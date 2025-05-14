@@ -1,46 +1,34 @@
 {
   "expo": {
-    "name": "ui-example-nativewind",
-    "slug": "ui-example-nativewind",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.gluestack.uiexamplenativewind"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.gluestack.uiexamplenativewind"
-    },
+    "scheme": "acme",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "platforms": ["ios", "android", "web"],
     "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "42cce9b5-9fbe-4572-92ba-fc43b2437a85"
+      "description": "Una app convertida a PWA con Expo",
+      "orientation": "portrait",
+      "backgroundColor": "#ffffff",
+      "themeColor": "#6200ee",
+      "primaryColor": "#6200ee",
+      "favicon": "./assets/icon.png",
+      "manifest": {
+        "name": "Tu App",
+        "short_name": "App",
+        "start_url": ".",
+        "display": "standalone",
+        "theme_color": "#000000",
+        "background_color": "#ffffff"
       }
     },
-    "owner": "gluestack",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/42cce9b5-9fbe-4572-92ba-fc43b2437a85"
-    }
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://n"
+        }
+      ]
+    ],
+    "name": "exporntailwind",
+    "slug": "exporntailwind"
   }
 }
