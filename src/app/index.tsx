@@ -108,7 +108,7 @@ function Header({
                   ${menuOpen ? "rotate-45 top-2.5" : "top-0"}
                 `}
               />
-              {/* Línea del medio */}
+              
               <View
                 className={`
                   absolute w-6 h-1 rounded bg-gray-800 dark:bg-white transition-all duration-300
