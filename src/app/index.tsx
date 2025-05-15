@@ -161,10 +161,10 @@ function Header({
           </View>
         </View>
       )}
-    </View>
+    </View >
   );
 }
-
+ 
 function LandingSection() {
   return (
     <View className="flex justify-center items-center bg-gradient-to-b from-blue-50 dark:from-gray-900 to-white dark:to-gray-950 px-6 w-full h-screen">
