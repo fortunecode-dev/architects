@@ -216,7 +216,7 @@ function Header({ sections, scrollToSection }: {
 function LandingSection() {
   return (
     <FadeInView>
-      <View className="flex justify-center items-center bg-[#fdf6e3] px-6 w-full h-screen">
+      <View className="flex lg:justify-center items-center bg-[#fdf6e3] mt-12 px-6 w-full h-screen">
         <View className="flex lg:flex-row flex-col items-center lg:items-start gap-3 mx-auto w-full max-w-7xl">
           {/* Logo a la izquierda con más espacio */}
           <View className="flex flex-shrink-0 justify-center lg:justify-start w-full lg:w-1/2">
