@@ -1,4 +1,6 @@
 import { useRef, useEffect, useState } from "react";
+import { SERVER_URL } from "@env";
+
 import {
   Linking,
   Animated,
@@ -10,13 +12,12 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  KeyboardTypeOptions,
-  StyleSheet,
-  Dimensions,
+  TextInputProps,
 } from "react-native";
 import { useFonts } from "expo-font";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WritingLogo from "@/components/WritingLogo";
+import axios from "axios";
 
 export default function Page() {
   const [fontsLoaded] = useFonts({
@@ -24,7 +25,7 @@ export default function Page() {
     "Tinos-Italic": require("../../assets/fonts/Tinos/Tinos-Italic.ttf"),
     "Tinos-Regular": require("../../assets/fonts/Tinos/Tinos-Regular.ttf"),
   });
-  
+
   const scrollViewRef = useRef<ScrollView>(null);
   const sectionRefs = {
     landing: useRef<View>(null),
@@ -94,9 +95,12 @@ export function FadeInView({
   );
 }
 
-function Header({ sections, scrollToSection }: { 
-  sections: string[]; 
-  scrollToSection: (section: string) => void 
+function Header({
+  sections,
+  scrollToSection,
+}: {
+  sections: string[];
+  scrollToSection: (section: string) => void;
 }) {
   const { top } = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -116,8 +120,8 @@ function Header({ sections, scrollToSection }: {
 
         <View className="hidden md:flex flex-row items-center gap-6">
           {sections.map((section) => (
-            <TouchableOpacity 
-              key={section} 
+            <TouchableOpacity
+              key={section}
               className="py-2"
               onPress={() => scrollToSection(section)}
             >
@@ -336,17 +340,94 @@ function ServicesSection() {
 }
 
 function ContactSection() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [message, setMessage] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    message: "",
+    state: "",
+    city: "",
+    postal: "",
+  });
   const [errors, setErrors] = useState({ name: false, email: false });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [searchDebounce, setSearchDebounce] = useState<NodeJS.Timeout>();
 
-  const handleSubmit = () => {
+  // Función con debounce para buscar sugerencias
+  const handleAddressChange = (text: string) => {
+    setFormData((prev) => ({ ...prev, address: text }));
+
+    if (searchDebounce) clearTimeout(searchDebounce);
+
+    setSearchDebounce(
+      setTimeout(() => {
+        if (text.length > 2) {
+          fetchAddressSuggestions(text);
+        } else {
+          setAddressSuggestions([]);
+          setShowSuggestions(false);
+        }
+      }, 500)
+    );
+  };
+
+  // Obtener sugerencias de OpenStreetMap Nominatim
+  const fetchAddressSuggestions = async (query: string) => {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          query
+        )}&addressdetails=1&limit=5&countrycodes=us`
+      );
+
+      setAddressSuggestions(
+        response.data.map((item: any) => ({
+          display: item.display_name,
+          address: {
+            city:
+              item.address.city ||
+              item.address.town ||
+              item.address.village ||
+              "",
+            state: item.address.state || "",
+            postal: item.address.postcode || "",
+          },
+        }))
+      );
+
+      setShowSuggestions(true);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+  };
+
+  // Manejar selección de dirección
+  const handleAddressSelect = (suggestion: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      address: suggestion.display.split(",")[0],
+      city: suggestion.address.city,
+      state: suggestion.address.state,
+      postal: suggestion.address.postal,
+    }));
+    setShowSuggestions(false);
+  };
+
+  const handleChange = (field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
     const newErrors = {
-      name: !name.trim(),
-      email: !email.trim(),
+      name: !formData.name.trim(),
+      email: !formData.email.trim(),
     };
     setErrors(newErrors);
 
@@ -355,23 +436,59 @@ function ContactSection() {
       return;
     }
 
-    const to = "osmel.rubido@gmail.com";
-    const subject = encodeURIComponent("Contact Form");
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\nPhone: ${
-        phone || "Not provided"
-      }\nAddress: ${address || "Not provided"}\nMessage: ${message}`
-    );
+    setIsSubmitting(true);
 
-    const mailtoUrl = `mailto:${to}?subject=${subject}&body=${body}`;
-    Linking.openURL(mailtoUrl)
-      .then(() => {
-        Alert.alert("Success", "Email prepared successfully.");
-      })
-      .catch((err) => {
-        Alert.alert("Error", "Could not open email client.");
-        console.error(err);
+    try {
+      const prospectData = {
+        name: formData.name,
+        lastName: formData.lastName || "", // Puedes dejarlo vacío o pedirlo en el formulario
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        state: formData.state || "", // Puedes dejarlo vacío o pedirlo en el formulario
+        city: formData.city || "", // Puedes dejarlo vacío o pedirlo en el formulario
+        postal: formData.postal || "", // Puedes dejarlo vacío o pedirlo en el formulario
+        metadata: {
+          message: formData.message,
+          contactDate: new Date().toISOString(),
+        },
+      };
+
+      const response = await fetch(`${SERVER_URL}/prospect/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(prospectData),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form");
+      }
+
+      Alert.alert("Success", "Your message has been sent successfully!");
+
+      // Reset form after successful submission
+      setFormData({
+        name: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        message: "",
+        state: "",
+        city: "",
+        postal: "",
+      });
+    } catch (error) {
+      console.error("Submission error:", error);
+      Alert.alert(
+        "Error",
+        "There was a problem sending your message. Please try again later."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -439,19 +556,32 @@ function ContactSection() {
 
         {/* Form */}
         <View className="flex-1 space-y-4 m-4 min-w-0">
-          <InputField
-            label="Name"
-            value={name}
-            onChangeText={setName}
-            placeholder="Name"
-            error={errors.name}
-          />
+          <View className="flex flex-row gap-4">
+            <View className="w-1/2">
+              <InputField
+                label="First Name"
+                value={formData.name}
+                onChangeText={(text) => handleChange("name", text)}
+                placeholder="First Name"
+                error={errors.name}
+              />
+            </View>
+            <View className="w-1/2">
+              <InputField
+                label="Last Name"
+                value={formData.lastName}
+                onChangeText={(text) => handleChange("lastName", text)}
+                placeholder="Last Name"
+              />
+            </View>
+          </View>
+
           <View className="relative flex flex-row w-full">
             <View className="w-1/2">
               <InputField
                 label="Email"
-                value={email}
-                onChangeText={setEmail}
+                value={formData.email}
+                onChangeText={(text) => handleChange("email", text)}
                 placeholder="Email"
                 keyboardType="email-address"
                 error={errors.email}
@@ -459,27 +589,82 @@ function ContactSection() {
             </View>
             <View className="right-0 absolute w-2/5">
               <InputField
-                label={"Phone"}
-                value={phone}
-                onChangeText={setPhone}
+                label="Phone"
+                value={formData.phone}
+                onChangeText={(text) => handleChange("phone", text)}
                 placeholder="Phone"
                 keyboardType="phone-pad"
               />
             </View>
           </View>
-          <InputField
-            label="Address"
-            value={address}
-            onChangeText={setAddress}
-            placeholder="Address"
-          />
+
+          <View className="relative z-10">
+            <InputField
+              label="Address"
+              value={formData.address}
+              onChangeText={handleAddressChange}
+              placeholder="Start typing your address"
+              onFocus={() =>
+                formData.address.length >= 3 && setShowSuggestions(true)
+              }
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+            />
+            {showSuggestions && addressSuggestions.length > 0 && (
+              <View className="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg">
+                {addressSuggestions.map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => handleAddressSelect(item)}
+                    className="p-3 border-b border-gray-100"
+                  >
+                    <Text className="text-sm">{item.display}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+          </View>
+
+          {/* Campos autocompletados (ciudad, estado, código postal) */}
+          <View className="flex flex-row gap-4">
+            <View className="flex-1">
+              <InputField
+                label="City"
+                value={formData.city}
+                onChangeText={(text) => handleChange("city", text)}
+                placeholder="City"
+              />
+            </View>
+            <View className="w-1/4">
+              <InputField
+                label="State"
+                value={formData.state}
+                onChangeText={(text) => handleChange("state", text)}
+                placeholder="State"
+              />
+            </View>
+            <View className="w-1/4">
+              <InputField
+                label="ZIP Code"
+                value={formData.postal}
+                onChangeText={(text) => handleChange("postal", text)}
+                placeholder="ZIP"
+                keyboardType="numeric"
+              />
+            </View>
+          </View>
+
           <TextAreaField
             label="Message"
-            value={message}
-            onChangeText={setMessage}
-            placeholder="Message"
+            value={formData.message}
+            onChangeText={(text) => handleChange("message", text)}
+            placeholder="Your message"
           />
-          <SubmitButton onPress={handleSubmit} label="Send Message" />
+
+          <SubmitButton
+            onPress={handleSubmit}
+            label={isSubmitting ? "Sending..." : "Send Message"}
+            disabled={isSubmitting}
+          />
         </View>
       </View>
     </View>
@@ -505,6 +690,9 @@ function Footer() {
             </View>
             <Text className="mt-2 text-[#5a6b8c] text-sm">
               © {new Date().getFullYear()} DwellingPlus. All rights reserved.
+            </Text>
+            <Text className="mt-1 text-[#5a6b8c] text-xs">
+              Map data © OpenStreetMap contributors
             </Text>
           </View>
 
@@ -537,39 +725,64 @@ function Footer() {
   );
 }
 
+type InputFieldProps = {
+  label: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder: string;
+  keyboardType?: TextInputProps["keyboardType"];
+  error?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  editable?: boolean;
+  autoCapitalize?: TextInputProps["autoCapitalize"];
+};
+
 function InputField({
   label,
   value,
   onChangeText,
   placeholder,
   keyboardType = "default",
-  error,
-}: {
-  label: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder: string;
-  keyboardType?: KeyboardTypeOptions;
-  error?: boolean;
-}) {
+  error = false,
+  onFocus = () => {},
+  onBlur = () => {},
+  editable = true,
+  autoCapitalize = "sentences",
+}: InputFieldProps) {
   return (
-    <View>
+    <View className="mb-3">
       <Text className="mb-1 font-medium text-[#39506b] text-xl">
-        {label} {error && <Text className="text-red-500">*</Text>}
+        {label}
+        {error && <Text className="text-red-500"> *</Text>}
       </Text>
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
+        placeholderTextColor="#9ca3af"
         keyboardType={keyboardType}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        editable={editable}
+        autoCapitalize={autoCapitalize}
         className={`bg-white px-3 border ${
-          error ? "border-red-500" : "border-[#f0e6cc]"
-        } rounded-md h-10 text-[#39506b7e]`}
+          error
+            ? "border-red-500"
+            : editable
+            ? "border-[#f0e6cc]"
+            : "border-gray-300"
+        } rounded-md h-10 text-[#39506b] ${!editable && "bg-gray-100"}`}
+        selectionColor="#f0c14b"
       />
+      {error && (
+        <Text className="text-red-500 text-xs mt-1">
+          This field is required
+        </Text>
+      )}
     </View>
   );
 }
-
 function TextAreaField({
   label,
   value,
@@ -602,14 +815,19 @@ function TextAreaField({
 function SubmitButton({
   onPress,
   label,
+  disabled = false,
 }: {
   onPress: () => void;
   label: string;
+  disabled?: boolean;
 }) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="bg-[#f0c14b] mt-4 px-6 py-3 rounded-md"
+      disabled={disabled}
+      className={`mt-4 px-6 py-3 rounded-md ${
+        disabled ? "bg-gray-400" : "bg-[#f0c14b]"
+      }`}
     >
       <Text className="font-medium text-[#39506b] text-base text-center">
         {label}
