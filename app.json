@@ -3,7 +3,11 @@
     "scheme": "acme",
     "userInterfaceStyle": "automatic",
     "orientation": "default",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "web": {
       "description": "Una app convertida a PWA con Expo",
       "orientation": "portrait",
@@ -26,7 +30,8 @@
         {
           "origin": "https://n"
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "name": "exporntailwind",
     "slug": "exporntailwind"

@@ -30,13 +30,11 @@ const AnimatedPath = Animated.createAnimatedComponent(SvgPath);
 const strokeDasharray = 5000;
 const duration = 250; // Duración rápida para escritura
 
-const WritingLogo = () => {
+const WritingLogo = ({ className }) => {
   const animatedValues = useRef(
     paths.map(() => new Animated.Value(strokeDasharray))
   ).current;
-  const opacityValues = useRef(
-    paths.map(() => new Animated.Value(0))
-  ).current;
+  const opacityValues = useRef(paths.map(() => new Animated.Value(0))).current;
 
   useEffect(() => {
     const animations = paths.map((_, i) =>
@@ -59,8 +57,13 @@ const WritingLogo = () => {
   }, []);
 
   return (
-    <View>
-      <Svg height="100%" width="100%" viewBox="0 0 1226 485">
+    <View className={className} style={{ aspectRatio: 1226 / 485 }}>
+      <Svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 1226 485"
+        preserveAspectRatio="xMidYMid meet"
+      >
         {paths.map((d, i) => (
           <AnimatedPath
             key={i}

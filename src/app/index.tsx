@@ -1,34 +1,46 @@
 import { useRef, useEffect, useState } from "react";
-import { SERVER_URL } from "@env";
-
 import {
-  Linking,
   Animated,
   ViewProps,
   Text,
   View,
-  Alert,
   ScrollView,
   TouchableOpacity,
   Image,
-  TextInput,
+  Dimensions,
+  Linking,
+  Alert,
   TextInputProps,
+  TextInput,
 } from "react-native";
-import { useFonts } from "expo-font";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import WritingLogo from "@/components/WritingLogo";
-import axios from "axios";
 import { Modal, Pressable } from "react-native";
-export default function Page() {
-  const [fontsLoaded] = useFonts({
-    "Tinos-Bold": require("../../assets/fonts/Tinos/Tinos-Bold.ttf"),
-    "Tinos-Italic": require("../../assets/fonts/Tinos/Tinos-Italic.ttf"),
-    "Tinos-Regular": require("../../assets/fonts/Tinos/Tinos-Regular.ttf"),
-  });
+import { SERVER_URL } from "@env";
+import axios from "axios";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
+// Constants
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const COLORS = {
+  primary: "#315072",
+  secondary: "#f0c14b",
+  accent: "#d4a017",
+  background: "#fce798",
+  card: "#f9f1d9",
+  text: "#315072",
+  lightText: "#f5e5a6",
+  border: "#e8d8b0",
+  error: "#e53e3e",
+};
+
+const FONTS = {
+  body: "Arial",
+};
+
+export default function Page() {
   const scrollViewRef = useRef<ScrollView>(null);
   const sectionRefs = {
-    landing: useRef<View>(null),
+    inicio: useRef<View>(null),
     services: useRef<View>(null),
     faq: useRef<View>(null),
     contact: useRef<View>(null),
@@ -44,14 +56,10 @@ export default function Page() {
     );
   };
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const sections = ["landing", "services", "faq", "contact"];
+  const sections = ["inicio", "services", "faq"];
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-white">
       <Header sections={sections} scrollToSection={scrollToSection} />
       <ScrollView
         ref={scrollViewRef}
@@ -59,7 +67,7 @@ export default function Page() {
         showsVerticalScrollIndicator={false}
         className="flex-1"
       >
-        <View ref={sectionRefs.landing}>
+        <View ref={sectionRefs.inicio}>
           <LandingSection scrollToSection={scrollToSection} />
         </View>
         <View ref={sectionRefs.services}>
@@ -76,7 +84,6 @@ export default function Page() {
     </View>
   );
 }
-
 
 export function FadeInView({
   children,
@@ -109,165 +116,227 @@ function Header({
 }) {
   const { top } = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const show = window.scrollY > 50;
+      if (show !== isScrolled) setIsScrolled(show);
+    };
+
+    document.addEventListener("scroll", handleScroll);
+    return () => document.removeEventListener("scroll", handleScroll);
+  }, [isScrolled]);
 
   return (
     <View
       style={{ paddingTop: top }}
-      className="bg-[#fdf6e3] border-[#f0e6cc] border-b"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#FBEFBE] border-b border-[#e8d8b0] `}
     >
-      <View className="flex flex-row justify-between items-center px-6 pt-4 h-16">
-        <View className="flex-row justify-center items-center">
+      <View className="flex flex-row items-center justify-between px-6 py-3 h-16 max-w-7xl mx-auto w-full">
+        {/* Left: Logo */}
+        <View className="flex flex-row items-center flex-shrink-0">
           <Image
-            source={require("../../assets/logo.svg")}
-            className="max-w-56 max-h-12"
+            source={require("../../public/logo.svg")}
+            style={{
+              width: 90,
+              height: 40,
+              resizeMode: "contain",
+              opacity: 1, // Mantener visibilidad en ambos casos
+            }}
           />
         </View>
 
-        <View className="hidden md:flex flex-row items-center gap-6">
+        {/* Center: Sections as Row */}
+        <View className="hidden md:flex flex-row items-center justify-center gap-6 flex-1">
           {sections.map((section) => (
             <TouchableOpacity
               key={section}
-              className="py-2"
               onPress={() => scrollToSection(section)}
+              className="group relative py-2"
             >
-              <Text className="font-medium text-[#424f60] hover:text-[#f0c14b] text-sm capitalize">
+              <Text
+                className={`font-bold text-sm capitalize transition-colors duration-200 text-[#315072]`}
+              >
                 {section}
               </Text>
+              <View
+                className={`absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-[#495a6d]`}
+              />
             </TouchableOpacity>
           ))}
         </View>
 
-        <View className="hidden md:flex flex-row gap-3">
-          <TouchableOpacity className="px-4 py-2 rounded-md">
-            <Text className="font-medium text-[#424f60] text-sm">
-              Sign in
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="bg-[#f0c14b] px-4 py-2 rounded-md">
-            <Text className="font-medium text-[#424f60] text-sm">
-              Login
-            </Text>
+        {/* Right: Contact Button */}
+        <View className="hidden md:flex flex-row items-center flex-shrink-0">
+          <TouchableOpacity
+            className={`px-4 py-2 rounded-md  transition-all duration-300 bg-[#ffdb80] hover:bg-[#FDE490]  `}
+            onPress={() => scrollToSection("contact")}
+          >
+            <Text className={`font-bold text-sm text-[#315072]`}>Contact</Text>
           </TouchableOpacity>
         </View>
 
-        <View className="md:hidden">
+        {/* Mobile Menu Button */}
+        <View className="md:hidden flex-shrink-0">
           <TouchableOpacity
             onPress={() => setMenuOpen(!menuOpen)}
-            className="p-2"
+            className="p-2 -mr-2"
           >
             <View className="relative justify-center w-6 h-6">
               <View
-                className={`
-                  absolute w-6 h-0.5 rounded bg-[#424f60] transition-all duration-300
-                  ${menuOpen ? "rotate-45 top-2.5" : "top-0"}
-                `}
-              />
-
-              <View
-                className={`
-                  absolute w-6 h-0.5 rounded bg-[#424f60] transition-all duration-300
-                  ${menuOpen ? "opacity-0" : "top-2.5"}
-                `}
+                className={`absolute w-6 h-0.5 rounded-full ${
+                  isScrolled ? "bg-[#315072]" : "bg-white"
+                } transition-all duration-300 ${
+                  menuOpen ? "rotate-45 top-1/2" : "top-0"
+                }`}
               />
               <View
-                className={`
-                  absolute w-6 h-0.5 rounded bg-[#424f60] transition-all duration-300
-                  ${menuOpen ? "-rotate-45 top-2.5" : "top-5"}
-                `}
+                className={`absolute w-6 h-0.5 rounded-full ${
+                  isScrolled ? "bg-[#315072]" : "bg-white"
+                } transition-all duration-300 ${
+                  menuOpen ? "opacity-0" : "top-1/2"
+                }`}
+              />
+              <View
+                className={`absolute w-6 h-0.5 rounded-full ${
+                  isScrolled ? "bg-[#315072]" : "bg-white"
+                } transition-all duration-300 ${
+                  menuOpen ? "-rotate-45 top-1/2" : "top-full"
+                }`}
               />
             </View>
           </TouchableOpacity>
         </View>
       </View>
 
+      {/* Mobile Menu */}
       {menuOpen && (
-        <View className="md:hidden bg-[#fdf6e3] px-6 py-4 border-[#f0e6cc] border-t w-full h-screen">
-          <Text
-            className="mb-3 font-bold text-[#f0c14b] text-4xl"
-            style={{ fontFamily: "Tinos-Bold" }}
-          >
-            DWELLINGPLUS
-          </Text>
-          {sections.map((section) => (
-            <TouchableOpacity
-              key={section}
-              onPress={() => {
-                scrollToSection(section);
-                setMenuOpen(false);
-              }}
-              className="py-2"
+        <View
+          className={`md:hidden ${
+            isScrolled ? "bg-[#f5e5a6]" : "bg-[#315072]"
+          } px-6 py-4 border-t ${
+            isScrolled ? "border-[#e8d8b0]" : "border-white/20"
+          } w-full`}
+        >
+          <View className="max-w-7xl mx-auto">
+            <Text
+              className={`mb-4 font-bold text-3xl ${
+                isScrolled ? "text-[#d4a017]" : "text-white"
+              }`}
             >
-              <Text className="py-5 font-medium text-[#424f60] text-base capitalize">
-                {section}
-              </Text>
-            </TouchableOpacity>
-          ))}
+              DWELLINGPLUS
+            </Text>
 
-          <View className="my-5 border-[#f0e6cc] border-t" />
+            {sections.map((section) => (
+              <TouchableOpacity
+                key={section}
+                onPress={() => {
+                  scrollToSection(section);
+                  setMenuOpen(false);
+                }}
+                className={`py-3 border-b ${
+                  isScrolled ? "border-[#e8d8b0]" : "border-white/20"
+                } last:border-0`}
+              >
+                <Text
+                  className={`font-medium text-lg capitalize ${
+                    isScrolled ? "text-[#315072]" : "text-white"
+                  }`}
+                >
+                  {section}
+                </Text>
+              </TouchableOpacity>
+            ))}
 
-          <View className="flex flex-row gap-3">
-            <TouchableOpacity className="px-4 py-2 rounded-md">
-              <Text className="font-medium text-[#424f60] text-sm">
-                Contactar
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="bg-[#f0c14b] px-4 py-2 rounded-md">
-              <Text className="font-medium text-[#424f60] text-sm">
-                Iniciar sesión
-              </Text>
-            </TouchableOpacity>
+            <View className="mt-6">
+              <TouchableOpacity
+                onPress={() => {
+                  scrollToSection("contact");
+                  setMenuOpen(false);
+                }}
+                className={`w-full px-4 py-3 rounded-md shadow-sm ${
+                  isScrolled ? "bg-[#f0c14b]" : "bg-white"
+                }`}
+              >
+                <Text
+                  className={`font-medium text-sm text-center ${
+                    isScrolled ? "text-[#39506b]" : "text-[#315072]"
+                  }`}
+                >
+                  Contact
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       )}
     </View>
   );
 }
-function LandingSection({ scrollToSection }: { scrollToSection: (section: string) => void }) {
+
+function LandingSection({
+  scrollToSection,
+}: {
+  scrollToSection: (section: string) => void;
+}) {
   return (
     <FadeInView>
-      <View className="flex lg:justify-center items-center bg-[#fce798] px-6 pt-10 lg:pt-0 w-full h-screen">
-        <View className="flex lg:flex-row flex-col items-center lg:items-start gap-3 mx-auto w-full max-w-7xl">
-          {/* Logo a la izquierda con más espacio */}
-          <View className="flex flex-shrink-0 justify-center lg:justify-start w-full lg:w-1/2">
-            <WritingLogo />
+      <View className="flex justify-center items-center bg-[#fce798] px-6 w-full h-screen">
+        <View className="flex lg:flex-row flex-col items-center justify-center gap-6 mx-auto w-full max-w-7xl">
+          {/* Logo Container */}
+          <View className="flex flex-1 justify-center items-center lg:items-end lg:pr-14">
+            <Image
+              source={require("../../public/logo-navy.png")}
+              style={{
+                width: "100%",
+                resizeMode: "contain",
+              }}
+            />
           </View>
 
-          {/* Divider vertical para pantallas grandes */}
-          {/* <View className="hidden lg:block mx-6 border-[#f0c14b] border-l-2 h-48" /> */}
+          {/* Vertical Divider */}
+          <View className="hidden lg:block border-l-2 border-[#FBEFBE] h-64 self-center" />
 
-          {/* Contenido a la derecha */}
-          <View className="lg:pl-14 border-l-[#fffaeeaf] lg:border-l-4 w-full lg:w-1/2 lg:text-left text-center">
-            <Text
-              className="mb-3 text-[#424f60] text-4xl md:text-6xl"
-              style={{ fontFamily: "Times New Roman" }}
-            >
-              Upgrade your property
-            </Text>
+          {/* Content */}
+          <View className="flex-1 lg:pl-14 w-full lg:text-left text-center">
+            <View className="flex flex-col justify-center h-full">
+              <Text
+                className="font-extralight text-[#315072] text-lg"
+                style={{ fontFamily: FONTS.body }}
+              >
+                Our goal is to help you develop your property. We work with
+                passion to meet the expectations of homeowners and developers.
+              </Text>
+              <Text
+                className="mb-5 font-extralight text-[#315072] text-lg"
+                style={{ fontFamily: FONTS.body }}
+              >
+                <Text className="text-[#315072] font-bold">DWELLINGPLUS </Text>{" "}
+                handles the entire process making it easier for the owner to
+                achieve their dream.
+              </Text>
 
-            <Text
-              className="mb-5 font-extralight text-[#5a6b8c] text-lg"
-              style={{ fontFamily: "Arial" }}
-            >
-              Our goal is to help you develop your property. We work with
-              passion to meet the expectations of homeowners and developers.
-              <Text className="text-[#f0c14b]"> DWELLINGPLUS </Text> handles the
-              entire process making it easier for the owner to achieve their
-              dream.
-            </Text>
+              <View className="flex sm:flex-row flex-col justify-center lg:justify-start gap-4">
+                <TouchableOpacity
+                  onPress={() => scrollToSection("contact")}
+                  className="bg-[#FBEFBE] px-6 py-3 rounded-md  transition-shadow duration-300"
+                >
+                  <Text className="font-medium text-[#315072] text-base text-center">
+                    Start your project
+                  </Text>
+                </TouchableOpacity>
 
-            <View className="flex sm:flex-row flex-col justify-center lg:justify-start gap-4">
-        <TouchableOpacity onPress={() => scrollToSection("contact")} className="bg-[#f9f1d9] px-6 py-3 rounded-md">
-          <Text className="font-medium text-[#424f60] text-base text-center">
-            Start your project
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => scrollToSection("services")}>
-          <Text className="px-6 py-3 font-medium text-[#424f60] text-base text-center">
-            More information →
-          </Text>
-        </TouchableOpacity>
-      </View>
+                <TouchableOpacity
+                  onPress={() => scrollToSection("services")}
+                  className="px-6 py-3 hover:bg-[#f9f1d9]/30 rounded-md transition-colors duration-300"
+                >
+                  <Text className="font-medium text-[#315072] text-base text-center">
+                    More information →
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </View>
       </View>
@@ -275,18 +344,29 @@ function LandingSection({ scrollToSection }: { scrollToSection: (section: string
   );
 }
 
-function ServiceCard({ icon, title, description, cont }: { icon: string; title: string; description: string ; cont?: string }) {
+function ServiceCard({
+  icon,
+  title,
+  description,
+  cont,
+}: {
+  icon: string;
+  title: string;
+  description: string;
+  cont?: string;
+}) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <View className="bg-[#f9f1d9] mb-4 p-6 border border-[#f0e6cc] rounded-xl">
+    <View className="bg-[#FBEFBE] mb-4 p-6 border border-[#f0e6cc] rounded-xl hover:shadow-sm transition-shadow duration-300">
       <Text className="mb-4 text-3xl">{icon}</Text>
-      <Text className="mb-2 font-semibold text-[#424f60] text-xl">{title}</Text>
-      <Text className="text-[#5a6b8c]">{description}</Text>
-      <Pressable onPress={() => setModalVisible(true)}>
-        <Text className="mt-5 font-medium text-[#6e6d6b] cursor-pointer">Read More →</Text>
+      <Text className="mb-2 font-semibold text-[#315072] text-xl">{title}</Text>
+      <Text className="text-[#315072]">{description}</Text>
+      <Pressable onPress={() => setModalVisible(true)} className="mt-5">
+        <Text className="font-medium text-[#315072] hover:text-[#315072] transition-colors duration-300">
+          Read More →
+        </Text>
       </Pressable>
-
       <Modal
         visible={modalVisible}
         transparent
@@ -295,13 +375,15 @@ function ServiceCard({ icon, title, description, cont }: { icon: string; title: 
       >
         <View className="flex-1 justify-center items-center bg-black/40">
           <View className="bg-white p-6 rounded-xl w-11/12 max-w-xl">
-            <Text className="mb-2 text-2xl">{icon} {title}</Text>
-            <Text className="my-6 text-[#5a6b8c] text-lg">{cont}</Text>
+            <Text className="mb-2 text-2xl text-[#315072]">
+              {icon} {title}
+            </Text>
+            <Text className="my-6 text-[#315072] text-lg">{cont}</Text>
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
-              className="self-end bg-[#f0c14b] px-4 py-2 rounded-md"
+              className="self-end bg-[#FDE490] px-4 py-2 rounded-md hover:bg-[#ffd753] transition-colors duration-300"
             >
-              <Text className="font-medium text-[#424f60]">Close</Text>
+              <Text className="font-medium text-[#315072]">Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -316,21 +398,21 @@ function ServicesSection() {
       title: "Let's build an ADU",
       description:
         "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU).",
-      cont:"Turn your available space into a source of value with an Accessory Dwelling Unit (ADU). Our ADU construction service allows you to make the most of your property, whether to generate rental income, comfortably house family members, or expand your living space. We design functional and efficient solutions that comply with local regulations, optimizing energy and materials for a sustainable home. With a smart investment, an ADU can offer you financial independence and flexibility, adapting to your current and future needs." ,
+      cont: "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU). Our ADU construction service allows you to make the most of your property, whether to generate rental income, comfortably house family members, or expand your living space. We design functional and efficient solutions that comply with local regulations, optimizing energy and materials for a sustainable home. With a smart investment, an ADU can offer you financial independence and flexibility, adapting to your current and future needs.",
       icon: "🏠",
     },
     {
       title: "Home Remodeling and Addition",
       description:
         "Transform your home to better suit your lifestyle and family needs.",
-      cont:"Our home remodeling and expansion services are designed to optimize your existing floor plan, creating more functional, comfortable and efficient spaces. Whether it's redistributing key areas, expanding bedrooms or modernizing bathrooms, we help you make the most of every square foot in a strategic way. With intelligent design and construction solutions, we turn your home into an environment that flows naturally and enhances your well-being.",
+      cont: "Our home remodeling and expansion services are designed to optimize your existing floor plan, creating more functional, comfortable and efficient spaces. Whether it's redistributing key areas, expanding bedrooms or modernizing bathrooms, we help you make the most of every square foot in a strategic way. With intelligent design and construction solutions, we turn your home into an environment that flows naturally and enhances your well-being.",
       icon: "🛠️",
     },
     {
       title: "Inspiring Backyard Spaces",
       description:
         "Turn your backyard into an oasis designed for comfort and conviviality.",
-      cont:"Our outdoor transformation service creates living areas with elegant pergolas, fire pits for warm moments, grills for unforgettable gatherings and a perfect balance of concrete pavers and natural grass. Cozy lighting enhances every detail, creating an ideal environment for relaxing, sharing and making the most of your home. Our architects and designers will turn your patio into a dream space for the whole family.",
+      cont: "Our outdoor transformation service creates living areas with elegant pergolas, fire pits for warm moments, grills for unforgettable gatherings and a perfect balance of concrete pavers and natural grass. Cozy lighting enhances every detail, creating an ideal environment for relaxing, sharing and making the most of your home. Our architects and designers will turn your patio into a dream space for the whole family.",
 
       icon: "🌳",
     },
@@ -338,29 +420,26 @@ function ServicesSection() {
       title: "General Construction and Repair",
       description:
         "We offer comprehensive solutions for construction, maintenance, painting, and repairs.",
-      cont:"We offer comprehensive solutions for construction, maintenance, painting, repair of roofs, walls, floors and any damaged area of the building. Whether you need to develop a project from scratch or restore existing structures, our team is ready to deliver quality results. From structural improvements to detailed renovations, we provide reliable service tailored to your needs.",
+      cont: "We offer comprehensive solutions for construction, maintenance, painting, repair of roofs, walls, floors and any damaged area of the building. Whether you need to develop a project from scratch or restore existing structures, our team is ready to deliver quality results. From structural improvements to detailed renovations, we provide reliable service tailored to your needs.",
       icon: "🧱",
     },
     {
       title: "Financial Support",
       description:
         "We help you access the financial resources available to develop construction and renovation projects.",
-      cont:"Through credit options or structured loans, homeowners can invest in an Auxiliary Dwelling Unit (ADU) or improve their home, distributing the payment in affordable installments. This service provides financial flexibility, facilitating the materialization of projects without compromising economic stability.",
+      cont: "Through credit options or structured loans, homeowners can invest in an Auxiliary Dwelling Unit (ADU) or improve their home, distributing the payment in affordable installments. This service provides financial flexibility, facilitating the materialization of projects without compromising economic stability.",
       icon: "💵",
     },
   ];
 
   return (
-    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 pt-10 lg:pt-0 lg:h-screen">
+    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 lg:h-screen">
       <View className="mx-auto w-full max-w-6xl">
-        <Text
-          className="mb-3 font-bold text-[#424f60] text-3xl md:text-4xl text-center"
-          style={{ fontFamily: "Times New Roman" }}
-        >
+        <Text className="mb-3 font-bold text-[#315072] text-3xl md:text-4xl text-center">
           Our Services
         </Text>
         <Text
-          className="mb-10 font-extralight text-[#5a6b8c] text-lg md:text-xl text-center"
+          className="mb-10 font-extralight text-[#315072] text-lg md:text-xl text-center"
           style={{ fontFamily: "Arial" }}
         >
           We offer a wide range of services to meet your needs.
@@ -376,14 +455,16 @@ function ServicesSection() {
               cont={service.cont}
             />
           ))}
-          
-
         </View>
       </View>
     </View>
   );
 }
-function FAQSection({ scrollToSection }: { scrollToSection: (section: string) => void }) {
+function FAQSection({
+  scrollToSection,
+}: {
+  scrollToSection: (section: string) => void;
+}) {
   const faqs = [
     {
       question: "What is an ADU and why should I build one?",
@@ -417,20 +498,24 @@ function FAQSection({ scrollToSection }: { scrollToSection: (section: string) =>
   return (
     <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 py-16 lg:h-screen">
       <View className="mx-auto w-full max-w-3xl">
-        <Text className="mb-6 font-bold text-[#424f60] text-3xl text-center" style={{ fontFamily: "Times New Roman" }}>
-        Frequently Asked Questions
+        <Text className="mb-6 font-bold text-[#315072] text-3xl text-center">
+          Frequently Asked Questions
         </Text>
         {faqs.map((faq, idx) => (
-          <View key={idx} className="mb-4 border-[#ffffff] border-b-2">
+          <View key={idx} className="mb-4 border-[#FBEFBE] border-b-2">
             <TouchableOpacity
               onPress={() => setOpenIndex(openIndex === idx ? null : idx)}
               className="flex flex-row justify-between items-center py-4"
             >
-              <Text className="font-medium text-[#424f60] text-lg">{faq.question}</Text>
-              <Text className="text-[#000000] text-2xl">{openIndex === idx ? "−" : "+"}</Text>
+              <Text className="font-medium text-[#315072] text-lg">
+                {faq.question}
+              </Text>
+              <Text className="text-[#315072] text-2xl">
+                {openIndex === idx ? "−" : "+"}
+              </Text>
             </TouchableOpacity>
             {openIndex === idx && (
-              <Text className="pb-4 text-[#5a6b8c]">{faq.answer}</Text>
+              <Text className="pb-4 text-[#315072]">{faq.answer}</Text>
             )}
           </View>
         ))}
@@ -594,25 +679,28 @@ function ContactSection() {
     <View className="flex justify-center items-center bg-[#fce798] px-6 w-full">
       <View className="flex lg:flex-row flex-col gap-5 bg-white drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl">
         {/* Contact Info */}
-        <View className="bg-[#f0c14b] drop-shadow-md p-5 lg:p-16 rounded-xl w-full lg:w-1/2">
-          <Text className="mb-6 font-bold text-[#424f60] text-2xl md:text-3xl text-left">
+        <View className="bg-[#FBEFBE] drop-shadow-md pt-7 pl-10 rounded-xl w-full lg:w-1/2">
+          <Text className="mb-6 font-bold text-[#315072] text-2xl md:text-3xl text-left">
             Contact Information
           </Text>
-          <Text className="text-[#5a6b8c] text-lg lg:text-left text-center">
+          <Text className="text-[#315072] text-lg lg:text-left text-center">
             Get in touch with us for any questions or inquiries.
           </Text>
           <View className="flex-row gap-10 lg:gap-20 lg:grid lg:grid-cols-2 m-auto mt-10 lg:mt-20 pb-5">
-            <View className="flex flex-col items-start gap-5 lg:gap-15"> 
+            <View className="flex flex-col items-start gap-5 lg:gap-15">
               <TouchableOpacity
                 onPress={() => Linking.openURL("tel:4706011911")}
                 className="flex-row justify-start items-center gap-2 hover:drop-shadow-md pb-5 border-[#ffffff63] border-b-2 w-96"
               >
-                <Image
-                  source={require("../../assets/circle-phone-flip.png")}
+                <Ionicons
+                  name="call"
+                  color={"#315072"}
+                  size={30}
                   className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
                 />
+
                 <View className="gap-3 mb-2 p-2">
-                  <Text className="lg:flex items-center gap-5 font-semibold text-[#424f60] lg:text-md text-lg">
+                  <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
                     470-601-1911
                   </Text>
                   <Text className="lg:flex items-center gap-5">
@@ -624,31 +712,33 @@ function ContactSection() {
                 onPress={() => Linking.openURL("mailto:osmel.rubido@gmail.com")}
                 className="flex-row justify-start items-center gap-2 hover:drop-shadow-md border-[#ffffff63] w-96"
               >
-                <Image
-                  source={require("../../assets/sobre.png")}
+                <Ionicons
+                  name="mail"
+                  color={"#315072"}
+                  size={30}
                   className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
                 />
                 <View className="gap-3 mb-2 p-2">
-                  <Text className="lg:flex items-center gap-5 font-semibold text-[#424f60] lg:text-md text-lg">
-                  email@example.com
+                  <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
+                    email@example.com
                   </Text>
-                  <Text>
-                    Email us to discuss your project
-                  </Text>
+                  <Text>Email us to discuss your project</Text>
                 </View>
               </TouchableOpacity>
-            </View>            
+            </View>
           </View>
-          <View className="flex flex-row gap-10 lg:gap-20 lg:grid lg:grid-cols-2 m-auto mt-10 lg:mt-20 pb-5"> 
+          <View className="flex flex-row gap-10 lg:gap-20 lg:grid lg:grid-cols-2 m-auto mt-10 lg:mt-20 pb-5">
             <TouchableOpacity
               onPress={() => Linking.openURL("sms:4706011911")}
               className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
             >
-              <Image
-                source={require("../../assets/puntos-de-comentario.png")}
-                className="max-w-9 lg:max-w-10 max-h-9 lg:max-h-10"
+              <MaterialIcons
+                name="sms"
+                color={"#315072"}
+                size={40}
+                className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
               />
-              {/* <Text className="hidden lg:flex items-center gap-5 font-semibold text-[#424f60] text-lg lg:text-xl">
+              {/* <Text className="hidden lg:flex items-center gap-5 font-semibold text-[#315072] text-lg lg:text-xl">
                 Direct Message
               </Text> */}
             </TouchableOpacity>
@@ -656,22 +746,19 @@ function ContactSection() {
               onPress={() => Linking.openURL("https://wa.me/1234567890")}
               className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
             >
-              <Image
-                source={require("../../assets/whatsapp (2).png")}
-                className="max-w-9 lg:max-w-10 max-h-9 lg:max-h-10"
+              <Ionicons
+                name="logo-whatsapp"
+                color={"#315072"}
+                size={40}
+                className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
               />
-              {/* <Text className="hidden lg:flex items-center gap-5 font-semibold text-[#424f60] text-lg lg:text-xl">
-                WhatsApp
-              </Text> */}
             </TouchableOpacity>
-
-            </View>
-
+          </View>
         </View>
 
         {/* Form */}
-        <View className="flex-1 space-y-4 m-4 pr-3 pb-3 min-w-0">
-          <View className="flex flex-row justify-between gap-4 pt-10 w-full overflow-hidden">
+        <View className="flex-1 space-y-1 m-2 pr-4 pb-3 min-w-0">
+          <View className="flex flex-row justify-between gap-1 pt-5 w-full overflow-hidden">
             <View className="w-1/2">
               <InputField
                 label="First Name"
@@ -693,7 +780,7 @@ function ContactSection() {
             </View>
           </View>
 
-          <View className="relative flex flex-row justify-between gap-4 w-full overflow-hidden">
+          <View className="relative flex flex-row justify-between gap-2 w-full overflow-hidden">
             <View className="w-1/2">
               <InputField
                 label="Email"
@@ -749,7 +836,6 @@ function ContactSection() {
             <View className="flex-1">
               <InputField
                 label="City"
-                autoComplete="address-line2" 
                 value={formData.city}
                 onChangeText={(text) => handleChange("city", text)}
                 placeholder="City"
@@ -758,7 +844,6 @@ function ContactSection() {
             <View className="w-1/4">
               <InputField
                 label="State"
-                autoComplete="address-line1"
                 value={formData.state}
                 onChangeText={(text) => handleChange("state", text)}
                 placeholder="State"
@@ -799,7 +884,7 @@ function Footer() {
 
   return (
     <View
-      className="bg-[#fdf6e3] border-[#f0e6cc] border-t"
+      className="bg-[#FBEFBE] border-[#ffdb80] border-t"
       style={{ paddingBottom: bottom }}
     >
       <View className="mx-auto px-6 py-2 w-full max-w-6xl">
@@ -807,38 +892,37 @@ function Footer() {
           <View className="flex items-center md:items-start mb-6 md:mb-0">
             <View className="flex-row items-center">
               <Image
-                source={require("../../assets/3.png")}
+                source={require("../../public/logo-navy.png")}
                 className="mr-2 rounded-lg max-w-56 max-h-12"
               />
             </View>
-            <Text className="mt-2 text-[#5a6b8c] text-sm">
-              © {new Date().getFullYear()} DwellingPlus. All rights reserved.
+            <Text className="mt-2 text-[#315072] text-sm">
+              DwellingPlus © {new Date().getFullYear()} All rights reserved.
             </Text>
-            <Text className="mt-1 text-[#5a6b8c] text-xs">
+            <Text className="mt-1 text-[#315072] text-xs">
               Map data © OpenStreetMap contributors
             </Text>
           </View>
 
           <View className="gap-8 grid grid-cols-2">
             <View className="space-y-2">
-              <Text className="font-semibold text-[#424f60] text-sm">
-                Product
+              <Text className="font-semibold text-[#315072] text-sm">
+                Content
               </Text>
               <View className="space-y-1">
-                <Text className="text-[#5a6b8c] text-sm">Features</Text>
-                <Text className="text-[#5a6b8c] text-sm">Pricing</Text>
-                <Text className="text-[#5a6b8c] text-sm">Documentation</Text>
+                <Text className="text-[#315072] text-sm">Home</Text>
+                <Text className="text-[#315072] text-sm">Services</Text>
+                <Text className="text-[#315072] text-sm">FAQs</Text>
               </View>
             </View>
 
             <View className="space-y-2">
-              <Text className="font-semibold text-[#424f60] text-sm">
+              <Text className="font-semibold text-[#315072] text-sm">
                 Company
               </Text>
               <View className="space-y-1">
-                <Text className="text-[#5a6b8c] text-sm">About</Text>
-                <Text className="text-[#5a6b8c] text-sm">Blog</Text>
-                <Text className="text-[#5a6b8c] text-sm">Careers</Text>
+                <Text className="text-[#315072] text-sm">About</Text>
+                <Text className="text-[#315072] text-sm">Development</Text>
               </View>
             </View>
           </View>
@@ -873,11 +957,11 @@ function InputField({
   onBlur = () => {},
   editable = true,
   autoCapitalize = "sentences",
-  autoComplete, 
+  autoComplete,
 }: InputFieldProps) {
   return (
     <View className="mb-3">
-      <Text className="mb-1 font-medium text-[#424f60] text-xl">
+      <Text className="mb-1 font-medium text-[#315072] text-xl">
         {label}
         {error && <Text className="text-red-500"> *</Text>}
       </Text>
@@ -891,23 +975,23 @@ function InputField({
         onBlur={onBlur}
         editable={editable}
         autoCapitalize={autoCapitalize}
-        autoComplete={autoComplete} 
+        autoComplete={autoComplete}
         className={`bg-white px-3 border ${
           error
             ? "border-red-500"
             : editable
             ? "border-[#f0e6cc]"
             : "border-gray-300"
-        } rounded-md h-10 text-[#424f60] ${!editable && "bg-gray-100"}`}
+        } rounded-md h-10 text-[#315072] ${!editable && "bg-gray-100"}`}
         selectionColor="#f0c14b"
-/>      
-            {error && (
-              <Text className="mt-1 text-red-500 text-xs">
-                This field is required
-              </Text>
-            )}
-          </View>
-        );
+      />
+      {error && (
+        <Text className="mt-1 text-red-500 text-xs">
+          This field is required
+        </Text>
+      )}
+    </View>
+  );
 }
 function TextAreaField({
   label,
@@ -922,7 +1006,7 @@ function TextAreaField({
 }) {
   return (
     <View>
-      <Text className="mt-4 mb-1 font-medium text-[#424f60] text-xl">
+      <Text className="mt-4 mb-1 font-medium text-[#315072] text-xl">
         {label}
       </Text>
       <TextInput
@@ -931,7 +1015,7 @@ function TextAreaField({
         placeholder={placeholder}
         multiline={true}
         numberOfLines={5}
-        className="bg-white p-3 border border-[#f0e6cc] rounded-md h-32 text-[#424f607a]"
+        className="bg-white p-3 border border-[#f0e6cc] rounded-md h-32 text-[#3150727a]"
         textAlignVertical="top"
       />
     </View>
@@ -952,10 +1036,10 @@ function SubmitButton({
       onPress={onPress}
       disabled={disabled}
       className={`mt-4 px-6 py-3 rounded-md ${
-        disabled ? "bg-gray-400" : "bg-[#f0c14b]"
-      }`}
+        disabled ? "bg-gray-400" : "bg-[#ffdb80]"
+      } hover:bg-[#FBEFBE]`}
     >
-      <Text className="font-medium text-zinc-`0 hover:text-[#424f60] text-base text-center">
+      <Text className="font-medium text-[#315072] text-base text-center hover:">
         {label}
       </Text>
     </TouchableOpacity>
