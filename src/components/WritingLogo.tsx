@@ -3,7 +3,6 @@ import { View, Animated, Easing } from "react-native";
 import Svg, { Path as SvgPath } from "react-native-svg";
 
 // Convertimos Path a un componente animado
-const AnimatedPath = Animated.createAnimatedComponent(SvgPath);
 const paths = [
   "M110.5 207.5c-6.370491-4.319122-13.527267-7.165787-21.017609-7.788086-7.551376-.62738-15.111297.907227-21.48513 5.784515-13.416946 10.266663-21.150421 23.694626-23.662029 40.478913-.831043 5.553558-1.118111 10.78244.69754 16.013275 2.231682 6.429382 5.345688 7.200775 9.949032 2.493591 6.558395-6.70636 11.318802-14.761688 16.518501-22.48201C80.336205 228.880966 89.370697 215.888397 97 202",
   "M139 138.5c-4.527725 1.081741-5.95842 5.025299-8.025894 8.484528C120.196289 165.0177 109.333336 183 98.5 201",
@@ -27,25 +26,38 @@ const paths = [
   "M1151.5 155.5c-9.825562 2.96875-16.071777 9.108902-18.075562 19.485413-1.025512 5.31105 1.23584 9.735046 2.497681 14.535049 2.554321 9.717224 6.691162 18.791245 10.577881 27.979538",
   "M1145.5 222c-1.646606.040054-2.86731.912323-4.003174 1.996704-13.305054 12.702118-26.585083 25.508759-35.887573 41.566589-5.579468 9.631134-10.497925 19.765717-10.094482 31.436188.163696 4.735291.95166 9.044251 4.899536 12.595734 4.726196 4.251526 10.036377 3.544586 15.054809 2.281891 16.325318-4.107697 27.017456-15.126374 33.966797-29.907227 6.447266-13.713104 5.644653-28.135162 2.458618-42.44638-1.332763-5.985932-1.44226-12.463898-5.780273-17.619614-.860962-1.023193.151123-3.502594 1.431518-4.333344 11.483033-7.450256 21.484497-17.097274 33.968995-23.039474 3.235107-1.53978 6.651855-2.697754 9.985229-4.031082",
 ];
+const AnimatedPath = Animated.createAnimatedComponent(SvgPath);
 const strokeDasharray = 5000;
-const duration = 120; // duración por path
+const duration = 250; // Duración rápida para escritura
 
 const WritingLogo = () => {
   const animatedValues = useRef(
     paths.map(() => new Animated.Value(strokeDasharray))
   ).current;
+  const opacityValues = useRef(
+    paths.map(() => new Animated.Value(0))
+  ).current;
 
   useEffect(() => {
-    const animations = animatedValues.map((anim) =>
-      Animated.timing(anim, {
-        toValue: 0,
-        duration,
-        easing: Easing.ease,
-        useNativeDriver: false,
-      })
+    const animations = paths.map((_, i) =>
+      Animated.sequence([
+        Animated.timing(opacityValues[i], {
+          toValue: 1,
+          duration: 180,
+          delay: i * 20, // Pequeño delay para efecto secuencial
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedValues[i], {
+          toValue: 0,
+          duration,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: false,
+        }),
+      ])
     );
-    Animated.sequence(animations).start();
+    Animated.stagger(80, animations).start();
   }, []);
+
   return (
     <View>
       <Svg height="100%" width="100%" viewBox="0 0 1226 485">
@@ -60,6 +72,7 @@ const WritingLogo = () => {
             strokeDashoffset={animatedValues[i]}
             strokeLinecap="round"
             strokeLinejoin="round"
+            opacity={opacityValues[i]}
           />
         ))}
       </Svg>

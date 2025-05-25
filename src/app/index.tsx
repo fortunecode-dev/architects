@@ -18,7 +18,7 @@ import { useFonts } from "expo-font";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WritingLogo from "@/components/WritingLogo";
 import axios from "axios";
-
+import { Modal, Pressable } from "react-native";
 export default function Page() {
   const [fontsLoaded] = useFonts({
     "Tinos-Bold": require("../../assets/fonts/Tinos/Tinos-Bold.ttf"),
@@ -30,6 +30,7 @@ export default function Page() {
   const sectionRefs = {
     landing: useRef<View>(null),
     services: useRef<View>(null),
+    faq: useRef<View>(null),
     contact: useRef<View>(null),
   };
 
@@ -47,10 +48,10 @@ export default function Page() {
     return null;
   }
 
-  const sections = ["landing", "services", "contact"];
+  const sections = ["landing", "services", "faq", "contact"];
 
   return (
-    <View className="flex-1 bg-[#fdf6e3]">
+    <View className="flex-1">
       <Header sections={sections} scrollToSection={scrollToSection} />
       <ScrollView
         ref={scrollViewRef}
@@ -59,10 +60,13 @@ export default function Page() {
         className="flex-1"
       >
         <View ref={sectionRefs.landing}>
-          <LandingSection />
+          <LandingSection scrollToSection={scrollToSection} />
         </View>
         <View ref={sectionRefs.services}>
           <ServicesSection />
+        </View>
+        <View ref={sectionRefs.faq}>
+          <FAQSection scrollToSection={scrollToSection} />
         </View>
         <View ref={sectionRefs.contact}>
           <ContactSection />
@@ -72,6 +76,7 @@ export default function Page() {
     </View>
   );
 }
+
 
 export function FadeInView({
   children,
@@ -125,7 +130,7 @@ function Header({
               className="py-2"
               onPress={() => scrollToSection(section)}
             >
-              <Text className="font-medium text-[#39506b] hover:text-[#f0c14b] text-sm capitalize">
+              <Text className="font-medium text-[#424f60] hover:text-[#f0c14b] text-sm capitalize">
                 {section}
               </Text>
             </TouchableOpacity>
@@ -134,13 +139,13 @@ function Header({
 
         <View className="hidden md:flex flex-row gap-3">
           <TouchableOpacity className="px-4 py-2 rounded-md">
-            <Text className="font-medium text-[#39506b] text-sm">
-              Contactar
+            <Text className="font-medium text-[#424f60] text-sm">
+              Sign in
             </Text>
           </TouchableOpacity>
           <TouchableOpacity className="bg-[#f0c14b] px-4 py-2 rounded-md">
-            <Text className="font-medium text-[#39506b] text-sm">
-              Iniciar sesión
+            <Text className="font-medium text-[#424f60] text-sm">
+              Login
             </Text>
           </TouchableOpacity>
         </View>
@@ -153,20 +158,20 @@ function Header({
             <View className="relative justify-center w-6 h-6">
               <View
                 className={`
-                  absolute w-6 h-0.5 rounded bg-[#39506b] transition-all duration-300
+                  absolute w-6 h-0.5 rounded bg-[#424f60] transition-all duration-300
                   ${menuOpen ? "rotate-45 top-2.5" : "top-0"}
                 `}
               />
 
               <View
                 className={`
-                  absolute w-6 h-0.5 rounded bg-[#39506b] transition-all duration-300
+                  absolute w-6 h-0.5 rounded bg-[#424f60] transition-all duration-300
                   ${menuOpen ? "opacity-0" : "top-2.5"}
                 `}
               />
               <View
                 className={`
-                  absolute w-6 h-0.5 rounded bg-[#39506b] transition-all duration-300
+                  absolute w-6 h-0.5 rounded bg-[#424f60] transition-all duration-300
                   ${menuOpen ? "-rotate-45 top-2.5" : "top-5"}
                 `}
               />
@@ -192,7 +197,7 @@ function Header({
               }}
               className="py-2"
             >
-              <Text className="py-5 font-medium text-[#39506b] text-base capitalize">
+              <Text className="py-5 font-medium text-[#424f60] text-base capitalize">
                 {section}
               </Text>
             </TouchableOpacity>
@@ -202,12 +207,12 @@ function Header({
 
           <View className="flex flex-row gap-3">
             <TouchableOpacity className="px-4 py-2 rounded-md">
-              <Text className="font-medium text-[#39506b] text-sm">
+              <Text className="font-medium text-[#424f60] text-sm">
                 Contactar
               </Text>
             </TouchableOpacity>
             <TouchableOpacity className="bg-[#f0c14b] px-4 py-2 rounded-md">
-              <Text className="font-medium text-[#39506b] text-sm">
+              <Text className="font-medium text-[#424f60] text-sm">
                 Iniciar sesión
               </Text>
             </TouchableOpacity>
@@ -217,10 +222,10 @@ function Header({
     </View>
   );
 }
-function LandingSection() {
+function LandingSection({ scrollToSection }: { scrollToSection: (section: string) => void }) {
   return (
     <FadeInView>
-      <View className="flex lg:justify-center items-center bg-[#fdf6e3] mt-12 px-6 w-full h-screen">
+      <View className="flex lg:justify-center items-center bg-[#fce798] px-6 pt-10 lg:pt-0 w-full h-screen">
         <View className="flex lg:flex-row flex-col items-center lg:items-start gap-3 mx-auto w-full max-w-7xl">
           {/* Logo a la izquierda con más espacio */}
           <View className="flex flex-shrink-0 justify-center lg:justify-start w-full lg:w-1/2">
@@ -231,17 +236,17 @@ function LandingSection() {
           {/* <View className="hidden lg:block mx-6 border-[#f0c14b] border-l-2 h-48" /> */}
 
           {/* Contenido a la derecha */}
-          <View className="lg:pl-14 border-l-[#f0c14b] lg:border-l-2 w-full lg:w-1/2 lg:text-left text-center">
+          <View className="lg:pl-14 border-l-[#fffaeeaf] lg:border-l-4 w-full lg:w-1/2 lg:text-left text-center">
             <Text
-              className="mb-3 text-[#39506b] text-4xl md:text-6xl"
-              style={{ fontFamily: "Tinos-Italic" }}
+              className="mb-3 text-[#424f60] text-4xl md:text-6xl"
+              style={{ fontFamily: "Times New Roman" }}
             >
               Upgrade your property
             </Text>
 
             <Text
               className="mb-5 font-extralight text-[#5a6b8c] text-lg"
-              style={{ fontFamily: "Tinos-Regular" }}
+              style={{ fontFamily: "Arial" }}
             >
               Our goal is to help you develop your property. We work with
               passion to meet the expectations of homeowners and developers.
@@ -251,22 +256,57 @@ function LandingSection() {
             </Text>
 
             <View className="flex sm:flex-row flex-col justify-center lg:justify-start gap-4">
-              <TouchableOpacity className="bg-[#f0c14b] px-6 py-3 rounded-md">
-                <Text className="font-medium text-[#39506b] text-base text-center">
-                  Comenzar ahora
-                </Text>
-              </TouchableOpacity>
+        <TouchableOpacity onPress={() => scrollToSection("contact")} className="bg-[#f9f1d9] px-6 py-3 rounded-md">
+          <Text className="font-medium text-[#424f60] text-base text-center">
+            Start your project
+          </Text>
+        </TouchableOpacity>
 
-              <TouchableOpacity>
-                <Text className="px-6 py-3 font-medium text-[#39506b] text-base text-center">
-                  Más información →
-                </Text>
-              </TouchableOpacity>
-            </View>
+        <TouchableOpacity onPress={() => scrollToSection("services")}>
+          <Text className="px-6 py-3 font-medium text-[#424f60] text-base text-center">
+            More information →
+          </Text>
+        </TouchableOpacity>
+      </View>
           </View>
         </View>
       </View>
     </FadeInView>
+  );
+}
+
+function ServiceCard({ icon, title, description, cont }: { icon: string; title: string; description: string ; cont?: string }) {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  return (
+    <View className="bg-[#f9f1d9] mb-4 p-6 border border-[#f0e6cc] rounded-xl">
+      <Text className="mb-4 text-3xl">{icon}</Text>
+      <Text className="mb-2 font-semibold text-[#424f60] text-xl">{title}</Text>
+      <Text className="text-[#5a6b8c]">{description}</Text>
+      <Pressable onPress={() => setModalVisible(true)}>
+        <Text className="mt-5 font-medium text-[#6e6d6b] cursor-pointer">Read More →</Text>
+      </Pressable>
+
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/40">
+          <View className="bg-white p-6 rounded-xl w-11/12 max-w-xl">
+            <Text className="mb-2 text-2xl">{icon} {title}</Text>
+            <Text className="my-6 text-[#5a6b8c] text-lg">{cont}</Text>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              className="self-end bg-[#f0c14b] px-4 py-2 rounded-md"
+            >
+              <Text className="font-medium text-[#424f60]">Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 }
 
@@ -276,69 +316,128 @@ function ServicesSection() {
       title: "Let's build an ADU",
       description:
         "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU).",
+      cont:"Turn your available space into a source of value with an Accessory Dwelling Unit (ADU). Our ADU construction service allows you to make the most of your property, whether to generate rental income, comfortably house family members, or expand your living space. We design functional and efficient solutions that comply with local regulations, optimizing energy and materials for a sustainable home. With a smart investment, an ADU can offer you financial independence and flexibility, adapting to your current and future needs." ,
       icon: "🏠",
     },
     {
       title: "Home Remodeling and Addition",
       description:
         "Transform your home to better suit your lifestyle and family needs.",
+      cont:"Our home remodeling and expansion services are designed to optimize your existing floor plan, creating more functional, comfortable and efficient spaces. Whether it's redistributing key areas, expanding bedrooms or modernizing bathrooms, we help you make the most of every square foot in a strategic way. With intelligent design and construction solutions, we turn your home into an environment that flows naturally and enhances your well-being.",
       icon: "🛠️",
     },
     {
       title: "Inspiring Backyard Spaces",
       description:
         "Turn your backyard into an oasis designed for comfort and conviviality.",
+      cont:"Our outdoor transformation service creates living areas with elegant pergolas, fire pits for warm moments, grills for unforgettable gatherings and a perfect balance of concrete pavers and natural grass. Cozy lighting enhances every detail, creating an ideal environment for relaxing, sharing and making the most of your home. Our architects and designers will turn your patio into a dream space for the whole family.",
+
       icon: "🌳",
     },
     {
       title: "General Construction and Repair",
       description:
         "We offer comprehensive solutions for construction, maintenance, painting, and repairs.",
+      cont:"We offer comprehensive solutions for construction, maintenance, painting, repair of roofs, walls, floors and any damaged area of the building. Whether you need to develop a project from scratch or restore existing structures, our team is ready to deliver quality results. From structural improvements to detailed renovations, we provide reliable service tailored to your needs.",
       icon: "🧱",
     },
     {
       title: "Financial Support",
       description:
-        "We help you access the financial resources available to develop construction projects.",
+        "We help you access the financial resources available to develop construction and renovation projects.",
+      cont:"Through credit options or structured loans, homeowners can invest in an Auxiliary Dwelling Unit (ADU) or improve their home, distributing the payment in affordable installments. This service provides financial flexibility, facilitating the materialization of projects without compromising economic stability.",
       icon: "💵",
     },
   ];
 
   return (
-    <View className="flex flex-col justify-center items-center bg-[#fdf6e3] px-6 lg:h-screen">
+    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 pt-10 lg:pt-0 lg:h-screen">
       <View className="mx-auto w-full max-w-6xl">
         <Text
-          className="mb-3 font-bold text-[#39506b] text-3xl md:text-4xl text-center"
-          style={{ fontFamily: "Tinos-Bold" }}
+          className="mb-3 font-bold text-[#424f60] text-3xl md:text-4xl text-center"
+          style={{ fontFamily: "Times New Roman" }}
         >
           Our Services
         </Text>
         <Text
           className="mb-10 font-extralight text-[#5a6b8c] text-lg md:text-xl text-center"
-          style={{ fontFamily: "Tinos-Regular" }}
+          style={{ fontFamily: "Arial" }}
         >
           We offer a wide range of services to meet your needs.
         </Text>
 
-        <View className="gap-8 grid grid-cols-1 md:grid-cols-3 mx-5">
+        <View className="gap-1 lg:gap-8 grid grid-cols-1 md:grid-cols-3 mx-5">
           {services.map((service, index) => (
-            <View
+            <ServiceCard
               key={index}
-              className="bg-[#f9f1d9] p-6 border border-[#f0e6cc] hover:border-[#f0c14b] rounded-xl transition-all"
-            >
-              <Text className="mb-4 text-3xl">{service.icon}</Text>
-              <Text className="mb-2 font-semibold text-[#39506b] text-xl">
-                {service.title}
-              </Text>
-              <Text className="text-[#5a6b8c]">{service.description}</Text>
-            </View>
+              icon={service.icon}
+              title={service.title}
+              description={service.description}
+              cont={service.cont}
+            />
           ))}
+          
+
         </View>
       </View>
     </View>
   );
 }
+function FAQSection({ scrollToSection }: { scrollToSection: (section: string) => void }) {
+  const faqs = [
+    {
+      question: "What is an ADU and why should I build one?",
+      answer:
+        "An ADU (Accessory Dwelling Unit) is an additional structure on your property that can be used for rental, family, or to expand your space. It increases your property's value and provides flexibility.",
+    },
+    {
+      question: "How long does a typical project take?",
+      answer:
+        "The time depends on the type of project, but most remodels and ADUs take between 3 and 6 months from design to completion.",
+    },
+    {
+      question: "Can I finance my project?",
+      answer:
+        "Yes, we offer advice on accessing credit and financing so you can carry out your project without affecting your finances.",
+    },
+    {
+      question: "What services do you offer besides construction?",
+      answer:
+        "We offer architectural design, permit management, remodeling, expansions, financial advice, and more.",
+    },
+    {
+      question: "Do you work with clients outside of Atlanta?",
+      answer:
+        "Yes, we can evaluate projects in other areas. Contact us to discuss your case.",
+    },
+  ];
 
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 py-16 lg:h-screen">
+      <View className="mx-auto w-full max-w-3xl">
+        <Text className="mb-6 font-bold text-[#424f60] text-3xl text-center" style={{ fontFamily: "Times New Roman" }}>
+        Frequently Asked Questions
+        </Text>
+        {faqs.map((faq, idx) => (
+          <View key={idx} className="mb-4 border-[#ffffff] border-b-2">
+            <TouchableOpacity
+              onPress={() => setOpenIndex(openIndex === idx ? null : idx)}
+              className="flex flex-row justify-between items-center py-4"
+            >
+              <Text className="font-medium text-[#424f60] text-lg">{faq.question}</Text>
+              <Text className="text-[#000000] text-2xl">{openIndex === idx ? "−" : "+"}</Text>
+            </TouchableOpacity>
+            {openIndex === idx && (
+              <Text className="pb-4 text-[#5a6b8c]">{faq.answer}</Text>
+            )}
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
 function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",
@@ -492,40 +591,66 @@ function ContactSection() {
   };
 
   return (
-    <View className="flex justify-center items-center bg-[#f9f1d9] px-6 w-full">
-      <View className="flex lg:flex-row flex-col gap-5 bg-white drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-4xl">
+    <View className="flex justify-center items-center bg-[#fce798] px-6 w-full">
+      <View className="flex lg:flex-row flex-col gap-5 bg-white drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl">
         {/* Contact Info */}
         <View className="bg-[#f0c14b] drop-shadow-md p-5 lg:p-16 rounded-xl w-full lg:w-1/2">
-          <Text className="mb-6 font-bold text-[#39506b] text-2xl md:text-3xl text-center">
+          <Text className="mb-6 font-bold text-[#424f60] text-2xl md:text-3xl text-left">
             Contact Information
           </Text>
           <Text className="text-[#5a6b8c] text-lg lg:text-left text-center">
             Get in touch with us for any questions or inquiries.
           </Text>
           <View className="flex-row gap-10 lg:gap-20 lg:grid lg:grid-cols-2 m-auto mt-10 lg:mt-20 pb-5">
-            <TouchableOpacity
-              onPress={() => Linking.openURL("tel:4706011911")}
-              className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
-            >
-              <Image
-                source={require("../../assets/circle-phone-flip.png")}
-                className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
-              />
-              <Text className="hidden lg:flex items-center gap-5 font-semibold text-[#39506b] text-lg lg:text-xl">
-                470-601-1911
-              </Text>
-            </TouchableOpacity>
+            <View className="flex flex-col items-start gap-5 lg:gap-15"> 
+              <TouchableOpacity
+                onPress={() => Linking.openURL("tel:4706011911")}
+                className="flex-row justify-start items-center gap-2 hover:drop-shadow-md pb-5 border-[#ffffff63] border-b-2 w-96"
+              >
+                <Image
+                  source={require("../../assets/circle-phone-flip.png")}
+                  className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
+                />
+                <View className="gap-3 mb-2 p-2">
+                  <Text className="lg:flex items-center gap-5 font-semibold text-[#424f60] lg:text-md text-lg">
+                    470-601-1911
+                  </Text>
+                  <Text className="lg:flex items-center gap-5">
+                    Call now for a free consultation
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => Linking.openURL("mailto:osmel.rubido@gmail.com")}
+                className="flex-row justify-start items-center gap-2 hover:drop-shadow-md border-[#ffffff63] w-96"
+              >
+                <Image
+                  source={require("../../assets/sobre.png")}
+                  className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
+                />
+                <View className="gap-3 mb-2 p-2">
+                  <Text className="lg:flex items-center gap-5 font-semibold text-[#424f60] lg:text-md text-lg">
+                  email@example.com
+                  </Text>
+                  <Text>
+                    Email us to discuss your project
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>            
+          </View>
+          <View className="flex flex-row gap-10 lg:gap-20 lg:grid lg:grid-cols-2 m-auto mt-10 lg:mt-20 pb-5"> 
             <TouchableOpacity
               onPress={() => Linking.openURL("sms:4706011911")}
               className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
             >
               <Image
                 source={require("../../assets/puntos-de-comentario.png")}
-                className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
+                className="max-w-9 lg:max-w-10 max-h-9 lg:max-h-10"
               />
-              <Text className="hidden lg:flex items-center gap-5 font-semibold text-[#39506b] text-lg lg:text-xl">
+              {/* <Text className="hidden lg:flex items-center gap-5 font-semibold text-[#424f60] text-lg lg:text-xl">
                 Direct Message
-              </Text>
+              </Text> */}
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => Linking.openURL("https://wa.me/1234567890")}
@@ -533,42 +658,34 @@ function ContactSection() {
             >
               <Image
                 source={require("../../assets/whatsapp (2).png")}
-                className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
+                className="max-w-9 lg:max-w-10 max-h-9 lg:max-h-10"
               />
-              <Text className="hidden lg:flex items-center gap-5 font-semibold text-[#39506b] text-lg lg:text-xl">
+              {/* <Text className="hidden lg:flex items-center gap-5 font-semibold text-[#424f60] text-lg lg:text-xl">
                 WhatsApp
-              </Text>
+              </Text> */}
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => Linking.openURL("mailto:osmel.rubido@gmail.com")}
-              className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
-            >
-              <Image
-                source={require("../../assets/sobre.png")}
-                className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
-              />
-              <Text className="hidden lg:flex items-center gap-5 font-semibold text-[#39506b] text-lg lg:text-xl">
-                Email
-              </Text>
-            </TouchableOpacity>
-          </View>
+
+            </View>
+
         </View>
 
         {/* Form */}
-        <View className="flex-1 space-y-4 m-4 min-w-0">
-          <View className="flex flex-row gap-4">
+        <View className="flex-1 space-y-4 m-4 pr-3 pb-3 min-w-0">
+          <View className="flex flex-row justify-between gap-4 pt-10 w-full overflow-hidden">
             <View className="w-1/2">
               <InputField
                 label="First Name"
+                autoComplete="name"
                 value={formData.name}
                 onChangeText={(text) => handleChange("name", text)}
                 placeholder="First Name"
                 error={errors.name}
               />
             </View>
-            <View className="w-1/2">
+            <View className="w-2/5 lg:w-60">
               <InputField
                 label="Last Name"
+                autoComplete="family-name"
                 value={formData.lastName}
                 onChangeText={(text) => handleChange("lastName", text)}
                 placeholder="Last Name"
@@ -576,10 +693,11 @@ function ContactSection() {
             </View>
           </View>
 
-          <View className="relative flex flex-row w-full">
+          <View className="relative flex flex-row justify-between gap-4 w-full overflow-hidden">
             <View className="w-1/2">
               <InputField
                 label="Email"
+                autoComplete="email"
                 value={formData.email}
                 onChangeText={(text) => handleChange("email", text)}
                 placeholder="Email"
@@ -587,9 +705,10 @@ function ContactSection() {
                 error={errors.email}
               />
             </View>
-            <View className="right-0 absolute w-2/5">
+            <View className="w-2/5 lg:w-60">
               <InputField
                 label="Phone"
+                autoComplete="tel"
                 value={formData.phone}
                 onChangeText={(text) => handleChange("phone", text)}
                 placeholder="Phone"
@@ -598,9 +717,10 @@ function ContactSection() {
             </View>
           </View>
 
-          <View className="relative z-10">
+          <View className="z-10 relative">
             <InputField
               label="Address"
+              autoComplete="street-address"
               value={formData.address}
               onChangeText={handleAddressChange}
               placeholder="Start typing your address"
@@ -610,12 +730,12 @@ function ContactSection() {
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             />
             {showSuggestions && addressSuggestions.length > 0 && (
-              <View className="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg">
+              <View className="top-full absolute bg-white shadow-lg mt-1 border border-gray-200 rounded-md w-full">
                 {addressSuggestions.map((item, index) => (
                   <TouchableOpacity
                     key={index}
                     onPress={() => handleAddressSelect(item)}
-                    className="p-3 border-b border-gray-100"
+                    className="p-3 border-gray-100 border-b"
                   >
                     <Text className="text-sm">{item.display}</Text>
                   </TouchableOpacity>
@@ -629,6 +749,7 @@ function ContactSection() {
             <View className="flex-1">
               <InputField
                 label="City"
+                autoComplete="address-line2" 
                 value={formData.city}
                 onChangeText={(text) => handleChange("city", text)}
                 placeholder="City"
@@ -637,6 +758,7 @@ function ContactSection() {
             <View className="w-1/4">
               <InputField
                 label="State"
+                autoComplete="address-line1"
                 value={formData.state}
                 onChangeText={(text) => handleChange("state", text)}
                 placeholder="State"
@@ -645,6 +767,7 @@ function ContactSection() {
             <View className="w-1/4">
               <InputField
                 label="ZIP Code"
+                autoComplete="postal-code"
                 value={formData.postal}
                 onChangeText={(text) => handleChange("postal", text)}
                 placeholder="ZIP"
@@ -698,7 +821,7 @@ function Footer() {
 
           <View className="gap-8 grid grid-cols-2">
             <View className="space-y-2">
-              <Text className="font-semibold text-[#39506b] text-sm">
+              <Text className="font-semibold text-[#424f60] text-sm">
                 Product
               </Text>
               <View className="space-y-1">
@@ -709,7 +832,7 @@ function Footer() {
             </View>
 
             <View className="space-y-2">
-              <Text className="font-semibold text-[#39506b] text-sm">
+              <Text className="font-semibold text-[#424f60] text-sm">
                 Company
               </Text>
               <View className="space-y-1">
@@ -736,6 +859,7 @@ type InputFieldProps = {
   onBlur?: () => void;
   editable?: boolean;
   autoCapitalize?: TextInputProps["autoCapitalize"];
+  autoComplete?: TextInputProps["autoComplete"];
 };
 
 function InputField({
@@ -749,10 +873,11 @@ function InputField({
   onBlur = () => {},
   editable = true,
   autoCapitalize = "sentences",
+  autoComplete, 
 }: InputFieldProps) {
   return (
     <View className="mb-3">
-      <Text className="mb-1 font-medium text-[#39506b] text-xl">
+      <Text className="mb-1 font-medium text-[#424f60] text-xl">
         {label}
         {error && <Text className="text-red-500"> *</Text>}
       </Text>
@@ -766,22 +891,23 @@ function InputField({
         onBlur={onBlur}
         editable={editable}
         autoCapitalize={autoCapitalize}
+        autoComplete={autoComplete} 
         className={`bg-white px-3 border ${
           error
             ? "border-red-500"
             : editable
             ? "border-[#f0e6cc]"
             : "border-gray-300"
-        } rounded-md h-10 text-[#39506b] ${!editable && "bg-gray-100"}`}
+        } rounded-md h-10 text-[#424f60] ${!editable && "bg-gray-100"}`}
         selectionColor="#f0c14b"
-      />
-      {error && (
-        <Text className="text-red-500 text-xs mt-1">
-          This field is required
-        </Text>
-      )}
-    </View>
-  );
+/>      
+            {error && (
+              <Text className="mt-1 text-red-500 text-xs">
+                This field is required
+              </Text>
+            )}
+          </View>
+        );
 }
 function TextAreaField({
   label,
@@ -796,7 +922,7 @@ function TextAreaField({
 }) {
   return (
     <View>
-      <Text className="mt-4 mb-1 font-medium text-[#39506b] text-xl">
+      <Text className="mt-4 mb-1 font-medium text-[#424f60] text-xl">
         {label}
       </Text>
       <TextInput
@@ -805,7 +931,7 @@ function TextAreaField({
         placeholder={placeholder}
         multiline={true}
         numberOfLines={5}
-        className="bg-white p-3 border border-[#f0e6cc] rounded-md h-32 text-[#39506b7a]"
+        className="bg-white p-3 border border-[#f0e6cc] rounded-md h-32 text-[#424f607a]"
         textAlignVertical="top"
       />
     </View>
@@ -829,7 +955,7 @@ function SubmitButton({
         disabled ? "bg-gray-400" : "bg-[#f0c14b]"
       }`}
     >
-      <Text className="font-medium text-[#39506b] text-base text-center">
+      <Text className="font-medium text-zinc-`0 hover:text-[#424f60] text-base text-center">
         {label}
       </Text>
     </TouchableOpacity>
