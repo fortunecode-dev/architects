@@ -911,7 +911,6 @@ function Footer() {
                 Content
               </Text>
               <View className="space-y-1">
-                <Text className="text-[#315072] text-sm">Home</Text>
                 <Text className="text-[#315072] text-sm">Services</Text>
                 <Text className="text-[#315072] text-sm">FAQs</Text>
               </View>
