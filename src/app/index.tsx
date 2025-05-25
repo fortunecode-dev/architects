@@ -186,21 +186,21 @@ function Header({
             <View className="relative justify-center w-6 h-6">
               <View
                 className={`absolute w-6 h-0.5 rounded-full ${
-                  isScrolled ? "bg-[#315072]" : "bg-white"
+                  isScrolled ? "bg-[#315072]" : "bg-[#315072]"
                 } transition-all duration-300 ${
                   menuOpen ? "rotate-45 top-1/2" : "top-0"
                 }`}
               />
               <View
                 className={`absolute w-6 h-0.5 rounded-full ${
-                  isScrolled ? "bg-[#315072]" : "bg-white"
+                  isScrolled ? "bg-[#315072]" : "bg-[#315072]"
                 } transition-all duration-300 ${
                   menuOpen ? "opacity-0" : "top-1/2"
                 }`}
               />
               <View
                 className={`absolute w-6 h-0.5 rounded-full ${
-                  isScrolled ? "bg-[#315072]" : "bg-white"
+                  isScrolled ? "bg-[#315072]" : "bg-[#315072]"
                 } transition-all duration-300 ${
                   menuOpen ? "-rotate-45 top-1/2" : "top-full"
                 }`}
