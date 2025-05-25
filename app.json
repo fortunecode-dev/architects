@@ -3,25 +3,21 @@
     "scheme": "acme",
     "userInterfaceStyle": "automatic",
     "orientation": "default",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "web": {
-      "description": "Una app convertida a PWA con Expo",
+      "description": "Upgrade your property",
       "orientation": "portrait",
-      "backgroundColor": "#ffffff",
-      "themeColor": "#6200ee",
-      "primaryColor": "#6200ee",
+      "backgroundColor": "#FDE490",
+      "themeColor": "#FBEFBE",
+      "primaryColor": "#FBEFBE",
       "favicon": "./assets/icon.png",
       "manifest": {
-        "name": "Tu App",
-        "short_name": "App",
+        "name": "dWELLingPlus",
+        "short_name": "dW+",
         "start_url": ".",
         "display": "standalone",
-        "theme_color": "#000000",
-        "background_color": "#ffffff"
+        "theme_color": "#FBEFBE",
+        "background_color": "#FDE490"
       }
     },
     "plugins": [
@@ -33,7 +29,7 @@
       ],
       "expo-localization"
     ],
-    "name": "exporntailwind",
-    "slug": "exporntailwind"
+    "name": "dWELLingPlus",
+    "slug": "dWELLingPlus"
   }
 }

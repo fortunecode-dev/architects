@@ -285,13 +285,14 @@ function LandingSection({
       <View className="flex justify-center items-center bg-[#fce798] px-6 w-full h-screen">
         <View className="flex lg:flex-row flex-col items-center justify-center gap-6 mx-auto w-full max-w-7xl">
           {/* Logo Container */}
-          <View className="flex flex-1 justify-center items-center lg:items-end lg:pr-14">
+          <View className="flex flex-1 w-full lg:w-auto justify-center items-center lg:items-end lg:pr-14">
             <Image
               source={require("../../public/logo-navy.png")}
               style={{
                 width: "100%",
                 resizeMode: "contain",
               }}
+              className="w-full lg:max-w-none" // alternativa con clases
             />
           </View>
 
