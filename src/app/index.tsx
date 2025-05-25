@@ -15,7 +15,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Modal, Pressable } from "react-native";
-import { SERVER_URL } from "@env";
+import {
+  MAIL_CONTACT,
+  PHONE_CONTACT,
+  SERVER_URL,
+  WHATSAPP_CONTACT,
+} from "@env";
 import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
@@ -79,7 +84,7 @@ export default function Page() {
         <View ref={sectionRefs.contact}>
           <ContactSection />
         </View>
-        <Footer />
+        <Footer scrollToSection={scrollToSection} />
       </ScrollView>
     </View>
   );
@@ -690,7 +695,7 @@ function ContactSection() {
           <View className="flex-row gap-10 lg:gap-20 lg:grid lg:grid-cols-2 m-auto mt-10 lg:mt-20 pb-5">
             <View className="flex flex-col items-start gap-5 lg:gap-15">
               <TouchableOpacity
-                onPress={() => Linking.openURL("tel:4706011911")}
+                onPress={() => Linking.openURL(`tel:${PHONE_CONTACT}`)}
                 className="flex-row justify-start items-center gap-2 hover:drop-shadow-md pb-5 border-[#ffffff63] border-b-2 w-96"
               >
                 <Ionicons
@@ -702,7 +707,7 @@ function ContactSection() {
 
                 <View className="gap-3 mb-2 p-2">
                   <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
-                    470-601-1911
+                    {PHONE_CONTACT}
                   </Text>
                   <Text className="lg:flex items-center gap-5">
                     Call now for a free consultation
@@ -710,7 +715,7 @@ function ContactSection() {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => Linking.openURL("mailto:osmel.rubido@gmail.com")}
+                onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                 className="flex-row justify-start items-center gap-2 hover:drop-shadow-md border-[#ffffff63] w-96"
               >
                 <Ionicons
@@ -721,7 +726,7 @@ function ContactSection() {
                 />
                 <View className="gap-3 mb-2 p-2">
                   <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
-                    email@example.com
+                    {MAIL_CONTACT}
                   </Text>
                   <Text>Email us to discuss your project</Text>
                 </View>
@@ -730,7 +735,7 @@ function ContactSection() {
           </View>
           <View className="flex flex-row gap-10 lg:gap-20 lg:grid lg:grid-cols-2 m-auto mt-10 lg:mt-20 pb-5">
             <TouchableOpacity
-              onPress={() => Linking.openURL("sms:4706011911")}
+              onPress={() => Linking.openURL(`sms:${PHONE_CONTACT}`)}
               className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
             >
               <MaterialIcons
@@ -744,7 +749,9 @@ function ContactSection() {
               </Text> */}
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => Linking.openURL("https://wa.me/1234567890")}
+              onPress={() =>
+                Linking.openURL(`https://wa.me/${WHATSAPP_CONTACT}`)
+              }
               className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
             >
               <Ionicons
@@ -880,8 +887,19 @@ function ContactSection() {
   );
 }
 
-function Footer() {
+function Footer({ scrollToSection }: any) {
   const { bottom } = useSafeAreaInsets();
+  const [modalVisible, setModalVisible] = useState<null | string>(null);
+  const about = {
+    dwelling: {
+      title: "Dwelling",
+      info: "Info",
+    },
+    fortuneCode: {
+      title: "FortuneCode",
+      info: "Info desarrollo",
+    },
+  };
 
   return (
     <View
@@ -911,8 +929,18 @@ function Footer() {
                 Content
               </Text>
               <View className="space-y-1">
-                <Text className="text-[#315072] text-sm">Services</Text>
-                <Text className="text-[#315072] text-sm">FAQs</Text>
+                <Text
+                  className="text-[#315072] text-sm"
+                  onPress={() => scrollToSection?.("services")}
+                >
+                  Services
+                </Text>
+                <Text
+                  className="text-[#315072] text-sm"
+                  onPress={() => scrollToSection?.("faq")}
+                >
+                  FAQs
+                </Text>
               </View>
             </View>
 
@@ -921,13 +949,46 @@ function Footer() {
                 Company
               </Text>
               <View className="space-y-1">
-                <Text className="text-[#315072] text-sm">About</Text>
-                <Text className="text-[#315072] text-sm">Development</Text>
+                <Text
+                  className="text-[#315072] text-sm"
+                  onPress={() => setModalVisible("dwelling")}
+                >
+                  About
+                </Text>
+                <Text
+                  className="text-[#315072] text-sm"
+                  onPress={() => setModalVisible("fortuneCode")}
+                >
+                  Development
+                </Text>
               </View>
             </View>
           </View>
         </View>
       </View>
+      <Modal
+        visible={!!modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(null)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/40">
+          <View className="bg-white p-6 rounded-xl w-11/12 max-w-xl">
+            <Text className="mb-2 text-2xl text-[#315072]">
+              {about[modalVisible]?.title}
+            </Text>
+            <Text className="my-6 text-[#315072] text-lg">
+              {about[modalVisible]?.info}
+            </Text>
+            <TouchableOpacity
+              onPress={() => setModalVisible(null)}
+              className="self-end bg-[#FDE490] px-4 py-2 rounded-md hover:bg-[#ffd753] transition-colors duration-300"
+            >
+              <Text className="font-medium text-[#315072]">Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
