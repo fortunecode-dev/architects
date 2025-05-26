@@ -762,22 +762,29 @@ function ContactSection() {
           </Text>
           {/* Mensaje SOLO en móvil */}
           {!isDesktop && (
-            <View className="flex flex-row lg:flex-col mt-2 mb-4">
-              <Text className="text-[#315072] text-left">
-                Email us at{" "}
-                <Text
-                  className="font-bold text-[#315072] underline"
-                  onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
-                >
-                  {MAIL_CONTACT}
+            <View className="mt-2 mb-4">
+              <View>
+                <Text>
+                  Email us at{" "}
+                  <Text
+                    className="font-bold text-[#315072] underline"
+                    onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
+                  >
+                    {MAIL_CONTACT}
                 </Text>{" "}
+              </Text>  
+              <Text>
                 or call us at{" "}
                 <Text
-                  className="font-bold text-[#315072] underline"
-                  onPress={() => setShowContactModal(true)}
-                >
-                  {PHONE_CONTACT}
+                    className="font-bold text-[#315072] underline"
+                    onPress={() => setShowContactModal(true)}
+                    >
+                    {PHONE_CONTACT}
+                  </Text>
+
                 </Text>
+              </View>
+              <Text className="flex flex-col text-[#315072] text-left">
               </Text>
             </View>
           )}
