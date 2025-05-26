@@ -53,6 +53,7 @@ export default function Page() {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
   const scrollToSection = (sectionName: string, forceScroll = false) => {
+    // Solo hacer scroll si es desktop o si se fuerza explícitamente (como desde el menú móvil)
     if (isDesktop || forceScroll) {
       sectionRefs[sectionName].current?.measureLayout(
         scrollViewRef.current?.getInnerViewNode(),
@@ -71,7 +72,7 @@ export default function Page() {
       <Header sections={sections} scrollToSection={scrollToSection} />
       <ScrollView
         ref={scrollViewRef}
-        pagingEnabled
+        pagingEnabled={isDesktop} // <-- Solo habilitar paging en desktop
         showsVerticalScrollIndicator={false}
         className="flex-1"
       >
@@ -87,7 +88,7 @@ export default function Page() {
         <View ref={sectionRefs.contact}>
           <ContactSection />
         </View>
-        <Footer />
+        <Footer scrollToSection={scrollToSection} />
 
       </ScrollView>
     </View>
@@ -245,11 +246,11 @@ function Header({
               <TouchableOpacity
                 key={section}
                 onPress={() => {
-                  scrollToSection(section);
+                  scrollToSection(section, true); // <-- Aquí añadimos true para forzar el scroll
                   setMenuOpen(false);
                 }}
                 className={`py-3 border-b ${
-                  isScrolled ? "border-[#e8d8b0]" : "border-white/20"
+                  isScrolled ? "border-[#e8d8a0]" : "border-white/20"
                 } last:border-0`}
               >
                 <Text
@@ -261,11 +262,10 @@ function Header({
                 </Text>
               </TouchableOpacity>
             ))}
-
             <View className="mt-6">
               <TouchableOpacity
                 onPress={() => {
-                  scrollToSection("contact");
+                  scrollToSection("contact", true); // <-- Forzar scroll aquí también
                   setMenuOpen(false);
                 }}
                 className={`w-full px-4 py-3 rounded-md shadow-sm ${
@@ -446,7 +446,7 @@ function ServicesSection() {
   ];
 
   return (
-    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 pt-40 lg:pt-0 lg:h-screen">
+    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 pt-20 lg:pt-0 lg:h-screen">
       <View className="mx-auto w-full max-w-6xl">
         <Text className="mb-3 font-bold text-[#315072] text-3xl md:text-4xl text-center">
           Our Services
