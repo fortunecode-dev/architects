@@ -88,7 +88,7 @@ export default function Page() {
           <ContactSection />
         </View>
         <Footer />
-        
+
       </ScrollView>
     </View>
   );
@@ -245,7 +245,7 @@ function Header({
               <TouchableOpacity
                 key={section}
                 onPress={() => {
-                  scrollToSection(section, true);
+                  scrollToSection(section);
                   setMenuOpen(false);
                 }}
                 className={`py-3 border-b ${
@@ -265,7 +265,7 @@ function Header({
             <View className="mt-6">
               <TouchableOpacity
                 onPress={() => {
-                  scrollToSection("contact", true);
+                  scrollToSection("contact");
                   setMenuOpen(false);
                 }}
                 className={`w-full px-4 py-3 rounded-md shadow-sm ${
@@ -446,7 +446,7 @@ function ServicesSection() {
   ];
 
   return (
-    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 pt-20 lg:pt-0 lg:h-screen">
+    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 pt-40 lg:pt-0 lg:h-screen">
       <View className="mx-auto w-full max-w-6xl">
         <Text className="mb-3 font-bold text-[#315072] text-3xl md:text-4xl text-center">
           Our Services
