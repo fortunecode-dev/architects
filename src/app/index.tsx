@@ -53,7 +53,7 @@ export default function Page() {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
   const scrollToSection = (sectionName: string) => {
-    if (!isDesktop) return; // No hacer scroll en móvil
+    if (!isDesktop) return; // Solo hace scroll en escritorio
     sectionRefs[sectionName].current?.measureLayout(
       scrollViewRef.current?.getInnerViewNode(),
       (x, y) => {
@@ -128,13 +128,15 @@ function Header({
   const isDesktop = width >= 1024;
 
   useEffect(() => {
-    const handleScroll = () => {
-      const show = window.scrollY > 50;
-      if (show !== isScrolled) setIsScrolled(show);
-    };
-
-    document.addEventListener("scroll", handleScroll);
-    return () => document.removeEventListener("scroll", handleScroll);
+    // Solo para web, ignora en móvil
+    if (typeof window !== "undefined") {
+      const handleScroll = () => {
+        const show = window.scrollY > 50;
+        if (show !== isScrolled) setIsScrolled(show);
+      };
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
   }, [isScrolled]);
 
   return (
@@ -241,9 +243,7 @@ function Header({
               <TouchableOpacity
                 key={section}
                 onPress={() => {
-                  if (isDesktop) {
-                    scrollToSection(section);
-                  }
+                  scrollToSection(section); // SIEMPRE navega, tanto en móvil como escritorio
                   setMenuOpen(false);
                 }}
                 className={`py-3 border-b ${
@@ -263,9 +263,7 @@ function Header({
             <View className="mt-6">
               <TouchableOpacity
                 onPress={() => {
-                  if (isDesktop) {
-                    scrollToSection("contact");
-                  }
+                  scrollToSection("contact"); // SIEMPRE navega, tanto en móvil como escritorio
                   setMenuOpen(false);
                 }}
                 className={`w-full px-4 py-3 rounded-md shadow-sm ${
