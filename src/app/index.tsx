@@ -50,8 +50,10 @@ export default function Page() {
     faq: useRef<View>(null),
     contact: useRef<View>(null),
   };
-
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 1024;
   const scrollToSection = (sectionName: string) => {
+    if (!isDesktop) return; // No hacer scroll en móvil
     sectionRefs[sectionName].current?.measureLayout(
       scrollViewRef.current?.getInnerViewNode(),
       (x, y) => {
@@ -122,6 +124,8 @@ function Header({
   const { top } = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 1024;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -147,7 +151,7 @@ function Header({
               width: 90,
               height: 40,
               resizeMode: "contain",
-              opacity: 1, // Mantener visibilidad en ambos casos
+              opacity: 1,
             }}
           />
         </View>
@@ -237,7 +241,9 @@ function Header({
               <TouchableOpacity
                 key={section}
                 onPress={() => {
-                  scrollToSection(section);
+                  if (isDesktop) {
+                    scrollToSection(section);
+                  }
                   setMenuOpen(false);
                 }}
                 className={`py-3 border-b ${
@@ -257,7 +263,9 @@ function Header({
             <View className="mt-6">
               <TouchableOpacity
                 onPress={() => {
-                  scrollToSection("contact");
+                  if (isDesktop) {
+                    scrollToSection("contact");
+                  }
                   setMenuOpen(false);
                 }}
                 className={`w-full px-4 py-3 rounded-md shadow-sm ${
@@ -297,7 +305,7 @@ function LandingSection({
                 width: "100%",
                 resizeMode: "contain",
               }}
-              className="w-full lg:max-w-none" // alternativa con clases
+              className="w-full lg:max-w-none"
             />
           </View>
 
@@ -419,7 +427,6 @@ function ServicesSection() {
       description:
         "Turn your backyard into an oasis designed for comfort and conviviality.",
       cont: "Our outdoor transformation service creates living areas with elegant pergolas, fire pits for warm moments, grills for unforgettable gatherings and a perfect balance of concrete pavers and natural grass. Cozy lighting enhances every detail, creating an ideal environment for relaxing, sharing and making the most of your home. Our architects and designers will turn your patio into a dream space for the whole family.",
-
       icon: "🌳",
     },
     {
@@ -763,14 +770,14 @@ function ContactSection() {
                   className="font-bold text-[#315072] underline"
                   onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                 >
-                  {MAIL_CONTACT}example@gmail.com
+                  {MAIL_CONTACT}
                 </Text>{" "}
-                or contact us at{" "}
+                or call us at{" "}
                 <Text
                   className="font-bold text-[#315072] underline"
                   onPress={() => setShowContactModal(true)}
                 >
-                  {PHONE_CONTACT} (503) 123-4567
+                  {PHONE_CONTACT}
                 </Text>
               </Text>
             </View>
