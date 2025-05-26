@@ -74,6 +74,7 @@ export default function Page() {
         pagingEnabled
         showsVerticalScrollIndicator={false}
         className="flex-1"
+        scrollEventThrottle={50}
       >
         <View ref={sectionRefs.inicio}>
           <LandingSection scrollToSection={scrollToSection} />
@@ -88,7 +89,6 @@ export default function Page() {
           <ContactSection />
         </View>
         <Footer />
-        
       </ScrollView>
     </View>
   );
@@ -121,7 +121,7 @@ function Header({
   scrollToSection,
 }: {
   sections: string[];
-  scrollToSection: (section: string) => void;
+  scrollToSection: (section: string, bypass?: boolean) => void;
 }) {
   const { top } = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -374,7 +374,9 @@ function ServiceCard({
   return (
     <View className="bg-[#FBEFBE] hover:shadow-sm mb-4 p-6 border border-[#f0e6cc] rounded-xl transition-shadow duration-300">
       <Text className="mb-1 lg:mb-4 text-2xl lg:text-3xl">{icon}</Text>
-      <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">{title}</Text>
+      <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">
+        {title}
+      </Text>
       <Text className="text-[#315072]">{description}</Text>
       <Pressable onPress={() => setModalVisible(true)} className="mt-1 lg:mt-5">
         <Text className="font-medium text-[#315072] hover:text-[#315072] transition-colors duration-300">
@@ -755,7 +757,7 @@ function ContactSection() {
           <Text className="mb-2 lg:mb-6 font-bold text-[#315072] text-2xl md:text-3xl text-left">
             Contact Information
           </Text>
-          <Text className="flex text-[#315072] lg:text-lg text-xl lg:text-left text-center">
+          <Text className="flex text-[#315072] lg:text-lg text-xl lg:text-left text-left">
             Get in touch with us{" "}
             <Text className="hidden lg:flex">
               for any questions or inquiries.
@@ -792,11 +794,7 @@ function ContactSection() {
                     onPress={() => Linking.openURL(`tel:${PHONE_CONTACT}`)}
                     className="flex-row justify-start items-center gap-2 hover:drop-shadow-md lg:pb-5 border-[#ffffff63] border-b-2 w-96"
                   >
-                    <Ionicons
-                      name="call"
-                      color={"#315072"}
-                      size={30}
-                    />
+                    <Ionicons name="call" color={"#315072"} size={30} />
                     <View className="gap-0 lg:gap-3 p-2">
                       <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
                         {PHONE_CONTACT}
@@ -810,11 +808,7 @@ function ContactSection() {
                     onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                     className="flex-row justify-start items-center gap-2 hover:drop-shadow-md border-[#ffffff63] w-96"
                   >
-                    <Ionicons
-                      name="mail"
-                      color={"#315072"}
-                      size={30}
-                    />
+                    <Ionicons name="mail" color={"#315072"} size={30} />
                     <View className="gap-0 lg:gap-3 p-2">
                       <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
                         {MAIL_CONTACT}
