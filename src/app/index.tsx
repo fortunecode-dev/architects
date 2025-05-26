@@ -52,15 +52,16 @@ export default function Page() {
   };
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
-  const scrollToSection = (sectionName: string) => {
-    if (!isDesktop) return; // Solo hace scroll en escritorio
-    sectionRefs[sectionName].current?.measureLayout(
-      scrollViewRef.current?.getInnerViewNode(),
-      (x, y) => {
-        scrollViewRef.current?.scrollTo({ y, animated: true });
-      },
-      () => {}
-    );
+  const scrollToSection = (sectionName: string, forceScroll = false) => {
+    if (isDesktop || forceScroll) {
+      sectionRefs[sectionName].current?.measureLayout(
+        scrollViewRef.current?.getInnerViewNode(),
+        (x, y) => {
+          scrollViewRef.current?.scrollTo({ y, animated: true });
+        },
+        () => {}
+      );
+    }
   };
 
   const sections = ["inicio", "services", "faq"];
@@ -243,7 +244,7 @@ function Header({
               <TouchableOpacity
                 key={section}
                 onPress={() => {
-                  scrollToSection(section); // SIEMPRE navega, tanto en móvil como escritorio
+                  scrollToSection(section, true);
                   setMenuOpen(false);
                 }}
                 className={`py-3 border-b ${
@@ -263,7 +264,7 @@ function Header({
             <View className="mt-6">
               <TouchableOpacity
                 onPress={() => {
-                  scrollToSection("contact"); // SIEMPRE navega, tanto en móvil como escritorio
+                  scrollToSection("contact", true);
                   setMenuOpen(false);
                 }}
                 className={`w-full px-4 py-3 rounded-md shadow-sm ${
