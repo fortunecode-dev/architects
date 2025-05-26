@@ -762,7 +762,7 @@ function ContactSection() {
           </Text>
           {/* Mensaje SOLO en móvil */}
           {!isDesktop && (
-            <View className="flex flex-col mt-2 mb-4">
+            <View className="flex flex-row lg:flex-col mt-2 mb-4">
               <Text className="text-[#315072] text-left">
                 Email us at{" "}
                 <Text
