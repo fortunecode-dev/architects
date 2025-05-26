@@ -770,7 +770,7 @@ function ContactSection() {
                     className="font-bold text-[#315072] underline"
                     onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                   >
-                    {MAIL_CONTACT}
+                    {MAIL_CONTACT}example@gmail.com
                 </Text>{" "}
               </Text>  
               <Text>
@@ -779,7 +779,7 @@ function ContactSection() {
                     className="font-bold text-[#315072] underline"
                     onPress={() => setShowContactModal(true)}
                     >
-                    {PHONE_CONTACT}
+                    {PHONE_CONTACT}54411364
                   </Text>
 
                 </Text>
