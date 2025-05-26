@@ -24,7 +24,6 @@ import {
 import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useWindowDimensions } from "react-native";
-// Constants
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const COLORS = {
   primary: "#315072",
@@ -45,7 +44,7 @@ const FONTS = {
 export default function Page() {
   const scrollViewRef = useRef<ScrollView>(null);
   const sectionRefs = {
-    inicio: useRef<View>(null),
+    home: useRef<View>(null),
     services: useRef<View>(null),
     faq: useRef<View>(null),
     contact: useRef<View>(null),
@@ -65,7 +64,7 @@ export default function Page() {
     }
   };
 
-  const sections = ["inicio", "services", "faq"];
+  const sections = ["home", "services", "faq"];
 
   return (
     <View className="flex-1 bg-white">
@@ -76,7 +75,7 @@ export default function Page() {
         showsVerticalScrollIndicator={false}
         className="flex-1"
       >
-        <View ref={sectionRefs.inicio}>
+        <View ref={sectionRefs.home}>
           <LandingSection scrollToSection={scrollToSection} />
         </View>
         <View ref={sectionRefs.services}>
@@ -246,7 +245,7 @@ function Header({
               <TouchableOpacity
                 key={section}
                 onPress={() => {
-                  scrollToSection(section, true); // <-- Aquí añadimos true para forzar el scroll
+                  scrollToSection(section, true); 
                   setMenuOpen(false);
                 }}
                 className={`py-3 border-b ${
@@ -265,7 +264,7 @@ function Header({
             <View className="mt-6">
               <TouchableOpacity
                 onPress={() => {
-                  scrollToSection("contact", true); // <-- Forzar scroll aquí también
+                  scrollToSection("contact", true); 
                   setMenuOpen(false);
                 }}
                 className={`w-full px-4 py-3 rounded-md shadow-sm ${
@@ -296,7 +295,7 @@ function LandingSection({
   return (
     <FadeInView>
       <View className="flex justify-center items-center bg-[#fce798] px-6 w-full h-screen">
-        <View className="flex lg:flex-row flex-col justify-center items-center lg:gap-6 mx-auto w-full max-w-7xl">
+        <View className="flex lg:flex-row flex-col justify-center items-center lg:gap-6 mx-auto pt-[-15px] lg:pt-0 w-full max-w-7xl">
           {/* Logo Container */}
           <View className="flex flex-1 justify-center items-center lg:items-end lg:pr-14 w-full lg:w-auto">
             <Image
@@ -333,7 +332,7 @@ function LandingSection({
 
               <View className="flex sm:flex-row flex-col justify-center lg:justify-start gap-4">
                 <TouchableOpacity
-                  onPress={() => scrollToSection("contact")}
+                  onPress={() => scrollToSection("contact",true)}
                   className="bg-[#FBEFBE] px-6 py-3 rounded-md transition-shadow duration-300"
                 >
                   <Text className="font-medium text-[#315072] text-base text-center">
@@ -342,7 +341,7 @@ function LandingSection({
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => scrollToSection("services")}
+                  onPress={() => scrollToSection("services", true)}
                   className="hover:bg-[#f9f1d9]/30 px-6 py-3 rounded-md transition-colors duration-300"
                 >
                   <Text className="font-medium text-[#315072] text-base text-center">
@@ -511,7 +510,7 @@ function FAQSection({
   return (
     <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 lg:px-0 py-16 h-screen">
       <View className="mx-auto lg:w-1/2">
-        <Text className="mb-6 font-bold text-[#315072] text-lg lg:text-2xl text-center">
+        <Text className="mb-6 font-bold text-[#315072] text-xl lg:text-2xl text-center">
           Frequently Asked Questions
         </Text>
         {faqs.map((faq, idx) => (
@@ -763,8 +762,8 @@ function ContactSection() {
           </Text>
           {/* Mensaje SOLO en móvil */}
           {!isDesktop && (
-            <View className="flex flex-col items-center mt-2 mb-4">
-              <Text className="text-[#315072] text-center">
+            <View className="flex flex-col mt-2 mb-4">
+              <Text className="text-[#315072] text-left">
                 Email us at{" "}
                 <Text
                   className="font-bold text-[#315072] underline"
@@ -1021,13 +1020,13 @@ function Footer({ scrollToSection }: any) {
               <View className="space-y-1">
                 <Text
                   className="text-[#315072] text-sm"
-                  onPress={() => scrollToSection?.("services")}
+                  onPress={() => scrollToSection?.("services",true)}
                 >
                   Services
                 </Text>
                 <Text
                   className="text-[#315072] text-sm"
-                  onPress={() => scrollToSection?.("faq")}
+                  onPress={() => scrollToSection?.("faq",true)}
                 >
                   FAQs
                 </Text>
