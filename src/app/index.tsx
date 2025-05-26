@@ -23,7 +23,7 @@ import {
 } from "@env";
 import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-
+import { useWindowDimensions } from "react-native";
 // Constants
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const COLORS = {
@@ -138,9 +138,9 @@ function Header({
       style={{ paddingTop: top }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#FBEFBE] border-b border-[#e8d8b0] `}
     >
-      <View className="flex flex-row items-center justify-between px-6 py-3 h-16 max-w-7xl mx-auto w-full">
+      <View className="flex flex-row justify-between items-center mx-auto px-6 py-3 w-full max-w-7xl h-16">
         {/* Left: Logo */}
-        <View className="flex flex-row items-center flex-shrink-0">
+        <View className="flex flex-row flex-shrink-0 items-center">
           <Image
             source={require("../../public/logo.svg")}
             style={{
@@ -153,7 +153,7 @@ function Header({
         </View>
 
         {/* Center: Sections as Row */}
-        <View className="hidden md:flex flex-row items-center justify-center gap-6 flex-1">
+        <View className="hidden md:flex flex-row flex-1 justify-center items-center gap-6">
           {sections.map((section) => (
             <TouchableOpacity
               key={section}
@@ -173,7 +173,7 @@ function Header({
         </View>
 
         {/* Right: Contact Button */}
-        <View className="hidden md:flex flex-row items-center flex-shrink-0">
+        <View className="hidden md:flex flex-row flex-shrink-0 items-center">
           <TouchableOpacity
             className={`px-4 py-2 rounded-md  transition-all duration-300 bg-[#ffdb80] hover:bg-[#FDE490]  `}
             onPress={() => scrollToSection("contact")}
@@ -186,7 +186,7 @@ function Header({
         <View className="md:hidden flex-shrink-0">
           <TouchableOpacity
             onPress={() => setMenuOpen(!menuOpen)}
-            className="p-2 -mr-2"
+            className="-mr-2 p-2"
           >
             <View className="relative justify-center w-6 h-6">
               <View
@@ -218,15 +218,15 @@ function Header({
       {/* Mobile Menu */}
       {menuOpen && (
         <View
-          className={`md:hidden ${
+          className={`md:hidden h-screen justify-center items-center ${
             isScrolled ? "bg-[#f5e5a6]" : "bg-[#315072]"
           } px-6 py-4 border-t ${
             isScrolled ? "border-[#e8d8b0]" : "border-white/20"
           } w-full`}
         >
-          <View className="max-w-7xl mx-auto">
+          <View className="max-w-7xl">
             <Text
-              className={`mb-4 font-bold text-3xl ${
+              className={`mb-4 font-bold text-3xl  ${
                 isScrolled ? "text-[#d4a017]" : "text-white"
               }`}
             >
@@ -245,7 +245,7 @@ function Header({
                 } last:border-0`}
               >
                 <Text
-                  className={`font-medium text-lg capitalize ${
+                  className={`font-medium text-lg capitalize text-center ${
                     isScrolled ? "text-[#315072]" : "text-white"
                   }`}
                 >
@@ -288,9 +288,9 @@ function LandingSection({
   return (
     <FadeInView>
       <View className="flex justify-center items-center bg-[#fce798] px-6 w-full h-screen">
-        <View className="flex lg:flex-row flex-col items-center justify-center gap-6 mx-auto w-full max-w-7xl">
+        <View className="flex lg:flex-row flex-col justify-center items-center lg:gap-6 mx-auto w-full max-w-7xl">
           {/* Logo Container */}
-          <View className="flex flex-1 w-full lg:w-auto justify-center items-center lg:items-end lg:pr-14">
+          <View className="flex flex-1 justify-center items-center lg:items-end lg:pr-14 w-full lg:w-auto">
             <Image
               source={require("../../public/logo-navy.png")}
               style={{
@@ -302,7 +302,7 @@ function LandingSection({
           </View>
 
           {/* Vertical Divider */}
-          <View className="hidden lg:block border-l-2 border-[#FBEFBE] h-64 self-center" />
+          <View className="hidden lg:block self-center border-[#FBEFBE] border-l-2 h-64" />
 
           {/* Content */}
           <View className="flex-1 lg:pl-14 w-full lg:text-left text-center">
@@ -318,7 +318,7 @@ function LandingSection({
                 className="mb-5 font-extralight text-[#315072] text-lg"
                 style={{ fontFamily: FONTS.body }}
               >
-                <Text className="text-[#315072] font-bold">DWELLINGPLUS </Text>{" "}
+                <Text className="font-bold text-[#315072]">DWELLINGPLUS </Text>{" "}
                 handles the entire process making it easier for the owner to
                 achieve their dream.
               </Text>
@@ -326,7 +326,7 @@ function LandingSection({
               <View className="flex sm:flex-row flex-col justify-center lg:justify-start gap-4">
                 <TouchableOpacity
                   onPress={() => scrollToSection("contact")}
-                  className="bg-[#FBEFBE] px-6 py-3 rounded-md  transition-shadow duration-300"
+                  className="bg-[#FBEFBE] px-6 py-3 rounded-md transition-shadow duration-300"
                 >
                   <Text className="font-medium text-[#315072] text-base text-center">
                     Start your project
@@ -335,7 +335,7 @@ function LandingSection({
 
                 <TouchableOpacity
                   onPress={() => scrollToSection("services")}
-                  className="px-6 py-3 hover:bg-[#f9f1d9]/30 rounded-md transition-colors duration-300"
+                  className="hover:bg-[#f9f1d9]/30 px-6 py-3 rounded-md transition-colors duration-300"
                 >
                   <Text className="font-medium text-[#315072] text-base text-center">
                     More information →
@@ -364,11 +364,11 @@ function ServiceCard({
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <View className="bg-[#FBEFBE] mb-4 p-6 border border-[#f0e6cc] rounded-xl hover:shadow-sm transition-shadow duration-300">
-      <Text className="mb-4 text-3xl">{icon}</Text>
-      <Text className="mb-2 font-semibold text-[#315072] text-xl">{title}</Text>
+    <View className="bg-[#FBEFBE] hover:shadow-sm mb-4 p-6 border border-[#f0e6cc] rounded-xl transition-shadow duration-300">
+      <Text className="mb-1 lg:mb-4 text-2xl lg:text-3xl">{icon}</Text>
+      <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">{title}</Text>
       <Text className="text-[#315072]">{description}</Text>
-      <Pressable onPress={() => setModalVisible(true)} className="mt-5">
+      <Pressable onPress={() => setModalVisible(true)} className="mt-1 lg:mt-5">
         <Text className="font-medium text-[#315072] hover:text-[#315072] transition-colors duration-300">
           Read More →
         </Text>
@@ -381,13 +381,13 @@ function ServiceCard({
       >
         <View className="flex-1 justify-center items-center bg-black/40">
           <View className="bg-white p-6 rounded-xl w-11/12 max-w-xl">
-            <Text className="mb-2 text-2xl text-[#315072]">
+            <Text className="mb-2 text-[#315072] text-2xl">
               {icon} {title}
             </Text>
             <Text className="my-6 text-[#315072] text-lg">{cont}</Text>
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
-              className="self-end bg-[#FDE490] px-4 py-2 rounded-md hover:bg-[#ffd753] transition-colors duration-300"
+              className="self-end bg-[#FDE490] hover:bg-[#ffd753] px-4 py-2 rounded-md transition-colors duration-300"
             >
               <Text className="font-medium text-[#315072]">Close</Text>
             </TouchableOpacity>
@@ -439,7 +439,7 @@ function ServicesSection() {
   ];
 
   return (
-    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 lg:h-screen">
+    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 pt-20 lg:pt-0 lg:h-screen">
       <View className="mx-auto w-full max-w-6xl">
         <Text className="mb-3 font-bold text-[#315072] text-3xl md:text-4xl text-center">
           Our Services
@@ -451,7 +451,7 @@ function ServicesSection() {
           We offer a wide range of services to meet your needs.
         </Text>
 
-        <View className="gap-1 lg:gap-8 grid grid-cols-1 md:grid-cols-3 mx-5">
+        <View className="gap-0 lg:gap-8 grid grid-cols-1 md:grid-cols-3 mx-5">
           {services.map((service, index) => (
             <ServiceCard
               key={index}
@@ -502,18 +502,18 @@ function FAQSection({
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 py-16 lg:h-screen">
-      <View className="mx-auto w-full max-w-3xl">
-        <Text className="mb-6 font-bold text-[#315072] text-3xl text-center">
+    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 lg:px-0 py-16 h-screen">
+      <View className="mx-auto lg:w-1/2">
+        <Text className="mb-6 font-bold text-[#315072] text-lg lg:text-2xl text-center">
           Frequently Asked Questions
         </Text>
         {faqs.map((faq, idx) => (
-          <View key={idx} className="mb-4 border-[#FBEFBE] border-b-2">
+          <View key={idx} className="mb-2 border-[#FBEFBE] border-b-2">
             <TouchableOpacity
               onPress={() => setOpenIndex(openIndex === idx ? null : idx)}
               className="flex flex-row justify-between items-center py-4"
             >
-              <Text className="font-medium text-[#315072] text-lg">
+              <Text className="font-medium text-[#315072] text-md lg:text-lg">
                 {faq.question}
               </Text>
               <Text className="text-[#315072] text-2xl">
@@ -546,6 +546,9 @@ function ContactSection() {
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchDebounce, setSearchDebounce] = useState<NodeJS.Timeout>();
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 1024;
+  const [showContactModal, setShowContactModal] = useState(false);
 
   // Función con debounce para buscar sugerencias
   const handleAddressChange = (text: string) => {
@@ -631,13 +634,13 @@ function ContactSection() {
     try {
       const prospectData = {
         name: formData.name,
-        lastName: formData.lastName || "", // Puedes dejarlo vacío o pedirlo en el formulario
+        lastName: formData.lastName || "",
         email: formData.email,
         phone: formData.phone,
         address: formData.address,
-        state: formData.state || "", // Puedes dejarlo vacío o pedirlo en el formulario
-        city: formData.city || "", // Puedes dejarlo vacío o pedirlo en el formulario
-        postal: formData.postal || "", // Puedes dejarlo vacío o pedirlo en el formulario
+        state: formData.state || "",
+        city: formData.city || "",
+        postal: formData.postal || "",
         metadata: {
           message: formData.message,
           contactDate: new Date().toISOString(),
@@ -683,90 +686,170 @@ function ContactSection() {
 
   return (
     <View className="flex justify-center items-center bg-[#fce798] px-6 w-full">
-      <View className="flex lg:flex-row flex-col gap-5 bg-white drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl">
-        {/* Contact Info */}
-        <View className="bg-[#FBEFBE] drop-shadow-md pt-7 pl-10 rounded-xl w-full lg:w-1/2">
-          <Text className="mb-6 font-bold text-[#315072] text-2xl md:text-3xl text-left">
-            Contact Information
-          </Text>
-          <Text className="text-[#315072] text-lg lg:text-left text-center">
-            Get in touch with us for any questions or inquiries.
-          </Text>
-          <View className="flex-row gap-10 lg:gap-20 lg:grid lg:grid-cols-2 m-auto mt-10 lg:mt-20 pb-5">
-            <View className="flex flex-col items-start gap-5 lg:gap-15">
+      {/* Modal SOLO en móvil */}
+      {!isDesktop && (
+        <Modal
+          visible={showContactModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowContactModal(false)}
+        >
+          <View className="flex-1 justify-center items-center bg-black/40">
+            <View className="bg-white p-6 rounded-xl w-11/12 max-w-xs">
+              <Text className="mb-4 font-bold text-[#315072] text-xl text-center">
+                Contact Us
+              </Text>
+              <View className="space-y-4">
+                <TouchableOpacity
+                  onPress={() => {
+                    Linking.openURL(`tel:${PHONE_CONTACT}`);
+                    setShowContactModal(false);
+                  }}
+                  className="flex-row items-center gap-3 py-2"
+                >
+                  <Ionicons name="call" color="#315072" size={28} />
+                  <Text className="text-[#315072] text-lg">Phone</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    Linking.openURL(`sms:${PHONE_CONTACT}`);
+                    setShowContactModal(false);
+                  }}
+                  className="flex-row items-center gap-3 py-2"
+                >
+                  <MaterialIcons name="sms" color="#315072" size={28} />
+                  <Text className="text-[#315072] text-lg">Message</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    Linking.openURL(`https://wa.me/${WHATSAPP_CONTACT}`);
+                    setShowContactModal(false);
+                  }}
+                  className="flex-row items-center gap-3 py-2"
+                >
+                  <Ionicons name="logo-whatsapp" color="#315072" size={28} />
+                  <Text className="text-[#315072] text-lg">Whatsapp</Text>
+                </TouchableOpacity>
+              </View>
               <TouchableOpacity
-                onPress={() => Linking.openURL(`tel:${PHONE_CONTACT}`)}
-                className="flex-row justify-start items-center gap-2 hover:drop-shadow-md pb-5 border-[#ffffff63] border-b-2 w-96"
+                onPress={() => setShowContactModal(false)}
+                className="self-center bg-[#FDE490] mt-6 px-4 py-2 rounded-md"
               >
-                <Ionicons
-                  name="call"
-                  color={"#315072"}
-                  size={30}
-                  className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
-                />
-
-                <View className="gap-3 mb-2 p-2">
-                  <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
-                    {PHONE_CONTACT}
-                  </Text>
-                  <Text className="lg:flex items-center gap-5">
-                    Call now for a free consultation
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
-                className="flex-row justify-start items-center gap-2 hover:drop-shadow-md border-[#ffffff63] w-96"
-              >
-                <Ionicons
-                  name="mail"
-                  color={"#315072"}
-                  size={30}
-                  className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
-                />
-                <View className="gap-3 mb-2 p-2">
-                  <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
-                    {MAIL_CONTACT}
-                  </Text>
-                  <Text>Email us to discuss your project</Text>
-                </View>
+                <Text className="font-medium text-[#315072]">Close</Text>
               </TouchableOpacity>
             </View>
           </View>
-          <View className="flex flex-row gap-10 lg:gap-20 lg:grid lg:grid-cols-2 m-auto mt-10 lg:mt-20 pb-5">
-            <TouchableOpacity
-              onPress={() => Linking.openURL(`sms:${PHONE_CONTACT}`)}
-              className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
-            >
-              <MaterialIcons
-                name="sms"
-                color={"#315072"}
-                size={40}
-                className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
-              />
-              {/* <Text className="hidden lg:flex items-center gap-5 font-semibold text-[#315072] text-lg lg:text-xl">
-                Direct Message
-              </Text> */}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                Linking.openURL(`https://wa.me/${WHATSAPP_CONTACT}`)
-              }
-              className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
-            >
-              <Ionicons
-                name="logo-whatsapp"
-                color={"#315072"}
-                size={40}
-                className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
-              />
-            </TouchableOpacity>
-          </View>
+        </Modal>
+      )}
+
+      <View className="flex lg:flex-row flex-col gap-5 bg-white drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl">
+        {/* Contact Info */}
+        <View className="bg-[#FBEFBE] drop-shadow-md px-10 pt-7 rounded-xl w-full lg:w-1/2">
+          <Text className="mb-2 lg:mb-6 font-bold text-[#315072] text-2xl md:text-3xl text-left">
+            Contact Information
+          </Text>
+          <Text className="flex text-[#315072] lg:text-lg text-xl lg:text-left text-center">
+            Get in touch with us{" "}
+            <Text className="hidden lg:flex">
+              for any questions or inquiries.
+            </Text>
+          </Text>
+          {/* Mensaje SOLO en móvil */}
+          {!isDesktop && (
+            <View className="flex flex-col items-center mt-2 mb-4">
+              <Text className="text-[#315072] text-center">
+                Email us at{" "}
+                <Text
+                  className="font-bold text-[#315072] underline"
+                  onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
+                >
+                  {MAIL_CONTACT}example@gmail.com
+                </Text>{" "}
+                or contact us at{" "}
+                <Text
+                  className="font-bold text-[#315072] underline"
+                  onPress={() => setShowContactModal(true)}
+                >
+                  {PHONE_CONTACT} (503) 123-4567
+                </Text>
+              </Text>
+            </View>
+          )}
+
+          {/* Contactos visibles solo en escritorio */}
+          {isDesktop && (
+            <>
+              <View className="flex-row lg:grid lg:grid-cols-2 m-auto mt-0 lg:mt-20 pb-5">
+                <View className="flex flex-col items-start lg:gap-15">
+                  <TouchableOpacity
+                    onPress={() => Linking.openURL(`tel:${PHONE_CONTACT}`)}
+                    className="flex-row justify-start items-center gap-2 hover:drop-shadow-md lg:pb-5 border-[#ffffff63] border-b-2 w-96"
+                  >
+                    <Ionicons
+                      name="call"
+                      color={"#315072"}
+                      size={30}
+                    />
+                    <View className="gap-0 lg:gap-3 p-2">
+                      <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
+                        {PHONE_CONTACT}
+                      </Text>
+                      <Text className="lg:flex items-center gap-5">
+                        Call now for a free consultation
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
+                    className="flex-row justify-start items-center gap-2 hover:drop-shadow-md border-[#ffffff63] w-96"
+                  >
+                    <Ionicons
+                      name="mail"
+                      color={"#315072"}
+                      size={30}
+                    />
+                    <View className="gap-0 lg:gap-3 p-2">
+                      <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
+                        {MAIL_CONTACT}
+                      </Text>
+                      <Text>Email us to discuss your project</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View className="flex flex-row justify-between gap-10 lg:gap-20 lg:grid lg:grid-cols-2 lg:m-auto mt-0 lg:mt-20 pb-5">
+                <TouchableOpacity
+                  onPress={() => Linking.openURL(`sms:${PHONE_CONTACT}`)}
+                  className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
+                >
+                  <MaterialIcons
+                    name="sms"
+                    color={"#315072"}
+                    size={40}
+                    className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(`https://wa.me/${WHATSAPP_CONTACT}`)
+                  }
+                  className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
+                >
+                  <Ionicons
+                    name="logo-whatsapp"
+                    color={"#315072"}
+                    size={40}
+                    className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
+                  />
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
         </View>
 
         {/* Form */}
-        <View className="flex-1 space-y-1 m-2 pr-4 pb-3 min-w-0">
-          <View className="flex flex-row justify-between gap-1 pt-5 w-full overflow-hidden">
+        <View className="flex-1 space-y-1 m-2 px-5 lg:px-0 pr-4 pb-3 min-w-0">
+          <View className="flex flex-row justify-between gap-1 lg:pt-5 w-full overflow-hidden">
             <View className="w-1/2">
               <InputField
                 label="First Name"
@@ -840,7 +923,7 @@ function ContactSection() {
           </View>
 
           {/* Campos autocompletados (ciudad, estado, código postal) */}
-          <View className="flex flex-row gap-4">
+          <View className="flex flex-row gap-4 w-full overflow-hidden">
             <View className="flex-1">
               <InputField
                 label="City"
@@ -974,7 +1057,7 @@ function Footer({ scrollToSection }: any) {
       >
         <View className="flex-1 justify-center items-center bg-black/40">
           <View className="bg-white p-6 rounded-xl w-11/12 max-w-xl">
-            <Text className="mb-2 text-2xl text-[#315072]">
+            <Text className="mb-2 text-[#315072] text-2xl">
               {about[modalVisible]?.title}
             </Text>
             <Text className="my-6 text-[#315072] text-lg">
@@ -982,7 +1065,7 @@ function Footer({ scrollToSection }: any) {
             </Text>
             <TouchableOpacity
               onPress={() => setModalVisible(null)}
-              className="self-end bg-[#FDE490] px-4 py-2 rounded-md hover:bg-[#ffd753] transition-colors duration-300"
+              className="self-end bg-[#FDE490] hover:bg-[#ffd753] px-4 py-2 rounded-md transition-colors duration-300"
             >
               <Text className="font-medium text-[#315072]">Close</Text>
             </TouchableOpacity>
@@ -1021,8 +1104,8 @@ function InputField({
   autoComplete,
 }: InputFieldProps) {
   return (
-    <View className="mb-3">
-      <Text className="mb-1 font-medium text-[#315072] text-xl">
+    <View className="mb-1 lg:mb-3">
+      <Text className="mb-1 font-medium text-[#315072] text-sm lg:text-xl">
         {label}
         {error && <Text className="text-red-500"> *</Text>}
       </Text>
@@ -1067,7 +1150,7 @@ function TextAreaField({
 }) {
   return (
     <View>
-      <Text className="mt-4 mb-1 font-medium text-[#315072] text-xl">
+      <Text className="mt-4 mb-1 font-medium text-[#315072] text-md lg:text-xl">
         {label}
       </Text>
       <TextInput
@@ -1075,8 +1158,8 @@ function TextAreaField({
         onChangeText={onChangeText}
         placeholder={placeholder}
         multiline={true}
-        numberOfLines={5}
-        className="bg-white p-3 border border-[#f0e6cc] rounded-md h-32 text-[#3150727a]"
+        numberOfLines={3}
+        className="bg-white p-2 border border-[#f0e6cc] rounded-md h-24p lg:h-32 text-[#3150727a]"
         textAlignVertical="top"
       />
     </View>
@@ -1096,7 +1179,7 @@ function SubmitButton({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      className={`mt-4 px-6 py-3 rounded-md ${
+      className={`mt-4 px-6 py-2 lg:py-3 rounded-md ${
         disabled ? "bg-gray-400" : "bg-[#ffdb80]"
       } hover:bg-[#FBEFBE]`}
     >
