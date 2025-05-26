@@ -87,7 +87,8 @@ export default function Page() {
         <View ref={sectionRefs.contact}>
           <ContactSection />
         </View>
-        <Footer scrollToSection={scrollToSection} />
+        <Footer />
+        
       </ScrollView>
     </View>
   );
