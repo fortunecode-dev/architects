@@ -88,7 +88,6 @@ export default function Page() {
           <ContactSection />
         </View>
         <Footer scrollToSection={scrollToSection} />
-
       </ScrollView>
     </View>
   );
@@ -121,7 +120,7 @@ function Header({
   scrollToSection,
 }: {
   sections: string[];
-  scrollToSection: (section: string) => void;
+  scrollToSection: (section: string, force?: boolean) => void;
 }) {
   const { top } = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -245,7 +244,7 @@ function Header({
               <TouchableOpacity
                 key={section}
                 onPress={() => {
-                  scrollToSection(section, true); 
+                  scrollToSection(section, true);
                   setMenuOpen(false);
                 }}
                 className={`py-3 border-b ${
@@ -264,7 +263,7 @@ function Header({
             <View className="mt-6">
               <TouchableOpacity
                 onPress={() => {
-                  scrollToSection("contact", true); 
+                  scrollToSection("contact", true);
                   setMenuOpen(false);
                 }}
                 className={`w-full px-4 py-3 rounded-md shadow-sm ${
@@ -290,7 +289,7 @@ function Header({
 function LandingSection({
   scrollToSection,
 }: {
-  scrollToSection: (section: string) => void;
+  scrollToSection: (section: string, force?: boolean) => void;
 }) {
   return (
     <FadeInView>
@@ -332,7 +331,7 @@ function LandingSection({
 
               <View className="flex sm:flex-row flex-col justify-center lg:justify-start gap-4">
                 <TouchableOpacity
-                  onPress={() => scrollToSection("contact",true)}
+                  onPress={() => scrollToSection("contact", true)}
                   className="bg-[#FBEFBE] px-6 py-3 rounded-md transition-shadow duration-300"
                 >
                   <Text className="font-medium text-[#315072] text-base text-center">
@@ -373,7 +372,9 @@ function ServiceCard({
   return (
     <View className="bg-[#FBEFBE] hover:shadow-sm mb-4 p-6 border border-[#f0e6cc] rounded-xl transition-shadow duration-300">
       <Text className="mb-1 lg:mb-4 text-2xl lg:text-3xl">{icon}</Text>
-      <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">{title}</Text>
+      <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">
+        {title}
+      </Text>
       <Text className="text-[#315072]">{description}</Text>
       <Pressable onPress={() => setModalVisible(true)} className="mt-1 lg:mt-5">
         <Text className="font-medium text-[#315072] hover:text-[#315072] transition-colors duration-300">
@@ -771,21 +772,19 @@ function ContactSection() {
                     onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                   >
                     {MAIL_CONTACT}
-                </Text>{" "}
-              </Text>  
-              <Text>
-                Or use this number{" "}
-                <Text
+                  </Text>{" "}
+                </Text>
+                <Text>
+                  Or use this number{" "}
+                  <Text
                     className="font-bold text-[#315072] underline"
                     onPress={() => setShowContactModal(true)}
-                    >
+                  >
                     {PHONE_CONTACT}
                   </Text>
-
                 </Text>
               </View>
-              <Text className="flex flex-col text-[#315072] text-left">
-              </Text>
+              <Text className="flex flex-col text-[#315072] text-left"></Text>
             </View>
           )}
 
@@ -798,11 +797,7 @@ function ContactSection() {
                     onPress={() => Linking.openURL(`tel:${PHONE_CONTACT}`)}
                     className="flex-row justify-start items-center gap-2 hover:drop-shadow-md lg:pb-5 border-[#ffffff63] border-b-2 w-96"
                   >
-                    <Ionicons
-                      name="call"
-                      color={"#315072"}
-                      size={30}
-                    />
+                    <Ionicons name="call" color={"#315072"} size={30} />
                     <View className="gap-0 lg:gap-3 p-2">
                       <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
                         {PHONE_CONTACT}
@@ -816,11 +811,7 @@ function ContactSection() {
                     onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                     className="flex-row justify-start items-center gap-2 hover:drop-shadow-md border-[#ffffff63] w-96"
                   >
-                    <Ionicons
-                      name="mail"
-                      color={"#315072"}
-                      size={30}
-                    />
+                    <Ionicons name="mail" color={"#315072"} size={30} />
                     <View className="gap-0 lg:gap-3 p-2">
                       <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
                         {MAIL_CONTACT}
@@ -1027,13 +1018,13 @@ function Footer({ scrollToSection }: any) {
               <View className="space-y-1">
                 <Text
                   className="text-[#315072] text-sm"
-                  onPress={() => scrollToSection?.("services",true)}
+                  onPress={() => scrollToSection?.("services", true)}
                 >
                   Services
                 </Text>
                 <Text
                   className="text-[#315072] text-sm"
-                  onPress={() => scrollToSection?.("faq",true)}
+                  onPress={() => scrollToSection?.("faq", true)}
                 >
                   FAQs
                 </Text>
