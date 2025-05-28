@@ -29,11 +29,11 @@ const COLORS = {
   primary: "#315072",
   secondary: "#f0c14b",
   accent: "#d4a017",
-  background: "#fce798",
+  background: "#FFFFFF",
   card: "#f9f1d9",
   text: "#315072",
   lightText: "#f5e5a6",
-  border: "#e8d8b0",
+  border: "#c9e4ff",
   error: "#e53e3e",
 };
 
@@ -143,29 +143,35 @@ function Header({
   return (
     <View
       style={{ paddingTop: top }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#FBEFBE] border-b border-[#e8d8b0] `}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#e1f0ff] border-b border-[#c9e4ff]`}
     >
-      <View className="flex flex-row justify-between items-center mx-auto px-6 py-3 w-full max-w-7xl h-16">
+      <View className="flex flex-row justify-between items-center mx-auto px-4 py-2 w-full max-w-7xl h-12">
+        {" "}
+        {/* Cambiado px-6 a px-4, py-3 a py-2, h-16 a h-14 */}
         {/* Left: Logo */}
         <View className="flex flex-row flex-shrink-0 items-center">
-          <Image
-            source={require("../../public/logo.svg")}
-            style={{
-              width: 90,
-              height: 40,
-              resizeMode: "contain",
-              opacity: 1,
-            }}
-          />
+          {" "}
+          <TouchableOpacity onPress={() => scrollToSection("home")}>
+            <Image
+              source={require("../../public/logo.svg")}
+              style={{
+                marginTop: 12,
+                width: 158, // Reducido de 90 a 80
+                resizeMode: "contain",
+                opacity: 1,
+              }}
+            />
+          </TouchableOpacity>
         </View>
-
         {/* Center: Sections as Row */}
-        <View className="hidden md:flex flex-row flex-1 justify-center items-center gap-6">
+        <View className="hidden md:flex flex-row flex-1 justify-center items-center gap-4">
+          {" "}
+          {/* Reducido gap de 6 a 4 */}
           {sections.map((section) => (
             <TouchableOpacity
               key={section}
               onPress={() => scrollToSection(section)}
-              className="group relative py-2"
+              className="group relative py-1"
             >
               <Text
                 className={`font-bold text-sm capitalize transition-colors duration-200 text-[#315072]`}
@@ -178,18 +184,16 @@ function Header({
             </TouchableOpacity>
           ))}
         </View>
-
         {/* Right: Contact Button */}
         <View className="hidden md:flex flex-row flex-shrink-0 items-center">
           <TouchableOpacity
-            className={`px-4 py-2 rounded-md  transition-all duration-300 bg-[#ffdb80] hover:bg-[#FDE490]  `}
+            className={`px-3 py-1.5 rounded-md transition-all duration-300 bg-[#badcff] hover:bg-[#a6d2ff]`}
             onPress={() => scrollToSection("contact")}
           >
             <Text className={`font-bold text-sm text-[#315072]`}>Contact</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Button (sin cambios ya que ya es compacto) */}
         <View className="md:hidden flex-shrink-0">
           <TouchableOpacity
             onPress={() => setMenuOpen(!menuOpen)}
@@ -222,13 +226,13 @@ function Header({
         </View>
       </View>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu (sin cambios ya que no afecta la altura del header) */}
       {menuOpen && (
         <View
           className={`md:hidden h-screen justify-center items-center ${
             isScrolled ? "bg-[#f5e5a6]" : "bg-[#315072]"
           } px-6 py-4 border-t ${
-            isScrolled ? "border-[#e8d8b0]" : "border-white/20"
+            isScrolled ? "border-[#c9e4ff]" : "border-white/20"
           } w-full`}
         >
           <View className="max-w-7xl">
@@ -285,7 +289,6 @@ function Header({
     </View>
   );
 }
-
 function LandingSection({
   scrollToSection,
 }: {
@@ -293,7 +296,7 @@ function LandingSection({
 }) {
   return (
     <FadeInView>
-      <View className="flex justify-center items-center bg-[#fce798] px-6 w-full h-screen">
+      <View className="flex justify-center items-center bg-[#FFFFFF] px-6 w-full h-screen">
         <View className="flex lg:flex-row flex-col justify-center items-center lg:gap-6 mx-auto pt-[-15px] lg:pt-0 w-full max-w-7xl">
           {/* Logo Container */}
           <View className="flex flex-1 justify-center items-center lg:items-end lg:pr-14 w-full lg:w-auto">
@@ -308,7 +311,7 @@ function LandingSection({
           </View>
 
           {/* Vertical Divider */}
-          <View className="hidden lg:block self-center border-[#FBEFBE] border-l-2 h-64" />
+          <View className="hidden lg:block self-center border-[#e1f0ff] border-l-2 h-64" />
 
           {/* Content */}
           <View className="flex-1 lg:pl-14 w-full lg:text-left text-center">
@@ -332,7 +335,7 @@ function LandingSection({
               <View className="flex sm:flex-row flex-col justify-center lg:justify-start gap-4">
                 <TouchableOpacity
                   onPress={() => scrollToSection("contact", true)}
-                  className="bg-[#FBEFBE] px-6 py-3 rounded-md transition-shadow duration-300"
+                  className="bg-[#e1f0ff] px-6 py-3 rounded-md transition-shadow duration-300"
                 >
                   <Text className="font-medium text-[#315072] text-base text-center">
                     Start your project
@@ -370,7 +373,7 @@ function ServiceCard({
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <View className="bg-[#FBEFBE] hover:shadow-sm mb-4 p-6 border border-[#f0e6cc] rounded-xl transition-shadow duration-300">
+    <View className="bg-[#e1f0ff] hover:shadow-sm mb-4 p-6 border border-[#c9e4ff] rounded-xl transition-shadow duration-300">
       <Text className="mb-1 lg:mb-4 text-2xl lg:text-3xl">{icon}</Text>
       <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">
         {title}
@@ -395,7 +398,7 @@ function ServiceCard({
             <Text className="my-6 text-[#315072] text-lg">{cont}</Text>
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
-              className="self-end bg-[#FDE490] hover:bg-[#ffd753] px-4 py-2 rounded-md transition-colors duration-300"
+              className="self-end bg-[#e1f0ff] hover:bg-[#a6d2ff] px-4 py-2 rounded-md transition-colors duration-300"
             >
               <Text className="font-medium text-[#315072]">Close</Text>
             </TouchableOpacity>
@@ -446,7 +449,7 @@ function ServicesSection() {
   ];
 
   return (
-    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 pt-40 lg:pt-0 lg:h-screen">
+    <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 pt-40 lg:pt-0 lg:h-screen">
       <View className="mx-auto w-full max-w-6xl">
         <Text className="mb-3 font-bold text-[#315072] text-3xl md:text-4xl text-center">
           Our Services
@@ -509,13 +512,13 @@ function FAQSection({
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <View className="flex flex-col justify-center items-center bg-[#fce798] px-6 lg:px-0 py-16 h-screen">
+    <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 lg:px-0 py-16 h-screen">
       <View className="mx-auto lg:w-1/2">
         <Text className="mb-6 font-bold text-[#315072] text-xl lg:text-2xl text-center">
           Frequently Asked Questions
         </Text>
         {faqs.map((faq, idx) => (
-          <View key={idx} className="mb-2 border-[#FBEFBE] border-b-2">
+          <View key={idx} className="mb-2 border-[#e1f0ff] border-b-2">
             <TouchableOpacity
               onPress={() => setOpenIndex(openIndex === idx ? null : idx)}
               className="flex flex-row justify-between items-center py-4"
@@ -692,7 +695,7 @@ function ContactSection() {
   };
 
   return (
-    <View className="flex justify-center items-center bg-[#fce798] px-6 w-full">
+    <View className="flex justify-center items-center bg-[#FFFFFF] px-6 w-full">
       {/* Modal SOLO en móvil */}
       {!isDesktop && (
         <Modal
@@ -740,7 +743,7 @@ function ContactSection() {
               </View>
               <TouchableOpacity
                 onPress={() => setShowContactModal(false)}
-                className="self-center bg-[#FDE490] mt-6 px-4 py-2 rounded-md"
+                className="self-center bg-[#FFFFFF] mt-6 px-4 py-2 rounded-md"
               >
                 <Text className="font-medium text-[#315072]">Close</Text>
               </TouchableOpacity>
@@ -751,7 +754,7 @@ function ContactSection() {
 
       <View className="flex lg:flex-row flex-col gap-5 bg-white drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl">
         {/* Contact Info */}
-        <View className="bg-[#FBEFBE] drop-shadow-md px-10 pt-7 rounded-xl w-full lg:w-1/2">
+        <View className="bg-[#e1f0ff] drop-shadow-md px-10 pt-7 rounded-xl w-full lg:w-1/2">
           <Text className="mb-2 lg:mb-6 font-bold text-[#315072] text-2xl md:text-3xl text-left">
             Contact Information
           </Text>
@@ -990,7 +993,7 @@ function Footer({ scrollToSection }: any) {
 
   return (
     <View
-      className="bg-[#FBEFBE] border-[#ffdb80] border-t"
+      className="bg-[#e1f0ff] border-[#badcff] border-t"
       style={{ paddingBottom: bottom }}
     >
       <View className="mx-auto px-6 py-2 w-full max-w-6xl">
@@ -1069,7 +1072,7 @@ function Footer({ scrollToSection }: any) {
             </Text>
             <TouchableOpacity
               onPress={() => setModalVisible(null)}
-              className="self-end bg-[#FDE490] hover:bg-[#ffd753] px-4 py-2 rounded-md transition-colors duration-300"
+              className="self-end bg-[#FFFFFF] hover:bg-[#ffd753] px-4 py-2 rounded-md transition-colors duration-300"
             >
               <Text className="font-medium text-[#315072]">Close</Text>
             </TouchableOpacity>
@@ -1128,7 +1131,7 @@ function InputField({
           error
             ? "border-red-500"
             : editable
-            ? "border-[#f0e6cc]"
+            ? "border-[#c9e4ff]"
             : "border-gray-300"
         } rounded-md h-10 text-[#315072] ${!editable && "bg-gray-100"}`}
         selectionColor="#f0c14b"
@@ -1163,7 +1166,7 @@ function TextAreaField({
         placeholder={placeholder}
         multiline={true}
         numberOfLines={3}
-        className="bg-white p-2 border border-[#f0e6cc] rounded-md h-24p lg:h-32 text-[#3150727a]"
+        className="bg-white p-2 border border-[#c9e4ff] rounded-md h-24p lg:h-32 text-[#3150727a]"
         textAlignVertical="top"
       />
     </View>
@@ -1184,8 +1187,8 @@ function SubmitButton({
       onPress={onPress}
       disabled={disabled}
       className={`mt-4 px-6 py-2 lg:py-3 rounded-md ${
-        disabled ? "bg-gray-400" : "bg-[#ffdb80]"
-      } hover:bg-[#FBEFBE]`}
+        disabled ? "bg-gray-400" : "bg-[#badcff]"
+      } hover:bg-[#e1f0ff]`}
     >
       <Text className="font-medium text-[#315072] text-base text-center hover:">
         {label}

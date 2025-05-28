@@ -1,23 +1,23 @@
 {
   "expo": {
-    "scheme": "acme",
+    "scheme": "dWELLingPlus",
     "userInterfaceStyle": "automatic",
     "orientation": "default",
     "platforms": ["ios", "android", "web"],
     "web": {
       "description": "Upgrade your property",
       "orientation": "portrait",
-      "backgroundColor": "#FDE490",
-      "themeColor": "#FBEFBE",
-      "primaryColor": "#FBEFBE",
+      "backgroundColor": "#FFFFFF",
+      "themeColor": "#e1f0ff",
+      "primaryColor": "#e1f0ff",
       "favicon": "./assets/icon.png",
       "manifest": {
         "name": "dWELLingPlus",
         "short_name": "dW+",
         "start_url": ".",
         "display": "standalone",
-        "theme_color": "#FBEFBE",
-        "background_color": "#FDE490"
+        "theme_color": "#e1f0ff",
+        "background_color": "#FFFFFF"
       }
     },
     "plugins": [

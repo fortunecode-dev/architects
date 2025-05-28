@@ -1,12 +1,12 @@
 export const COLORS = {
   primary: "#315072", // Azul principal [#315072]
-  secondary: "#FDE490", // Amarillo claro [#FDE490]
-  accent: "#FBEFBE", // Beige claro [#FBEFBE]
+  secondary: "#FFFFFF", // Amarillo claro [#FFFFFF]
+  accent: "#e1f0ff", // Beige claro [#e1f0ff]
   background: "#FEFFFF", // Blanco roto [#FEFFFF]
   card: "#F9F1D9", // Beige claro para tarjetas
   text: "#315072", // Texto azul oscuro (utiliza el color primario)
-  lightText: "#FDE490", // Texto amarillo claro
-  border: "#FBEFBE", // Borde beige
+  lightText: "#FFFFFF", // Texto amarillo claro
+  border: "#e1f0ff", // Borde beige
   error: "#E53E3E", // Rojo para errores
   white: "#FFFFFF", // Blanco (usado en varios lugares)
   black: "#000000", // Negro (usado en FAQ)

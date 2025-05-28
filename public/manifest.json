@@ -1,6 +1,6 @@
 {
-  "short_name": "Expo App",
-  "name": "Expo Router Sample",
+  "short_name": "dW+",
+  "name": "dWELLingPlus",
   "icons": [
     {
       "src": "windows11/SmallTile.scale-100.png",
@@ -453,6 +453,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#FBEFBE",
-  "background_color": "#FDE490"
+  "theme_color": "#e1f0ff",
+  "background_color": "#FFFFFF"
 }
