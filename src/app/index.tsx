@@ -192,6 +192,21 @@ function Header({
           >
             <Text className={`font-bold text-sm text-[#315072]`}>Contact</Text>
           </TouchableOpacity>
+          {/* Iconos de redes sociales */}
+          <TouchableOpacity
+            onPress={() => Linking.openURL("https://www.facebook.com/tu-negocio")}
+            className="ml-3"
+            accessibilityLabel="Facebook"
+          >
+            <Ionicons name="logo-facebook" size={26} color="#315072" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => Linking.openURL("https://www.instagram.com/tu-negocio")}
+            className="ml-2"
+            accessibilityLabel="Instagram"
+          >
+            <Ionicons name="logo-instagram" size={26} color="#315072" />
+          </TouchableOpacity>
         </View>
         {/* Mobile Menu Button (sin cambios ya que ya es compacto) */}
         <View className="md:hidden flex-shrink-0">
@@ -282,6 +297,20 @@ function Header({
                   Contact
                 </Text>
               </TouchableOpacity>
+              <View className="flex flex-row justify-center gap-4 mt-4">
+                <TouchableOpacity
+                  onPress={() => Linking.openURL("https://www.facebook.com/tu-negocio")}
+                  accessibilityLabel="Facebook"
+                >
+                  <Ionicons name="logo-facebook" size={28} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => Linking.openURL("https://www.instagram.com/tu-negocio")}
+                  accessibilityLabel="Instagram"
+                >
+                  <Ionicons name="logo-instagram" size={28} color="#fff" />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
@@ -338,7 +367,7 @@ function LandingSection({
                   className="bg-[#e1f0ff] px-6 py-3 rounded-md transition-shadow duration-300"
                 >
                   <Text className="font-medium text-[#315072] text-base text-center">
-                    Start your project
+                    Get Started
                   </Text>
                 </TouchableOpacity>
 
@@ -511,10 +540,39 @@ function FAQSection({
 
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  // Estados para el formulario de nueva pregunta
+  const [question, setQuestion] = useState("");
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [contactInfo, setContactInfo] = useState("");
+  const [contactType, setContactType] = useState<"email" | "phone" | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+
+  // Validación simple
+  const isContactValid =
+    (contactType === "email" && /\S+@\S+\.\S+/.test(contactInfo)) ||
+    (contactType === "phone" && /^[0-9+\-\s()]{7,}$/.test(contactInfo));
+
+  const handleSendQuestion = () => {
+    if (question.trim().length < 5) return;
+    setShowContactModal(true);
+  };
+
+  const handleContactSubmit = () => {
+    if (!isContactValid) return;
+    // Aquí podrías enviar la pregunta y el contacto a tu backend si lo deseas
+    setShowContactModal(false);
+    setSubmitted(true);
+    setQuestion("");
+    setContactInfo("");
+    setContactType(null);
+    setTimeout(() => setSubmitted(false), 4000);
+  };
+
   return (
-    <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 lg:px-0 py-16 h-screen">
-      <View className="mx-auto lg:w-1/2">
-        <Text className="mb-6 font-bold text-[#315072] text-xl lg:text-2xl text-center">
+    <View className="flex lg:flex-row flex-col justify-center items-center bg-[#FFFFFF] px-0 lg:px-64 pt-48 lg:pt-0 h-screen">
+      {/* Preguntas frecuentes a la izquierda */}
+      <View className="w-full lg:w-1/2">
+        <Text className="mb-12 font-bold text-[#315072] text-xl lg:text-2xl text-center">
           Frequently Asked Questions
         </Text>
         {faqs.map((faq, idx) => (
@@ -536,6 +594,111 @@ function FAQSection({
           </View>
         ))}
       </View>
+
+      {/* Formulario de nueva pregunta a la derecha */}
+      <View className="flex flex-col justify-start items-center mt-10 lg:mt-0 lg:pl-10 w-full lg:w-1/2">
+        <View className="bg-[#e1f0ff] shadow-md p-6 rounded-xl w-full max-w-md">
+          <Text className="mb-2 font-bold text-[#315072] text-lg text-center">
+            Haz una pregunta
+          </Text>
+          <TextInput
+            value={question}
+            onChangeText={setQuestion}
+            placeholder="Escribe tu pregunta aquí..."
+            multiline
+            numberOfLines={3}
+            className="bg-white mb-3 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
+            textAlignVertical="top"
+          />
+          <TouchableOpacity
+            onPress={handleSendQuestion}
+            disabled={question.trim().length < 5}
+            className={`w-full px-4 py-2 rounded-md ${
+              question.trim().length < 5
+                ? "bg-gray-300"
+                : "bg-[#badcff] hover:bg-[#e1f0ff]"
+            }`}
+          >
+            <Text className="font-bold text-[#315072] text-center">
+              Enviar
+            </Text>
+          </TouchableOpacity>
+          {submitted && (
+            <Text className="mt-4 text-green-700 text-center">
+              ¡Gracias! Pronto te daremos respuesta.
+            </Text>
+          )}
+        </View>
+      </View>
+
+      {/* Modal para pedir contacto */}
+      <Modal
+        visible={showContactModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowContactModal(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/40">
+          <View className="bg-white p-6 rounded-xl w-11/12 max-w-xs">
+            <Text className="mb-4 font-bold text-[#315072] text-lg text-center">
+              Podemos contactarte a través de:
+            </Text>
+            {/* Correo */}
+            <Text className="mb-1 text-[#315072]">Correo</Text>
+            <TextInput
+              value={contactType === "email" ? contactInfo : ""}
+              onChangeText={(text) => {
+                setContactType("email");
+                setContactInfo(text);
+              }}
+              placeholder="Tu correo electrónico"
+              keyboardType="email-address"
+              className="bg-white mb-2 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
+              autoCapitalize="none"
+            />
+            {/* Separador */}
+            <Text className="my-2 text-[#315072] text-center">O</Text>
+            {/* Teléfono */}
+            <Text className="mb-1 text-[#315072]">Teléfono</Text>
+            <TextInput
+              value={contactType === "phone" ? contactInfo : ""}
+              onChangeText={(text) => {
+                setContactType("phone");
+                setContactInfo(text);
+              }}
+              placeholder="Tu número de teléfono"
+              keyboardType="phone-pad"
+              className="bg-white mb-4 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
+            />
+            {/* Botones */}
+            <View className="flex flex-row justify-between mt-2">
+              <TouchableOpacity
+                onPress={() => setShowContactModal(false)}
+                className="bg-gray-200 px-4 py-2 rounded-md"
+              >
+                <Text className="text-[#315072] text-center">Cerrar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleContactSubmit}
+                disabled={
+                  !(
+                    (contactType === "email" && /\S+@\S+\.\S+/.test(contactInfo)) ||
+                    (contactType === "phone" && /^[0-9+\-\s()]{7,}$/.test(contactInfo))
+                  )
+                }
+                className={`px-4 py-2 rounded-md ${
+                  (contactType === "email" && /\S+@\S+\.\S+/.test(contactInfo)) ||
+                  (contactType === "phone" && /^[0-9+\-\s()]{7,}$/.test(contactInfo))
+                    ? "bg-[#badcff]"
+                    : "bg-gray-300"
+                }`}
+              >
+                <Text className="font-bold text-[#315072] text-center">Enviar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -1053,6 +1216,20 @@ function Footer({ scrollToSection }: any) {
                 </Text>
               </View>
             </View>
+          </View>
+          <View className="flex flex-row justify-center gap-4 mt-4">
+            <TouchableOpacity
+              onPress={() => Linking.openURL("https://www.facebook.com/tu-negocio")}
+              accessibilityLabel="Facebook"
+            >
+              <Ionicons name="logo-facebook" size={28} color="#120" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => Linking.openURL("https://www.instagram.com/tu-negocio")}
+              accessibilityLabel="Instagram"
+            >
+              <Ionicons name="logo-instagram" size={28} color="#120" />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
