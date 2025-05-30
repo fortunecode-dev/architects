@@ -334,14 +334,16 @@ function LandingSection({
         <Image
           source={require("../../public/logo-navy.png")}
           style={{
-            width: 480,
-            height: 180,
+            width: isDesktop ? 480 : 360,
+            height: isDesktop ? 180 : 120,
             resizeMode: "contain",
             alignSelf: "flex-start",
+            backgroundColor: "#"
           }}
+          className="bg-blue-200/80 shadow-lg lg:shadow-none mb-4 lg:mb-0 rounded-lg"
           
         />
-        <Text className="bg-blue-200 lg:bg-transparent shadow-lg lg:shadow-transparent mt-5 mb-8 p-5 lg:p-0 pt-5 rounded-xl font-medium text-blue-500 lg:text-[#315072] text-lg lg:text-xl">
+        <Text className="bg-blue-200/80 lg:bg-transparent shadow-lg lg:shadow-transparent mt-5 mb-8 p-5 lg:p-0 pt-5 rounded-xl font-medium text-blue-500 lg:text-[#315072] text-lg lg:text-xl">
           Our goal is to help you develop your property. We work with
           passion to meet the expectations of home owners and developers.
         </Text>
@@ -394,7 +396,8 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
   const [questionModalVisible, setQuestionModalVisible] = useState(false);
   const [questionText, setQuestionText] = useState("");
   const [questionSent, setQuestionSent] = useState(false);
-
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 1024;
   const services = [
     {
       title: "Let's build an ADU",
@@ -532,7 +535,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
               <Text className="mb-2 font-bold text-[#315072] text-2xl">
                 {selectedService?.title}
               </Text>
-              <Text className="my-6 text-[#315072] text-lg">{selectedService?.cont}</Text>
+              <Text className="my-6 text-[#315072] text-md">{selectedService?.cont}</Text>
               <View className="flex flex-row gap-2 mt-8">
                 <TouchableOpacity
                   onPress={() => setModalVisible(false)}
@@ -558,10 +561,10 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
               </View>
             </View>
             {/* Derecha: Imagen y botón Ver más */}
-            <View className="relative flex-1 justify-center items-center">
+            <View className="relative flex-1 justify-center items-center pt-10">
               <Image
                 source={selectedService?.images[0]}
-                style={{ width: 260, height: 260, borderRadius: 16 }}
+                style={{ width: isDesktop ? 460 : 380, height: isDesktop ? 260 : 200, borderRadius: 16 }}
                 resizeMode="cover"
               />
               <TouchableOpacity
@@ -696,7 +699,7 @@ function FAQSection({
   };
 
   return (
-    <View className="flex lg:flex-row flex-col justify-center items-center bg-[#FFFFFF] mb-40 px-20 lg:px-64 pt-48 lg:pt-0 h-screen">
+    <View className="flex lg:flex-row flex-col justify-center items-center bg-[#FFFFFF] mb-40 px-16 lg:px-64 pt-48 lg:pt-0 h-screen">
       {/* Preguntas frecuentes a la izquierda */}
       <View className="w-full lg:w-1/2">
         <Text className="mb-12 font-bold text-[#315072] text-xl lg:text-2xl text-center">
