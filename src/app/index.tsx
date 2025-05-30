@@ -340,7 +340,7 @@ function LandingSection({
             alignSelf: "flex-start",
             backgroundColor: "#"
           }}
-          className="bg-blue-200/80 shadow-lg lg:shadow-none mb-4 lg:mb-0 rounded-lg"
+          className="bg-blue-200/80 lg:bg-transparent shadow-lg lg:shadow-none mb-4 lg:mb-0 rounded-lg"
           
         />
         <Text className="bg-blue-200/80 lg:bg-transparent shadow-lg lg:shadow-transparent mt-5 mb-8 p-5 lg:p-0 pt-5 rounded-xl font-medium text-blue-500 lg:text-[#315072] text-lg lg:text-xl">
@@ -398,60 +398,51 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
   const [questionSent, setQuestionSent] = useState(false);
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
+  const scrollViewRef = useRef<ScrollView>(null);
+
   const services = [
     {
       title: "Let's build an ADU",
-      description:
-        "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU).",
-      cont: "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU). Our ADU construction service allows you to make the most of your property, whether to generate rental income, comfortably house family members, or expand your living space. We design functional and efficient solutions that comply with local regulations, optimizing energy and materials for a sustainable home. With a smart investment, an ADU can offer you financial independence and flexibility, adapting to your current and future needs.",
-      images: [
-        require("../../public/ADU.jpg"),
-        // Puedes agregar más imágenes aquí si lo deseas
-      ],
+      description: "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU).",
+      cont: "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU). Our ADU construction service allows you to make the most of your property, whether to generate rental income, comfortably house family members, or expand your living space. We design functional and efficient solutions that comply with local regulations, optimizing energy and materials for a sustainable home. With a smart investment, an ADU can offer you financial independence and flexibility, adapting to your current and future needs.",
+      images: [require("../../public/ADU.jpg")],
     },
     {
       title: "Home Remodeling and Addition",
-      description:
-        "Transform your home to better suit your lifestyle and family needs.",
-      cont: "Our home remodeling and expansion services are designed to optimize your existing floor plan, creating more functional, comfortable and efficient spaces. Whether it's redistributing key areas, expanding bedrooms or modernizing bathrooms, we help you make the most of every square foot in a strategic way. With intelligent design and construction solutions, we turn your home into an environment that flows naturally and enhances your well-being.",
-      images: [
-        require("../../public/Remodelation.jpg"),
-      ],
+      description: "Transform your home to better suit your lifestyle and family needs.",
+      cont: "Our home remodeling and expansion services are designed to optimize your existing floor plan, creating more functional, comfortable and efficient spaces. Whether it's redistributing key areas, expanding bedrooms or modernizing bathrooms, we help you make the most of every square foot in a strategic way. With intelligent design and construction solutions, we turn your home into an environment that flows naturally and enhances your well-being.",
+      images: [require("../../public/Remodelation.jpg")],
     },
     {
       title: "Inspiring Backyard Spaces",
-      description:
-        "Turn your backyard into an oasis designed for comfort and conviviality.",
-      cont: "Our outdoor transformation service creates living areas with elegant pergolas, fire pits for warm moments, grills for unforgettable gatherings and a perfect balance of concrete pavers and natural grass. Cozy lighting enhances every detail, creating an ideal environment for relaxing, sharing and making the most of your home. Our architects and designers will turn your patio into a dream space for the whole family.",
-      images: [
-        require("../../public/Backyard Spaces.jpg"),
-      ],
+      description: "Turn your backyard into an oasis designed for comfort and conviviality.",
+      cont: "Our outdoor transformation service creates living areas with elegant pergolas, fire pits for warm moments, grills for unforgettable gatherings and a perfect balance of concrete pavers and natural grass. Cozy lighting enhances every detail, creating an ideal environment for relaxing, sharing and making the most of your home. Our architects and designers will turn your patio into a dream space for the whole family.",
+      images: [require("../../public/Backyard Spaces.jpg")],
     },
     {
       title: "General Construction and Repair",
-      description:
-        "We offer comprehensive solutions for construction, maintenance, painting, and repairs.",
-      cont: "We offer comprehensive solutions for construction, maintenance, painting, repair of roofs, walls, floors and any damaged area of the building. Whether you need to develop a project from scratch or restore existing structures, our team is ready to deliver quality results. From structural improvements to detailed renovations, we provide reliable service tailored to your needs.",
-      images: [
-        require("../../public/Repair.jpg"),
-      ],
+      description: "We offer comprehensive solutions for construction, maintenance, painting, and repairs.",
+      cont: "We offer comprehensive solutions for construction, maintenance, painting, repair of roofs, walls, floors and any damaged area of the building. Whether you need to develop a project from scratch or restore existing structures, our team is ready to deliver quality results. From structural improvements to detailed renovations, we provide reliable service tailored to your needs.",
+      images: [require("../../public/Repair.jpg")],
     },
     {
       title: "Financial Support",
-      description:
-        "We help you access the financial resources available to develop construction and renovation projects.",
-      cont: "Through credit options or structured loans, homeowners can invest in an Auxiliary Dwelling Unit (ADU) or improve their home, distributing the payment in affordable installments. This service provides financial flexibility, facilitating the materialization of projects without compromising economic stability.",
-      images: [
-        require("../../public/Financial Support.jpg"),
-      ],
+      description: "We help you access the financial resources available to develop construction and renovation projects.",
+      cont: "Through credit options or structured loans, homeowners can invest in an Auxiliary Dwelling Unit (ADU) or improve their home, distributing the payment in affordable installments. This service provides financial flexibility, facilitating the materialization of projects without compromising economic stability.",
+      images: [require("../../public/Financial Support.jpg")],
     },
   ];
 
   const handleGetStarted = () => {
-    setModalVisible(true);
+    setModalVisible(false);
     setTimeout(() => {
-      if (scrollToSection) scrollToSection("contact", true);
-    }, 100);
+      if (scrollToSection) {
+        scrollToSection("contact", true);
+        setTimeout(() => {
+          scrollViewRef.current?.scrollToEnd({ animated: true });
+        }, 300);
+      }
+    }, 400);
   };
 
   const handleSendQuestion = () => {
@@ -464,84 +455,92 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
     }, 1500);
   };
 
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 pt-40 lg:pt-10 lg:h-screen">
-      <View className="mx-auto w-full max-w-6xl">
-        <Text className="mb-3 font-bold text-[#315072] text-3xl md:text-4xl text-center">
-          Our Services
-        </Text>
-        <Text
-          className="mb-10 font-extralight text-[#315072] text-lg md:text-xl text-center"
-          style={{ fontFamily: "Arial" }}
-        >
-          We offer a wide range of services to meet your needs.
-        </Text>
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="mx-auto w-full max-w-6xl">
+          <Text className="mb-3 font-bold text-[#315072] text-3xl md:text-4xl text-center">
+            Our Services
+          </Text>
+          <Text
+            className="mb-10 font-extralight text-[#315072] text-lg md:text-xl text-center"
+            style={{ fontFamily: "Arial" }}
+          >
+            We offer a wide range of services to meet your needs.
+          </Text>
 
-        <View className="gap-0 lg:gap-5 grid grid-cols-1 md:grid-cols-3 mx-5">
-          {services.map((service, index) => (
-            <View
-              key={index}
-              className="flex flex-col bg-[#e1f0ff] hover:shadow-sm mb-2 p-3 border border-[#c9e4ff] rounded-xl transition-shadow duration-300"
-            >
-              <Image
-                source={service.images[0]}
-                style={{
-                  width: "100%",
-                  height: 160,
-                  borderRadius: 12,
-                  marginBottom: 12,
-                }}
-                resizeMode="cover"
-              />
-              <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">
-                {service.title}
-              </Text>
-              <Text className="text-[#315072]">{service.description}</Text>
-              <Pressable
-                onPress={() => {
-                  setSelectedService(service);
-                  setModalVisible(true);
-                }}
-                className="mt-4"
+          <View className="gap-0 lg:gap-5 grid grid-cols-1 md:grid-cols-3 mx-5">
+            {services.map((service, index) => (
+              <View
+                key={index}
+                className="flex flex-col bg-[#e1f0ff] hover:shadow-sm mb-2 p-3 border border-[#c9e4ff] rounded-xl transition-shadow duration-300"
               >
-                <Text className="font-medium text-[#315072] underline transition-colors duration-300">
-                  Read More →
+                <Image
+                  source={service.images[0]}
+                  style={{
+                    width: "100%",
+                    height: 160,
+                    borderRadius: 12,
+                    marginBottom: 12,
+                  }}
+                  resizeMode="cover"
+                />
+                <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">
+                  {service.title}
                 </Text>
-              </Pressable>
-            </View>
-          ))}
+                <Text className="text-[#315072]">{service.description}</Text>
+                <Pressable
+                  onPress={() => {
+                    setSelectedService(service);
+                    setModalVisible(true);
+                  }}
+                  className="mt-4"
+                >
+                  <Text className="font-medium text-[#315072] underline transition-colors duration-300">
+                    Read More →
+                  </Text>
+                </Pressable>
+              </View>
+            ))}
+          </View>
         </View>
-      </View>
+      </ScrollView>
 
-      {/* Modal de servicio */}
+      {/* Service Modal */}
       <Modal
         visible={modalVisible}
         transparent
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={handleCloseModal}
       >
         <View className="flex-1 justify-center items-center bg-black/40">
           <View className="relative lg:flex-row flex-col bg-white p-6 rounded-xl w-11/12 max-w-4xl">
-            {/* Botón X de cerrar */}
             <TouchableOpacity
-              onPress={() => setModalVisible(false)}
+              onPress={handleCloseModal}
               className="top-4 right-4 z-10 absolute"
-              style={{ position: "absolute", top: 16, right: 16, zIndex: 10 }}
             >
               <Ionicons name="close" size={28} color="#315072" />
             </TouchableOpacity>
-            {/* Izquierda: Texto */}
+            
             <View className="flex-1 mb-6 lg:mb-0 pr-0 lg:pr-6">
               <Text className="mb-2 font-bold text-[#315072] text-2xl">
                 {selectedService?.title}
               </Text>
               <Text className="my-6 text-[#315072] text-md">{selectedService?.cont}</Text>
-              <View className="flex flex-row gap-2 mt-8">
+              <View className="flex flex-row flex-wrap gap-2 mt-8">
                 <TouchableOpacity
-                  onPress={() => setModalVisible(false)}
-                  className="bg-gray-200 mr-20 px-4 py-2 rounded-md"
+                  onPress={handleCloseModal}
+                  className="bg-gray-200 px-4 py-2 rounded-md"
                 >
-                  <Text className="font-medium text-[#315072]">Cerrar</Text>
+                  <Text className="font-medium text-[#315072]">Close</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
@@ -554,23 +553,27 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleGetStarted}
-                  className="bg-[#badcff] px-4 py-2 rounded-md"
+                  className="z-70 bg-[#badcff] px-4 py-2 rounded-md pointer"
                 >
                   <Text className="font-medium text-[#315072]">Get Started</Text>
                 </TouchableOpacity>
               </View>
             </View>
-            {/* Derecha: Imagen y botón Ver más */}
-            <View className="relative flex-1 justify-center items-center pt-10">
+            
+            <View className="relative flex-1 justify-center items-center mt-10">
               <Image
                 source={selectedService?.images[0]}
-                style={{ width: isDesktop ? 460 : 380, height: isDesktop ? 260 : 200, borderRadius: 16 }}
+                style={{ 
+                  width: isDesktop ? 360 : 380, 
+                  height: isDesktop ? 260 : 200, 
+                  borderRadius: 16 
+                }}
                 resizeMode="cover"
               />
               <TouchableOpacity
                 className="top-1/2 left-1/2 absolute bg-[#badcffab] px-4 py-2 rounded-md -translate-x-1/2 -translate-y-1/2"
                 onPress={() => {
-                  // Acción ver más imágenes (puedes implementar un carrusel aquí)
+                  // Future implementation for seeing more images
                 }}
               >
                 <Text className="font-medium text-[#315072]">See</Text>
@@ -580,7 +583,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
         </View>
       </Modal>
 
-      {/* Modal para hacer una pregunta */}
+      {/* Question Modal */}
       <Modal
         visible={questionModalVisible}
         transparent
@@ -615,7 +618,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                 }}
                 className="bg-gray-200 px-4 py-2 rounded-md"
               >
-                <Text className="text-[#315072] text-center">Cerrar</Text>
+                <Text className="text-[#315072] text-center">Close</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleSendQuestion}
