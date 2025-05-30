@@ -12,6 +12,7 @@ import {
   Alert,
   TextInputProps,
   TextInput,
+  Touchable,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Modal, Pressable } from "react-native";
@@ -79,7 +80,7 @@ export default function Page() {
           <LandingSection scrollToSection={scrollToSection} />
         </View>
         <View ref={sectionRefs.services}>
-          <ServicesSection />
+          <ServicesSection scrollToSection={scrollToSection} />
         </View>
         <View ref={sectionRefs.faq}>
           <FAQSection scrollToSection={scrollToSection} />
@@ -323,162 +324,144 @@ function LandingSection({
 }: {
   scrollToSection: (section: string, force?: boolean) => void;
 }) {
+  const isDesktop = window.innerWidth >= 1024;
   return (
     <FadeInView>
-      <View className="flex justify-center items-center bg-[#FFFFFF] px-6 w-full h-screen">
-        <View className="flex lg:flex-row flex-col justify-center items-center lg:gap-6 mx-auto pt-[-15px] lg:pt-0 w-full max-w-7xl">
-          {/* Logo Container */}
-          <View className="flex flex-1 justify-center items-center lg:items-end lg:pr-14 w-full lg:w-auto">
-            <Image
-              source={require("../../public/logo-navy.png")}
-              style={{
-                width: "100%",
-                resizeMode: "contain",
-              }}
-              className="w-full lg:max-w-none"
-            />
-          </View>
-
-          {/* Vertical Divider */}
-          <View className="hidden lg:block self-center border-[#e1f0ff] border-l-2 h-64" />
-
-          {/* Content */}
-          <View className="flex-1 lg:pl-14 w-full lg:text-left text-center">
-            <View className="flex flex-col justify-center h-full">
-              <Text
-                className="font-extralight text-[#315072] text-lg"
-                style={{ fontFamily: FONTS.body }}
-              >
-                Our goal is to help you develop your property. We work with
-                passion to meet the expectations of homeowners and developers.
-              </Text>
-              <Text
-                className="mb-5 font-extralight text-[#315072] text-lg"
-                style={{ fontFamily: FONTS.body }}
-              >
-                <Text className="font-bold text-[#315072]">DWELLINGPLUS </Text>{" "}
-                handles the entire process making it easier for the owner to
-                achieve their dream.
-              </Text>
-
-              <View className="flex sm:flex-row flex-col justify-center lg:justify-start gap-4">
-                <TouchableOpacity
-                  onPress={() => scrollToSection("contact", true)}
-                  className="bg-[#e1f0ff] px-6 py-3 rounded-md transition-shadow duration-300"
-                >
-                  <Text className="font-medium text-[#315072] text-base text-center">
-                    Get Started
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => scrollToSection("services", true)}
-                  className="hover:bg-[#f9f1d9]/30 px-6 py-3 rounded-md transition-colors duration-300"
-                >
-                  <Text className="font-medium text-[#315072] text-base text-center">
-                    More information →
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-    </FadeInView>
-  );
-}
-
-function ServiceCard({
-  icon,
-  title,
-  description,
-  cont,
-}: {
-  icon: string;
-  title: string;
-  description: string;
-  cont?: string;
-}) {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  return (
-    <View className="bg-[#e1f0ff] hover:shadow-sm mb-4 p-6 border border-[#c9e4ff] rounded-xl transition-shadow duration-300">
-      <Text className="mb-1 lg:mb-4 text-2xl lg:text-3xl">{icon}</Text>
-      <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">
-        {title}
-      </Text>
-      <Text className="text-[#315072]">{description}</Text>
-      <Pressable onPress={() => setModalVisible(true)} className="mt-1 lg:mt-5">
-        <Text className="font-medium text-[#315072] hover:text-[#315072] transition-colors duration-300">
-          Read More →
+  <View className="flex flex-1 px-6 w-full h-screen">
+    <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 w-full h-screen">
+      {/* Columna izquierda */}
+      <View className="z-50 flex flex-col justify-center items-start w-full lg:w-1/2 h-full">
+        <Image
+          source={require("../../public/logo-navy.png")}
+          style={{
+            width: 480,
+            height: 180,
+            resizeMode: "contain",
+            alignSelf: "flex-start",
+          }}
+          
+        />
+        <Text className="bg-blue-200 lg:bg-transparent shadow-lg lg:shadow-transparent mt-5 mb-8 p-5 lg:p-0 pt-5 rounded-xl font-medium text-blue-500 lg:text-[#315072] text-lg lg:text-xl">
+          Our goal is to help you develop your property. We work with
+          passion to meet the expectations of home owners and developers.
         </Text>
-      </Pressable>
-      <Modal
-        visible={modalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/40">
-          <View className="bg-white p-6 rounded-xl w-11/12 max-w-xl">
-            <Text className="mb-2 text-[#315072] text-2xl">
-              {icon} {title}
-            </Text>
-            <Text className="my-6 text-[#315072] text-lg">{cont}</Text>
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              className="self-end bg-[#e1f0ff] hover:bg-[#a6d2ff] px-4 py-2 rounded-md transition-colors duration-300"
-            >
-              <Text className="font-medium text-[#315072]">Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+        <View className="flex flex-row justify-center lg:justify-start items-center lg:items-start gap-12 mt-2 w-full">
+        
+        <TouchableOpacity
+          onPress={() => scrollToSection("contact")}
+          className="bg-blue-200 hover:bg-blue-100 px-4 py-2 rounded-md"
+        >
+          <Text className="font-medium text-[#315072] text-base text-center">
+            Get Started
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => scrollToSection("services", true)}
+          className="bg-blue-200 hover:bg-blue-100 px-4 py-2 rounded-md"
+        >
+          <Text className="font-medium text-[#315072] text-base text-center">
+            More Information →
+          </Text>
+        </TouchableOpacity>
+      </View>
+      </View>
+      {/* Columna derecha */}
+      <View className="z-0 absolute lg:relative flex flex-col justify-center items-center lg:bg-blue-50 w-1/6 lg:w-2/3 h-full" style={{ clipPath: isDesktop ? "polygon(19% 0, 100% 0, 100% 100%, 0% 100%)" : "none" }}>
+        <Image
+          source={require("../../public/landing-imagelanding-image.png")}
+          style={{
+            width: 1250,
+            height: 650,
+            resizeMode: "cover",
+          }}
+          className="z-30 mb-6"
+        />
+      </View>
+      
     </View>
+    
+  </View>
+</FadeInView>
   );
 }
 
-function ServicesSection() {
+
+
+function ServicesSection({ scrollToSection }: { scrollToSection?: (section: string, force?: boolean) => void }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedService, setSelectedService] = useState<any>(null);
+  const [questionModalVisible, setQuestionModalVisible] = useState(false);
+  const [questionText, setQuestionText] = useState("");
+  const [questionSent, setQuestionSent] = useState(false);
+
   const services = [
     {
       title: "Let's build an ADU",
       description:
         "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU).",
       cont: "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU). Our ADU construction service allows you to make the most of your property, whether to generate rental income, comfortably house family members, or expand your living space. We design functional and efficient solutions that comply with local regulations, optimizing energy and materials for a sustainable home. With a smart investment, an ADU can offer you financial independence and flexibility, adapting to your current and future needs.",
-      icon: "🏠",
+      images: [
+        require("../../public/ADU.jpg"),
+        // Puedes agregar más imágenes aquí si lo deseas
+      ],
     },
     {
       title: "Home Remodeling and Addition",
       description:
         "Transform your home to better suit your lifestyle and family needs.",
       cont: "Our home remodeling and expansion services are designed to optimize your existing floor plan, creating more functional, comfortable and efficient spaces. Whether it's redistributing key areas, expanding bedrooms or modernizing bathrooms, we help you make the most of every square foot in a strategic way. With intelligent design and construction solutions, we turn your home into an environment that flows naturally and enhances your well-being.",
-      icon: "🛠️",
+      images: [
+        require("../../public/Remodelation.jpg"),
+      ],
     },
     {
       title: "Inspiring Backyard Spaces",
       description:
         "Turn your backyard into an oasis designed for comfort and conviviality.",
       cont: "Our outdoor transformation service creates living areas with elegant pergolas, fire pits for warm moments, grills for unforgettable gatherings and a perfect balance of concrete pavers and natural grass. Cozy lighting enhances every detail, creating an ideal environment for relaxing, sharing and making the most of your home. Our architects and designers will turn your patio into a dream space for the whole family.",
-      icon: "🌳",
+      images: [
+        require("../../public/Backyard Spaces.jpg"),
+      ],
     },
     {
       title: "General Construction and Repair",
       description:
         "We offer comprehensive solutions for construction, maintenance, painting, and repairs.",
       cont: "We offer comprehensive solutions for construction, maintenance, painting, repair of roofs, walls, floors and any damaged area of the building. Whether you need to develop a project from scratch or restore existing structures, our team is ready to deliver quality results. From structural improvements to detailed renovations, we provide reliable service tailored to your needs.",
-      icon: "🧱",
+      images: [
+        require("../../public/Repair.jpg"),
+      ],
     },
     {
       title: "Financial Support",
       description:
         "We help you access the financial resources available to develop construction and renovation projects.",
       cont: "Through credit options or structured loans, homeowners can invest in an Auxiliary Dwelling Unit (ADU) or improve their home, distributing the payment in affordable installments. This service provides financial flexibility, facilitating the materialization of projects without compromising economic stability.",
-      icon: "💵",
+      images: [
+        require("../../public/Financial Support.jpg"),
+      ],
     },
   ];
 
+  const handleGetStarted = () => {
+    setModalVisible(true);
+    setTimeout(() => {
+      if (scrollToSection) scrollToSection("contact", true);
+    }, 100);
+  };
+
+  const handleSendQuestion = () => {
+    if (questionText.trim().length < 5) return;
+    setQuestionSent(true);
+    setTimeout(() => {
+      setQuestionModalVisible(false);
+      setQuestionText("");
+      setQuestionSent(false);
+    }, 1500);
+  };
+
   return (
-    <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 pt-40 lg:pt-0 lg:h-screen">
+    <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 pt-40 lg:pt-10 lg:h-screen">
       <View className="mx-auto w-full max-w-6xl">
         <Text className="mb-3 font-bold text-[#315072] text-3xl md:text-4xl text-center">
           Our Services
@@ -490,18 +473,161 @@ function ServicesSection() {
           We offer a wide range of services to meet your needs.
         </Text>
 
-        <View className="gap-0 lg:gap-8 grid grid-cols-1 md:grid-cols-3 mx-5">
+        <View className="gap-0 lg:gap-5 grid grid-cols-1 md:grid-cols-3 mx-5">
           {services.map((service, index) => (
-            <ServiceCard
+            <View
               key={index}
-              icon={service.icon}
-              title={service.title}
-              description={service.description}
-              cont={service.cont}
-            />
+              className="flex flex-col bg-[#e1f0ff] hover:shadow-sm mb-2 p-3 border border-[#c9e4ff] rounded-xl transition-shadow duration-300"
+            >
+              <Image
+                source={service.images[0]}
+                style={{
+                  width: "100%",
+                  height: 160,
+                  borderRadius: 12,
+                  marginBottom: 12,
+                }}
+                resizeMode="cover"
+              />
+              <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">
+                {service.title}
+              </Text>
+              <Text className="text-[#315072]">{service.description}</Text>
+              <Pressable
+                onPress={() => {
+                  setSelectedService(service);
+                  setModalVisible(true);
+                }}
+                className="mt-4"
+              >
+                <Text className="font-medium text-[#315072] underline transition-colors duration-300">
+                  Read More →
+                </Text>
+              </Pressable>
+            </View>
           ))}
         </View>
       </View>
+
+      {/* Modal de servicio */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/40">
+          <View className="relative lg:flex-row flex-col bg-white p-6 rounded-xl w-11/12 max-w-4xl">
+            {/* Botón X de cerrar */}
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              className="top-4 right-4 z-10 absolute"
+              style={{ position: "absolute", top: 16, right: 16, zIndex: 10 }}
+            >
+              <Ionicons name="close" size={28} color="#315072" />
+            </TouchableOpacity>
+            {/* Izquierda: Texto */}
+            <View className="flex-1 mb-6 lg:mb-0 pr-0 lg:pr-6">
+              <Text className="mb-2 font-bold text-[#315072] text-2xl">
+                {selectedService?.title}
+              </Text>
+              <Text className="my-6 text-[#315072] text-lg">{selectedService?.cont}</Text>
+              <View className="flex flex-row gap-2 mt-8">
+                <TouchableOpacity
+                  onPress={() => setModalVisible(false)}
+                  className="bg-gray-200 mr-20 px-4 py-2 rounded-md"
+                >
+                  <Text className="font-medium text-[#315072]">Cerrar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setModalVisible(false);
+                    setTimeout(() => setQuestionModalVisible(true), 300);
+                  }}
+                  className="bg-[#e1f0ff] px-4 py-2 rounded-md"
+                >
+                  <Text className="font-medium text-[#315072]">Make a Question</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={handleGetStarted}
+                  className="bg-[#badcff] px-4 py-2 rounded-md"
+                >
+                  <Text className="font-medium text-[#315072]">Get Started</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            {/* Derecha: Imagen y botón Ver más */}
+            <View className="relative flex-1 justify-center items-center">
+              <Image
+                source={selectedService?.images[0]}
+                style={{ width: 260, height: 260, borderRadius: 16 }}
+                resizeMode="cover"
+              />
+              <TouchableOpacity
+                className="top-1/2 left-1/2 absolute bg-[#badcffab] px-4 py-2 rounded-md -translate-x-1/2 -translate-y-1/2"
+                onPress={() => {
+                  // Acción ver más imágenes (puedes implementar un carrusel aquí)
+                }}
+              >
+                <Text className="font-medium text-[#315072]">See</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal para hacer una pregunta */}
+      <Modal
+        visible={questionModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setQuestionModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/40">
+          <View className="bg-white p-6 rounded-xl w-11/12 max-w-xs">
+            <Text className="mb-4 font-bold text-[#315072] text-lg text-center">
+              Make a Question
+            </Text>
+            <TextInput
+              value={questionText}
+              onChangeText={setQuestionText}
+              placeholder="Write your question here..."
+              multiline
+              numberOfLines={4}
+              className="bg-white mb-3 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
+              textAlignVertical="top"
+            />
+            {questionSent && (
+              <Text className="mb-2 text-green-700 text-center">
+                Thanks, we will get back to you soon!
+              </Text>
+            )}
+            <View className="flex flex-row justify-between mt-2">
+              <TouchableOpacity
+                onPress={() => {
+                  setQuestionModalVisible(false);
+                  setQuestionText("");
+                  setQuestionSent(false);
+                }}
+                className="bg-gray-200 px-4 py-2 rounded-md"
+              >
+                <Text className="text-[#315072] text-center">Cerrar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleSendQuestion}
+                disabled={questionText.trim().length < 5 || questionSent}
+                className={`px-4 py-2 rounded-md ${
+                  questionText.trim().length >= 5 && !questionSent
+                    ? "bg-[#badcff]"
+                    : "bg-gray-300"
+                }`}
+              >
+                <Text className="font-bold text-[#315072] text-center">Send</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -569,7 +695,7 @@ function FAQSection({
   };
 
   return (
-    <View className="flex lg:flex-row flex-col justify-center items-center bg-[#FFFFFF] px-0 lg:px-64 pt-48 lg:pt-0 h-screen">
+    <View className="flex lg:flex-row flex-col justify-center items-center bg-[#FFFFFF] mb-40 px-20 lg:px-64 pt-48 lg:pt-0 h-screen">
       {/* Preguntas frecuentes a la izquierda */}
       <View className="w-full lg:w-1/2">
         <Text className="mb-12 font-bold text-[#315072] text-xl lg:text-2xl text-center">
@@ -599,12 +725,12 @@ function FAQSection({
       <View className="flex flex-col justify-start items-center mt-10 lg:mt-0 lg:pl-10 w-full lg:w-1/2">
         <View className="bg-[#e1f0ff] shadow-md p-6 rounded-xl w-full max-w-md">
           <Text className="mb-2 font-bold text-[#315072] text-lg text-center">
-            Haz una pregunta
+            Make a Question
           </Text>
           <TextInput
             value={question}
             onChangeText={setQuestion}
-            placeholder="Escribe tu pregunta aquí..."
+            placeholder="Write your question here . . . "
             multiline
             numberOfLines={3}
             className="bg-white mb-3 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
@@ -620,7 +746,7 @@ function FAQSection({
             }`}
           >
             <Text className="font-bold text-[#315072] text-center">
-              Enviar
+              Send
             </Text>
           </TouchableOpacity>
           {submitted && (
@@ -641,17 +767,17 @@ function FAQSection({
         <View className="flex-1 justify-center items-center bg-black/40">
           <View className="bg-white p-6 rounded-xl w-11/12 max-w-xs">
             <Text className="mb-4 font-bold text-[#315072] text-lg text-center">
-              Podemos contactarte a través de:
+            We can contact you via:
             </Text>
             {/* Correo */}
-            <Text className="mb-1 text-[#315072]">Correo</Text>
+            <Text className="mb-1 text-[#315072]">Mail</Text>
             <TextInput
               value={contactType === "email" ? contactInfo : ""}
               onChangeText={(text) => {
                 setContactType("email");
                 setContactInfo(text);
               }}
-              placeholder="Tu correo electrónico"
+              placeholder="Your email address"
               keyboardType="email-address"
               className="bg-white mb-2 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
               autoCapitalize="none"
@@ -659,14 +785,14 @@ function FAQSection({
             {/* Separador */}
             <Text className="my-2 text-[#315072] text-center">O</Text>
             {/* Teléfono */}
-            <Text className="mb-1 text-[#315072]">Teléfono</Text>
+            <Text className="mb-1 text-[#315072]">Phone</Text>
             <TextInput
               value={contactType === "phone" ? contactInfo : ""}
               onChangeText={(text) => {
                 setContactType("phone");
                 setContactInfo(text);
               }}
-              placeholder="Tu número de teléfono"
+              placeholder="Your phone number"
               keyboardType="phone-pad"
               className="bg-white mb-4 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
             />
@@ -676,7 +802,7 @@ function FAQSection({
                 onPress={() => setShowContactModal(false)}
                 className="bg-gray-200 px-4 py-2 rounded-md"
               >
-                <Text className="text-[#315072] text-center">Cerrar</Text>
+                <Text className="text-[#315072] text-center">Close</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleContactSubmit}
@@ -693,7 +819,7 @@ function FAQSection({
                     : "bg-gray-300"
                 }`}
               >
-                <Text className="font-bold text-[#315072] text-center">Enviar</Text>
+                <Text className="font-bold text-[#315072] text-center">Send</Text>
               </TouchableOpacity>
             </View>
           </View>
