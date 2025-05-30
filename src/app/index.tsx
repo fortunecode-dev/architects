@@ -365,6 +365,7 @@ function LandingSection({
         </TouchableOpacity>
       </View>
       </View>
+      
       {/* Columna derecha */}
       <View className="z-0 absolute lg:relative flex flex-col justify-center items-center lg:bg-blue-50 w-1/6 lg:w-2/3 h-full" style={{ clipPath: isDesktop ? "polygon(19% 0, 100% 0, 100% 100%, 0% 100%)" : "none" }}>
         <Image
