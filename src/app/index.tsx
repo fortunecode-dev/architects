@@ -745,7 +745,7 @@ function FAQSection({
         {/* Columna de preguntas */}
         <View className="flex flex-col flex-1 gap-4">
           {columns.map((faqsCol, colIdx) => (
-            <View key={colIdx} className="flex-1 w-full">
+            <View key={colIdx} className="flex-1 px-5 w-full">
               {faqsCol.map((faq, idx) => {
                 const realIdx = colIdx * colLength + idx;
                 return (
@@ -755,7 +755,7 @@ function FAQSection({
                       setSelectedIndex(realIdx);
                       if (isMobile) setShowAnswerModal(true);
                     }}
-                    className={`mb-2 px-3 py-3 rounded-xl border border-[#e1f0ff] bg-[#f7fbff] shadow-sm transition-all ${
+                    className={`mb-2 px-3 py-3 rounded-xl border border-[#e1f0ff] bg-[#f7fbff]  shadow-sm transition-all ${
                       selectedIndex === realIdx && !isMobile ? "bg-[#9ecefd] border-[#3899fa]" : ""
                     }`}
                   >
@@ -778,8 +778,7 @@ function FAQSection({
               <Text className="text-[#315072] text-base whitespace-pre-line">
                 {faqs[selectedIndex].answer}
               </Text>
-            </View>
-            <View className="mt-20 pb-6 rounded-xl w-full">
+              <View className="mt-20 pb-6 rounded-xl w-full">
               <Text className="mb-2 font-bold text-[#315072] text-lg text-center">
                 Make a Question
               </Text>
@@ -813,6 +812,8 @@ function FAQSection({
                 </Text>
               )}
             </View>
+            </View>
+            
           </View>
         )}
         
@@ -832,10 +833,10 @@ function FAQSection({
             >
               <Ionicons name="close" size={28} color="#315072" />
             </TouchableOpacity>
-            <Text className="mb-4 font-bold text-[#315072] text-lg text-center">
+            <Text className="mb-4 font-bold text-[#315072] text-lg">
               {faqs[selectedIndex].question}
             </Text>
-            <Text className="text-[#315072] text-base text-center whitespace-pre-line">
+            <Text className="text-[#315072] text-base whitespace-pre-line">
               {faqs[selectedIndex].answer}
             </Text>
           </View>
