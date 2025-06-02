@@ -330,20 +330,18 @@ function LandingSection({
   <View className="flex flex-1 px-6 w-full h-screen">
     <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 w-full h-screen">
       {/* Columna izquierda */}
-      <View className="z-50 flex flex-col justify-center items-start w-full lg:w-1/2 h-full">
+      <View className="z-50 flex flex-col justify-center items-center lg:items-start m-auto w-full lg:w-1/2 h-full">
         <Image
           source={require("../../public/logo-navy.png")}
           style={{
             width: isDesktop ? 480 : 360,
             height: isDesktop ? 180 : 120,
             resizeMode: "contain",
-            alignSelf: "flex-start",
-            backgroundColor: "#"
           }}
-          className="bg-blue-200/80 lg:bg-transparent shadow-lg lg:shadow-none mb-4 lg:mb-0 rounded-lg"
+          className="bg-blue-200/50 lg:bg-transparent shadow-lg lg:shadow-none mb-4 lg:mb-0 rounded-lg"
           
         />
-        <Text className="bg-blue-200/80 lg:bg-transparent shadow-lg lg:shadow-transparent mt-5 mb-8 p-5 lg:p-0 pt-5 rounded-xl font-medium text-blue-500 lg:text-[#315072] text-lg lg:text-xl">
+        <Text className="bg-blue-200/70 lg:bg-transparent shadow-lg lg:shadow-transparent mt-5 mb-8 p-5 lg:p-0 pt-5 rounded-xl font-medium text-[#315072] text-lg lg:text-xl">
           Our goal is to help you develop your property. We work with
           passion to meet the expectations of home owners and developers.
         </Text>
@@ -369,13 +367,13 @@ function LandingSection({
       </View>
       
       {/* Columna derecha */}
-      <View className="z-0 absolute lg:relative flex flex-col justify-center items-center lg:bg-blue-50 w-1/6 lg:w-2/3 h-full" style={{ clipPath: isDesktop ? "polygon(19% 0, 100% 0, 100% 100%, 0% 100%)" : "none" }}>
+      <View className="z-0 absolute lg:relative lg:flex lg:flex-col justify-center items-center lg:bg-blue-50 w-full lg:w-2/3 h-full" style={{ clipPath: isDesktop ? "polygon(19% 0, 100% 0, 100% 100%, 0% 100%)" : "none" }}>
         <Image
           source={require("../../public/landing-imagelanding-image.png")}
           style={{
             width: 1250,
             height: 650,
-            resizeMode: "cover",
+            resizeMode: "contain",
           }}
           className="z-30 mb-6"
         />
@@ -477,11 +475,15 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
             We offer a wide range of services to meet your needs.
           </Text>
 
-          <View className="gap-0 lg:gap-5 grid grid-cols-1 md:grid-cols-3 mx-5">
+          <View className="gap-4 lg:gap-5 grid grid-cols-1 md:grid-cols-3 mx-5">
             {services.map((service, index) => (
-              <View
+              <Pressable
+              onPress={() => {
+                setSelectedService(service);
+                setModalVisible(true);
+              }}
                 key={index}
-                className="flex flex-col bg-[#e1f0ff] hover:shadow-sm mb-2 p-3 border border-[#c9e4ff] rounded-xl transition-shadow duration-300"
+                className="flex flex-col justify-between bg-[#e1f0ff] hover:shadow-sm mb-2 p-3 border border-[#c9e4ff] rounded-xl transition-shadow duration-300"
               >
                 <Image
                   source={service.images[0]}
@@ -497,18 +499,11 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                   {service.title}
                 </Text>
                 <Text className="text-[#315072]">{service.description}</Text>
-                <Pressable
-                  onPress={() => {
-                    setSelectedService(service);
-                    setModalVisible(true);
-                  }}
-                  className="mt-4"
-                >
-                  <Text className="font-medium text-[#315072] underline transition-colors duration-300">
+                
+                  <Text className="mt-4 font-medium text-[#315072] transition-colors duration-300">
                     Read More →
                   </Text>
                 </Pressable>
-              </View>
             ))}
           </View>
         </View>
@@ -521,8 +516,8 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
         animationType="fade"
         onRequestClose={handleCloseModal}
       >
-        <View className="flex-1 justify-center items-center bg-black/40">
-          <View className="relative lg:flex-row flex-col bg-white p-6 rounded-xl w-11/12 max-w-4xl">
+        <View className="flex-col-reverse flex-1 justify-center items-center bg-black/40">
+          <View className="relative lg:flex-row flex-col-reverse bg-white p-6 rounded-xl w-11/12 max-w-4xl">
             <TouchableOpacity
               onPress={handleCloseModal}
               className="top-4 right-4 z-10 absolute"
@@ -530,7 +525,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
               <Ionicons name="close" size={28} color="#315072" />
             </TouchableOpacity>
             
-            <View className="flex-1 mb-6 lg:mb-0 pr-0 lg:pr-6">
+            <View className="flex-col flex-1 mb-6 lg:mb-0 pr-0 lg:pr-6">
               <Text className="mb-2 font-bold text-[#315072] text-2xl">
                 {selectedService?.title}
               </Text>
@@ -566,7 +561,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                 style={{ 
                   width: isDesktop ? 360 : 380, 
                   height: isDesktop ? 260 : 200, 
-                  borderRadius: 16 
+                  borderRadius: 16, 
                 }}
                 resizeMode="cover"
               />
@@ -645,42 +640,74 @@ function FAQSection({
 }) {
   const faqs = [
     {
-      question: "What is an ADU and why should I build one?",
+      question: "What services does DwellingPlus offer?",
       answer:
-        "An ADU (Accessory Dwelling Unit) is an additional structure on your property that can be used for rental, family, or to expand your space. It increases your property's value and provides flexibility.",
+        "We provide a full range of construction and remodeling services, specializing in Accessory Dwelling Units (ADUs), interior renovations, improvements to outdoor areas and home repairs. Our services include:\n" +
+        " - Lot analysis to assess feasibility\n" +
+        " - Sketch proposals and renders for design concepts\n" +
+        " - Architectural plans\n" +
+        " - City permit management\n" +
+        " - Construction and project management\n" +
+        " - Financing solutions for your project"
     },
     {
-      question: "How long does a typical project take?",
+      question: "What is an ADU, and how can it benefit my property?",
       answer:
-        "The time depends on the type of project, but most remodels and ADUs take between 3 and 6 months from design to completion.",
+        "An Accessory Dwelling Unit (ADU) is a separate, independent living space located on the same lot as a primary residence. ADUs come in various forms, including detached units, garage conversions, and interior modifications like basement apartments. They provide numerous benefits, such as increasing property value, generating rental income, and creating a private space for family members or guests. Additionally, ADUs contribute to housing solutions in urban areas by maximizing land use efficiently. Many homeowners also find that building an ADU helps them adapt to changing family needs, such as accommodating aging parents or young adults looking for affordable housing.",
     },
     {
-      question: "Can I finance my project?",
+      question: "What are the requirements to build an ADU on my lot? ",
       answer:
-        "Yes, we offer advice on accessing credit and financing so you can carry out your project without affecting your finances.",
+        "ADU regulations vary by city and county, but there are common requirements that homeowners must consider. These include zoning laws, minimum and maximum unit size, setback distances from property lines, and utility connections for water, electricity, and sewage. In California, state laws have made ADU construction more accessible, reducing restrictions on parking and allowing homeowners to build units even in single-family zones. Some factors that may influence approval include available space, historical preservation restrictions, and neighborhood density. At DWELLING PLUS, we take care of analyzing all these aspects to ensure compliance, simplifying the process for homeowners.",
     },
     {
-      question: "What services do you offer besides construction?",
+      question: "How does the permit process work?",
       answer:
-        "We offer architectural design, permit management, remodeling, expansions, financial advice, and more.",
+        "The permit process involves several stages, including site evaluation, architectural planning, engineering reviews, and city approvals. First, we assess your lot to determine feasibility based on zoning laws and building codes. Then, our team prepares sketches and detailed construction plans that align with your vision while meeting regulatory requirements. Once the plans are finalized, we submit them to the city for review. This phase may include corrections or clarifications requested by city officials. After approval, we secure the necessary construction permits, ensuring a smooth transition into the building phase. Our team handles every step, reducing stress and keeping you informed throughout the process.",
     },
     {
-      question: "Do you work with clients outside of Atlanta?",
+      question: "Do you offer financing for construction and remodeling?",
       answer:
-        "Yes, we can evaluate projects in other areas. Contact us to discuss your case.",
+        "Yes, DWELLING PLUS assists homeowners in finding financing options that suit their needs. Building an ADU or renovating a home can be a significant investment, but there are various financial solutions available. These include home equity loans, construction loans, government grants, and specialized ADU financing programs. Some cities offer incentives for ADU construction, such as reduced fees or streamlined approval processes. We provide guidance on navigating the financing landscape, helping you identify the best way to fund your project while considering long-term benefits like rental income or increased property value.",
     },
+    {
+      question: "How long does a remodel or new construction take?",
+      answer: "The timeline for construction depends on the project's complexity and scope. A full ADU construction typically takes 4 to 6 months, from design to completion, depending on permitting delays, material availability, and site conditions. Interior remodels or backyard enhancements may take less time, usually between a few weeks to several months. At DWELLING PLUS, we prioritize efficiency without compromising quality. We establish realistic timelines and keep clients informed about progress, ensuring expectations are met. Our streamlined processes and experienced team help minimize delays while delivering high-quality results."
+    },
+    {
+      question: "What types of designs and visualizations do you provide?",
+      answer: "Before construction begins, we provide clients with comprehensive visualizations to help them make informed decisions. This includes conceptual sketches, 2D architectural plans, and detailed 3D renders that showcase how the final structure will look. We also offer virtual walkthroughs, allowing homeowners to 'step inside' their future space through digital simulations. These tools help clients explore different layouts, materials, and aesthetics before committing to a design. Visualization is a crucial part of our process, ensuring that expectations align with reality while eliminating costly design changes later in construction."
+    },
+    {
+      question: "Can you help me maximize my property's value?",
+      answer:
+        "Absolutely! Our team specializes in identifying strategic improvements that enhance functionality and aesthetics while increasing property value. Whether through ADU construction, backyard transformations, or interior renovations, we provide expert recommendations tailored to your lot’s potential. Rental income is a key factor in boosting return on investment, and we guide homeowners on designing ADUs that attract tenants. Additionally, we consider long-term trends, energy efficiency, and modern materials to future-proof homes. Our goal is to ensure that every project serves both immediate needs and long-term financial benefits.",
+    },
+    {
+      question: "How do you ensure transparency and speed in construction?",
+      answer: "We believe that construction should be a stress-free process. Our approach combines clear communication, structured timelines, and efficient project management to minimize disruptions. From the initial consultation to the final build, we provide homeowners with regular updates, detailed cost breakdowns, and realistic completion schedules. Transparency is key—we ensure that every step is clearly outlined, so clients understand what to expect. Additionally, our established relationships with suppliers and city authorities allow us to accelerate permitting and sourcing, ensuring that projects move forward smoothly."
+    },
+    {
+      question: "What kinds of backyard projects do you build?",
+      answer: "We specialize in creating beautiful, functional outdoor spaces that enhance the homeowner’s quality of life. Our backyard projects include customized patios, pergolas, outdoor kitchens, fire pits, and landscaping features that maximize enjoyment and usability. We also design recreational areas for families, such as play zones, seating arrangements, and shaded spaces. Whether homeowners seek a relaxing retreat, a stylish entertainment area, or an outdoor workspace, we tailor backyard designs to match individual lifestyles and property layouts."
+    },
+    {
+      question: "How do I get started with DWELLING PLUS?",
+      answer: "Getting started is simple! Contact us for a personalized consultation where we assess your property, discuss your vision, and present initial design concepts. Once a project direction is chosen, we handle everything—from detailed planning and city permits to construction and final inspections. Our goal is to streamline the process, ensuring a hassle-free experience while delivering high-quality results. Whether you're interested in building an ADU, renovating your home, or enhancing your backyard, DWELLING PLUS is ready to bring your ideas to life."
+    }
   ];
 
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  // Estados para el formulario de nueva pregunta
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [showAnswerModal, setShowAnswerModal] = useState(false);
   const [question, setQuestion] = useState("");
   const [showContactModal, setShowContactModal] = useState(false);
   const [contactInfo, setContactInfo] = useState("");
   const [contactType, setContactType] = useState<"email" | "phone" | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
-  // Validación simple
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+
   const isContactValid =
     (contactType === "email" && /\S+@\S+\.\S+/.test(contactInfo)) ||
     (contactType === "phone" && /^[0-9+\-\s()]{7,}$/.test(contactInfo));
@@ -692,7 +719,6 @@ function FAQSection({
 
   const handleContactSubmit = () => {
     if (!isContactValid) return;
-    // Aquí podrías enviar la pregunta y el contacto a tu backend si lo deseas
     setShowContactModal(false);
     setSubmitted(true);
     setQuestion("");
@@ -701,69 +727,122 @@ function FAQSection({
     setTimeout(() => setSubmitted(false), 4000);
   };
 
+  // Divide las preguntas en 2 columnas
+  const colLength = Math.ceil(faqs.length / 2);
+  const columns = [
+    faqs.slice(0, colLength),
+    faqs.slice(colLength)
+  ];
+
   return (
-    <View className="flex lg:flex-row flex-col justify-center items-center bg-[#FFFFFF] mb-40 px-16 lg:px-64 pt-48 lg:pt-0 h-screen">
-      {/* Preguntas frecuentes a la izquierda */}
-      <View className="w-full lg:w-1/2">
-        <Text className="mb-12 font-bold text-[#315072] text-xl lg:text-2xl text-center">
-          Frequently Asked Questions
-        </Text>
-        {faqs.map((faq, idx) => (
-          <View key={idx} className="mb-2 border-[#e1f0ff] border-b-2">
-            <TouchableOpacity
-              onPress={() => setOpenIndex(openIndex === idx ? null : idx)}
-              className="flex flex-row justify-between items-center py-4"
-            >
-              <Text className="font-medium text-[#315072] text-md lg:text-lg">
-                {faq.question}
-              </Text>
-              <Text className="text-[#315072] text-2xl">
-                {openIndex === idx ? "−" : "+"}
-              </Text>
-            </TouchableOpacity>
-            {openIndex === idx && (
-              <Text className="pb-4 text-[#315072]">{faq.answer}</Text>
-            )}
-          </View>
-        ))}
-      </View>
-
-      {/* Formulario de nueva pregunta a la derecha */}
-      <View className="flex flex-col justify-start items-center mt-10 lg:mt-0 lg:pl-10 w-full lg:w-1/2">
-        <View className="bg-[#e1f0ff] shadow-md p-6 rounded-xl w-full max-w-md">
-          <Text className="mb-2 font-bold text-[#315072] text-lg text-center">
-            Make a Question
-          </Text>
-          <TextInput
-            value={question}
-            onChangeText={setQuestion}
-            placeholder="Write your question here . . . "
-            multiline
-            numberOfLines={3}
-            className="bg-white mb-3 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
-            textAlignVertical="top"
-          />
-          <TouchableOpacity
-            onPress={handleSendQuestion}
-            disabled={question.trim().length < 5}
-            className={`w-full px-4 py-2 rounded-md ${
-              question.trim().length < 5
-                ? "bg-gray-300"
-                : "bg-[#badcff] hover:bg-[#e1f0ff]"
-            }`}
-          >
-            <Text className="font-bold text-[#315072] text-center">
-              Send
-            </Text>
-          </TouchableOpacity>
-          {submitted && (
-            <Text className="mt-4 text-green-700 text-center">
-              ¡Gracias! Pronto te daremos respuesta.
-            </Text>
-          )}
+    <View className="flex flex-col items-center gap-2 bg-[#FFFFFF] mb-40 px-2 lg:px-32 pt-32 w-full">
+      {/* Título centrado */}
+      <Text className="mb-10 font-bold text-[#315072] text-2xl lg:text-3xl text-center">
+        Frequently Asked Questions
+      </Text>
+      {/* Preguntas y respuesta */}
+      <View className="flex flex-row justify-center items-start gap-8 mb-10 w-full max-w-6xl">
+        {/* Columna de preguntas */}
+        <View className="flex flex-col flex-1 gap-4">
+          {columns.map((faqsCol, colIdx) => (
+            <View key={colIdx} className="flex-1 w-full">
+              {faqsCol.map((faq, idx) => {
+                const realIdx = colIdx * colLength + idx;
+                return (
+                  <TouchableOpacity
+                    key={realIdx}
+                    onPress={() => {
+                      setSelectedIndex(realIdx);
+                      if (isMobile) setShowAnswerModal(true);
+                    }}
+                    className={`mb-2 px-3 py-3 rounded-xl border border-[#e1f0ff] bg-[#f7fbff] shadow-sm transition-all ${
+                      selectedIndex === realIdx && !isMobile ? "bg-[#9ecefd] border-[#3899fa]" : ""
+                    }`}
+                  >
+                    <Text className={`font-semibold text-[#315072] text-base ${selectedIndex === realIdx && !isMobile ? "" : ""}`}>
+                      {faq.question}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          ))}
         </View>
+        {/* Respuesta solo en escritorio/tablet */}
+        {!isMobile && (
+          <View className="flex-col">
+            <View className="flex-1 bg-[#f7fbff] shadow-sm p-6 border border-[#e1f0ff] rounded-xl max-w-xl min-h-[220px]">
+              <Text className="mb-2 font-bold text-[#315072] text-lg">
+                {faqs[selectedIndex].question}
+              </Text>
+              <Text className="text-[#315072] text-base whitespace-pre-line">
+                {faqs[selectedIndex].answer}
+              </Text>
+            </View>
+            <View className="mt-20 pb-6 rounded-xl w-full">
+              <Text className="mb-2 font-bold text-[#315072] text-lg text-center">
+                Make a Question
+              </Text>
+              <TextInput
+                value={question}
+                onChangeText={setQuestion}
+                placeholder="Write your question here . . . "
+                multiline
+                numberOfLines={3}
+                className="bg-white mb-3 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
+                textAlignVertical="top"
+              />
+              <TouchableOpacity
+                onPress={handleSendQuestion}
+                disabled={question.trim().length < 5}
+                className={`w-full px-4 py-2 rounded-md 
+                  ${
+                    question.trim().length < 5
+                      ? "bg-[#e1f0ff]"
+                      : "bg-[#a6d2ff] hover:bg-[#e1f0ff]"
+                  }`
+                }
+              >
+                <Text className="font-bold text-[#315072] text-center">
+                  Send
+                </Text>
+              </TouchableOpacity>
+              {submitted && (
+                <Text className="mt-4 text-green-700 text-center">
+                  ¡Gracias! Pronto te daremos respuesta.
+                </Text>
+              )}
+            </View>
+          </View>
+        )}
+        
       </View>
-
+      {/* Modal de respuesta en móvil */}
+      <Modal
+        visible={showAnswerModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowAnswerModal(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/40">
+          <View className="relative bg-white p-6 rounded-xl w-11/12 max-w-md">
+            <TouchableOpacity
+              onPress={() => setShowAnswerModal(false)}
+              className="top-3 right-3 z-10 absolute"
+            >
+              <Ionicons name="close" size={28} color="#315072" />
+            </TouchableOpacity>
+            <Text className="mb-4 font-bold text-[#315072] text-lg text-center">
+              {faqs[selectedIndex].question}
+            </Text>
+            <Text className="text-[#315072] text-base text-center whitespace-pre-line">
+              {faqs[selectedIndex].answer}
+            </Text>
+          </View>
+        </View>
+      </Modal>
+      {/* Make a Question centrado */}
+      
       {/* Modal para pedir contacto */}
       <Modal
         visible={showContactModal}
@@ -774,7 +853,7 @@ function FAQSection({
         <View className="flex-1 justify-center items-center bg-black/40">
           <View className="bg-white p-6 rounded-xl w-11/12 max-w-xs">
             <Text className="mb-4 font-bold text-[#315072] text-lg text-center">
-            We can contact you via:
+              Give us a way to contact you
             </Text>
             {/* Correo */}
             <Text className="mb-1 text-[#315072]">Mail</Text>
@@ -789,8 +868,6 @@ function FAQSection({
               className="bg-white mb-2 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
               autoCapitalize="none"
             />
-            {/* Separador */}
-            <Text className="my-2 text-[#315072] text-center">O</Text>
             {/* Teléfono */}
             <Text className="mb-1 text-[#315072]">Phone</Text>
             <TextInput
@@ -813,15 +890,9 @@ function FAQSection({
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleContactSubmit}
-                disabled={
-                  !(
-                    (contactType === "email" && /\S+@\S+\.\S+/.test(contactInfo)) ||
-                    (contactType === "phone" && /^[0-9+\-\s()]{7,}$/.test(contactInfo))
-                  )
-                }
+                disabled={!isContactValid}
                 className={`px-4 py-2 rounded-md ${
-                  (contactType === "email" && /\S+@\S+\.\S+/.test(contactInfo)) ||
-                  (contactType === "phone" && /^[0-9+\-\s()]{7,}$/.test(contactInfo))
+                  isContactValid
                     ? "bg-[#badcff]"
                     : "bg-gray-300"
                 }`}
