@@ -614,8 +614,8 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                 <Image
                   source={selectedService?.images[currentImageIndex]}
                   style={{ 
-                    width: isDesktop ? 300 : 280, 
-                    height: isDesktop ? 260 : 200, 
+                    width: isDesktop ? 300 : 220, 
+                    height: isDesktop ? 260 : 180, 
                     borderRadius: 16,
                   }}
                   resizeMode="cover"
