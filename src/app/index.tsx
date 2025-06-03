@@ -578,12 +578,12 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
               <Ionicons name="close" size={28} color="#315072" />
             </TouchableOpacity>
             
-            <View className="flex-col flex-1 mb-6 lg:mb-0 pr-0 lg:pr-6">
+            <View className="flex-col flex-1 mb-0 pr-0 lg:pr-6">
               <Text className="mb-2 font-bold text-[#315072] text-2xl">
                 {selectedService?.title}
               </Text>
-              <Text className="my-6 text-[#315072] text-md">{selectedService?.cont}</Text>
-              <View className="flex flex-row flex-wrap gap-2 mt-8">
+              <Text className="my-6 pb-28 text-[#315072] text-md">{selectedService?.cont}</Text>
+              <View className="bottom-0 absolute flex flex-row flex-wrap gap-2">
                 <TouchableOpacity
                   onPress={handleCloseModal}
                   className="bg-gray-200 px-4 py-2 rounded-md"
@@ -608,7 +608,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
               </View>
             </View>
             
-            <View className="relative flex-1 justify-center items-center mt-10">
+            <View className="relative flex-1 justify-center items-center mt-0">
               {/* Enhanced Carousel */}
               <View className="relative justify-center items-center w-full">
                 <Image
