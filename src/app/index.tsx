@@ -570,7 +570,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
         onRequestClose={handleCloseModal}
       >
         <View className="flex-col-reverse flex-1 justify-center items-center bg-black/40">
-          <View className="relative lg:flex-row flex-col-reverse gap-5 bg-white my-2 p-6 rounded-xl w-11/12 max-w-4xl h-4/5 lg:h-auto">
+          <View className="relative lg:flex-row flex-col-reverse gap-5 bg-white my-2 p-6 rounded-xl w-11/12 max-w-4xl h-full lg:h-auto">
             <TouchableOpacity
               onPress={handleCloseModal}
               className="top-4 right-4 z-10 absolute"
