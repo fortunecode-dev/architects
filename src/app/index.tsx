@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Modal, Pressable } from "react-native";
+import FastImage from 'react-native-fast-image';
 import {
   MAIL_CONTACT,
   PHONE_CONTACT,
@@ -336,23 +337,23 @@ function LandingSection({
 }) {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
+  const isTablet = width >= 768 && width < 1024;
   return (
     <FadeInView>
   <View className="flex flex-1 px-6 w-full h-screen">
-    <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 w-full h-screen">
+    <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
       {/* Columna izquierda */}
       <View className="z-50 flex flex-col justify-center items-center lg:items-start m-auto w-full lg:w-1/2 h-full">
-        <Image
-          source={require("../../public/logo-navy.png")}
-          style={{
-            width: isDesktop ? 480 : 360,
-            height: isDesktop ? 180 : 120,
-            resizeMode: "contain",
-          }}
-          className="bg-blue-200/50 lg:bg-transparent shadow-lg lg:shadow-none mb-4 lg:mb-0 rounded-lg"
-          
-        />
-        <Text className="bg-blue-200/70 lg:bg-transparent shadow-lg lg:shadow-transparent mt-5 mb-8 p-5 lg:p-0 pt-5 rounded-xl font-medium text-[#315072] text-lg lg:text-xl">
+      <Image
+        source={require("../../assets/Images Renderizadas/FIGMA GIFF.gif")}
+        style={{
+          width: isDesktop ? 680 : 420,
+          height: isDesktop ? 280 : 180,
+        }}
+        resizeMode="contain"
+        className="bg-blue-200/80 lg:bg-transparent mb-4 lg:mb-0 rounded-lg"
+      />
+        <Text className="bg-blue-200/80 lg:bg-transparent shadow-lg lg:shadow-transparent mt-5 mb-8 p-5 lg:p-0 pt-5 rounded-xl font-medium text-[#315072] text-lg lg:text-xl">
           Our goal is to help you develop your property. We work with
           passion to meet the expectations of home owners and developers.
         </Text>
@@ -378,15 +379,15 @@ function LandingSection({
       </View>
       
       {/* Columna derecha */}
-      <View className="z-0 absolute lg:relative lg:flex lg:flex-col justify-center items-center lg:bg-blue-50 w-full lg:w-2/3 h-full" style={{ clipPath: isDesktop ? "polygon(19% 0, 100% 0, 100% 100%, 0% 100%)" : "none" }}>
+      <View className="z-0 absolute lg:relative lg:flex lg:flex-col justify-center items-center lg:bg-blue-50 w-full lg:w-2/3 h-full" style={{ clipPath: isDesktop ? "polygon(10% 0, 100% 0, 100% 100%, 0% 100%)" : "none" }}>
         <Image
-          source={require("../../public/landing-imagelanding-image.png")}
+          source={require("../../assets/Images Renderizadas/portada.webp")}
           style={{
             width: 1250,
-            height: 650,
-            resizeMode: "contain",
+            height: 900,
+            resizeMode: "cover",
           }}
-          className="z-30 mb-6"
+          className="z-30"
         />
       </View>
       
@@ -408,37 +409,62 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
   const scrollViewRef = useRef<ScrollView>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const services = [
     {
       title: "Let's build an ADU",
       description: "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU).",
       cont: "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU). Our ADU construction service allows you to make the most of your property, whether to generate rental income, comfortably house family members, or expand your living space. We design functional and efficient solutions that comply with local regulations, optimizing energy and materials for a sustainable home. With a smart investment, an ADU can offer you financial independence and flexibility, adapting to your current and future needs.",
-      images: [require("../../public/ADU.jpg")],
+      images: [
+        require("../../assets/Images Renderizadas/ADU/SharedScreenshot 2.webp"),
+        require("../../assets/Images Renderizadas/ADU/SharedScreenshot 4.webp"),
+        require("../../assets/Images Renderizadas/ADU/SharedScreenshot 5.webp"),
+        require("../../assets/Images Renderizadas/ADU/SharedScreenshot 6.webp"),
+      ],
     },
     {
       title: "Home Remodeling and Addition",
       description: "Transform your home to better suit your lifestyle and family needs.",
       cont: "Our home remodeling and expansion services are designed to optimize your existing floor plan, creating more functional, comfortable and efficient spaces. Whether it's redistributing key areas, expanding bedrooms or modernizing bathrooms, we help you make the most of every square foot in a strategic way. With intelligent design and construction solutions, we turn your home into an environment that flows naturally and enhances your well-being.",
-      images: [require("../../public/Remodelation.jpg")],
+      images: [
+        require("../../assets/Images Renderizadas/HOME_REMODELATION_&_ADITION/236c150e96ab40ff7d55eff89e1df194.webp"),
+        require("../../assets/Images Renderizadas/HOME_REMODELATION_&_ADITION/34cd3b4d95b8540cb0597dfd8fb3d8e3.webp"),
+        require("../../assets/Images Renderizadas/HOME_REMODELATION_&_ADITION/6e9fca23ae57f21396afc52fc8726640.webp"),
+        require("../../assets/Images Renderizadas/HOME_REMODELATION_&_ADITION/ae309748a132f76fb5867568bd3634e2.webp"),
+      ],
     },
     {
       title: "Inspiring Backyard Spaces",
       description: "Turn your backyard into an oasis designed for comfort and conviviality.",
       cont: "Our outdoor transformation service creates living areas with elegant pergolas, fire pits for warm moments, grills for unforgettable gatherings and a perfect balance of concrete pavers and natural grass. Cozy lighting enhances every detail, creating an ideal environment for relaxing, sharing and making the most of your home. Our architects and designers will turn your patio into a dream space for the whole family.",
-      images: [require("../../public/Backyard Spaces.jpg")],
+      images: [
+        require("../../assets/Images Renderizadas/BACKYARD/171bab5615fb26781618d8ac56311a9a.webp"),
+        require("../../assets/Images Renderizadas/BACKYARD/245919b9596c7627920f325e3e8c5f24.webp"),
+        require("../../assets/Images Renderizadas/BACKYARD/5434cb30b1bd49b25804aa09ec663bb4.webp"),
+        require("../../assets/Images Renderizadas/BACKYARD/5f603e2078dde9f7128814905cdd475e.webp"),
+      ],
     },
     {
       title: "General Construction and Repair",
       description: "We offer comprehensive solutions for construction, maintenance, painting, and repairs.",
       cont: "We offer comprehensive solutions for construction, maintenance, painting, repair of roofs, walls, floors and any damaged area of the building. Whether you need to develop a project from scratch or restore existing structures, our team is ready to deliver quality results. From structural improvements to detailed renovations, we provide reliable service tailored to your needs.",
-      images: [require("../../public/Repair.jpg")],
+      images: [
+        require("../../assets/Images Renderizadas/GENERAL REPAIR/15640787a9376f5b01b69b5c345656da.webp"),
+        require("../../assets/Images Renderizadas/GENERAL REPAIR/3023072130a24ef92245c6c0d2c1912a.webp"),
+        require("../../assets/Images Renderizadas/GENERAL REPAIR/336e449cfaf9c5466a48be08281f1354.webp"),
+        require("../../assets/Images Renderizadas/GENERAL REPAIR/3b753451a02912f70be1662b94bedaab.webp"),
+      ],
     },
     {
       title: "Financial Support",
       description: "We help you access the financial resources available to develop construction and renovation projects.",
       cont: "Through credit options or structured loans, homeowners can invest in an Auxiliary Dwelling Unit (ADU) or improve their home, distributing the payment in affordable installments. This service provides financial flexibility, facilitating the materialization of projects without compromising economic stability.",
-      images: [require("../../public/Financial Support.jpg")],
+      images: [
+        require("../../assets/Images Renderizadas/FINANCING/71j10cyRf8L._SL1360_.webp"),
+        require("../../assets/Images Renderizadas/FINANCING/adu-financing-in-california-all-available-options.webp"),
+        require("../../assets/Images Renderizadas/FINANCING/SharedScreenshot (1).webp"),
+      ],
     },
   ];
 
@@ -463,8 +489,28 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
       setQuestionSent(false);
     }, 1500);
   };
+
   const handleCloseModal = () => {
     setModalVisible(false);
+    setCurrentImageIndex(0);
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex(prev => 
+      prev === selectedService.images.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex(prev => 
+      prev === 0 ? selectedService.images.length - 1 : prev - 1
+    );
+  };
+
+  const openModalWithService = (service: any) => {
+    setSelectedService(service);
+    setCurrentImageIndex(0);
+    setModalVisible(true);
   };
 
   return (
@@ -488,10 +534,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
           <View className="gap-4 lg:gap-5 grid grid-cols-1 md:grid-cols-3 mx-5">
             {services.map((service, index) => (
               <Pressable
-              onPress={() => {
-                setSelectedService(service);
-                setModalVisible(true);
-              }}
+                onPress={() => openModalWithService(service)}
                 key={index}
                 className="flex flex-col justify-between bg-[#e1f0ff] hover:shadow-sm mb-2 p-3 border border-[#c9e4ff] rounded-xl transition-shadow duration-300"
               >
@@ -510,16 +553,16 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                 </Text>
                 <Text className="text-[#315072]">{service.description}</Text>
                 
-                  <Text className="mt-4 font-medium text-[#315072] transition-colors duration-300">
-                    Read More →
-                  </Text>
-                </Pressable>
+                <Text className="mt-4 font-medium text-[#315072] transition-colors duration-300">
+                  Read More →
+                </Text>
+              </Pressable>
             ))}
           </View>
         </View>
       </ScrollView>
 
-      {/* Service Modal */}
+      {/* Service Modal with Carousel */}
       <Modal
         visible={modalVisible}
         transparent
@@ -566,23 +609,55 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
             </View>
             
             <View className="relative flex-1 justify-center items-center mt-10">
-              <Image
-                source={selectedService?.images[0]}
-                style={{ 
-                  width: isDesktop ? 360 : 380, 
-                  height: isDesktop ? 260 : 200, 
-                  borderRadius: 16, 
-                }}
-                resizeMode="cover"
-              />
-              <TouchableOpacity
-                className="top-1/2 left-1/2 absolute bg-[#badcffab] px-4 py-2 rounded-md -translate-x-1/2 -translate-y-1/2"
-                onPress={() => {
-                  // Future implementation for seeing more images
-                }}
-              >
-                <Text className="font-medium text-[#315072]">See</Text>
-              </TouchableOpacity>
+              {/* Enhanced Carousel */}
+              <View className="relative justify-center items-center w-full">
+                <Image
+                  source={selectedService?.images[currentImageIndex]}
+                  style={{ 
+                    width: isDesktop ? 300 : 380, 
+                    height: isDesktop ? 260 : 200, 
+                    borderRadius: 16,
+                  }}
+                  resizeMode="cover"
+                />
+                
+                {/* Navigation Arrows */}
+                <TouchableOpacity
+                  onPress={handlePrevImage}
+                  className="top-1/2 left-2 absolute bg-[#badcffab] p-2 rounded-full -translate-y-1/2"
+                >
+                  <Ionicons name="chevron-back" size={24} color="#315072" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={handleNextImage}
+                  className="top-1/2 right-2 absolute bg-[#badcffab] p-2 rounded-full -translate-y-1/2"
+                >
+                  <Ionicons name="chevron-forward" size={24} color="#315072" />
+                </TouchableOpacity>
+                
+                {/* Indicators */}
+                <View className="flex-row justify-center mt-2">
+                  {selectedService?.images.map((_, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => setCurrentImageIndex(index)}
+                    >
+                      <View
+                        className={`w-2 h-2 mx-1 rounded-full ${
+                          index === currentImageIndex ? 'bg-[#315072]' : 'bg-gray-300'
+                        }`}
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                
+                {/* Image Counter */}
+                <View className="right-2 bottom-2 absolute bg-black/50 px-2 py-1 rounded-md">
+                  <Text className="text-white text-xs">
+                    {currentImageIndex + 1}/{selectedService?.images.length}
+                  </Text>
+                </View>
+              </View>
             </View>
           </View>
         </View>
