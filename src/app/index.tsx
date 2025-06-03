@@ -408,6 +408,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
   const [questionSent, setQuestionSent] = useState(false);
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
+  const isTablet = width >= 768 && width < 1024;
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -512,7 +513,6 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
     setCurrentImageIndex(0);
     setModalVisible(true);
   };
-
   return (
     <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 pt-20 lg:pt-10 lg:h-screen">
       <ScrollView
@@ -570,7 +570,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
         onRequestClose={handleCloseModal}
       >
         <View className="flex-col-reverse flex-1 justify-center items-center bg-black/40">
-          <View className="relative lg:flex-row flex-col-reverse bg-white p-6 rounded-xl w-11/12 max-w-4xl">
+          <View className="relative lg:flex-row flex-col-reverse gap-5 bg-white my-2 p-6 rounded-xl w-11/12 max-w-4xl h-5/6 lg:h-auto">
             <TouchableOpacity
               onPress={handleCloseModal}
               className="top-4 right-4 z-10 absolute"
@@ -578,12 +578,12 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
               <Ionicons name="close" size={28} color="#315072" />
             </TouchableOpacity>
             
-            <View className="flex-col flex-1 mb-0 pr-0 lg:pr-6">
-              <Text className="mb-2 font-bold text-[#315072] text-2xl">
+            <View className="flex-col flex-1 gap-5 mb-0 pr-0 lg:pr-6 min-w-0 max-w-full">
+              <Text className="font-bold text-[#315072] text-2xl">
                 {selectedService?.title}
               </Text>
-              <Text className="my-6 pb-28 text-[#315072] text-md">{selectedService?.cont}</Text>
-              <View className="bottom-0 absolute flex flex-row flex-wrap gap-2">
+              <Text className="my-0 text-[#315072] lg:text-md text-sm">{selectedService?.cont}</Text>
+              <View className="flex flex-row flex-wrap gap-2 w-full">
                 <TouchableOpacity
                   onPress={handleCloseModal}
                   className="bg-gray-200 px-4 py-2 rounded-md"
@@ -614,8 +614,8 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                 <Image
                   source={selectedService?.images[currentImageIndex]}
                   style={{ 
-                    width: isDesktop ? 300 : 220, 
-                    height: isDesktop ? 260 : 180, 
+                    width: isDesktop ? 300 : isTablet ? 520 : 200, 
+                    height: isDesktop ? 260 : isTablet ? 280 : 160, 
                     borderRadius: 16,
                   }}
                   resizeMode="cover"
