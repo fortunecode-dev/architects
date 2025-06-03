@@ -347,9 +347,9 @@ function LandingSection({
       <Image
         source={require("../../assets/Images Renderizadas/FIGMA GIFF.gif")}
         style={{
-          width: isDesktop ? 680 : 420,
-          height: isDesktop ? 280 : 180,
-        }}
+          width: isDesktop ? 680 : 300,
+          height: isDesktop ? 280 : 120,
+        } }
         resizeMode="contain"
         className="bg-blue-200/80 lg:bg-transparent mb-4 lg:mb-0 rounded-lg"
       />
@@ -614,7 +614,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                 <Image
                   source={selectedService?.images[currentImageIndex]}
                   style={{ 
-                    width: isDesktop ? 300 : 380, 
+                    width: isDesktop ? 300 : 280, 
                     height: isDesktop ? 260 : 200, 
                     borderRadius: 16,
                   }}
