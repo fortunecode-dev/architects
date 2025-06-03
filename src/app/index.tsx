@@ -50,20 +50,28 @@ export default function Page() {
     faq: useRef<View>(null),
     contact: useRef<View>(null),
   };
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const isDesktop = width >= 1024;
+  const isTablet = width >= 768 && width < 1024;
+  const isLargeScreen = isDesktop || isTablet;
+
   const scrollToSection = (sectionName: string, forceScroll = false) => {
-    // Solo hacer scroll si es desktop o si se fuerza explícitamente (como desde el menú móvil)
-    if (isDesktop || forceScroll) {
-      sectionRefs[sectionName].current?.measureLayout(
-        scrollViewRef.current?.getInnerViewNode(),
-        (x, y) => {
-          scrollViewRef.current?.scrollTo({ y, animated: true });
-        },
-        () => {}
-      );
-    }
-  };
+    if (isLargeScreen || forceScroll) {
+    sectionRefs[sectionName].current?.measureLayout(
+      scrollViewRef.current?.getInnerViewNode(),
+      (x, y) => {
+        scrollViewRef.current?.scrollTo({ y, animated: true });
+      },
+      () => {
+        // Fallback para tablets donde measureLayout puede fallar
+        const sectionOrder = ["home", "services", "faq", "contact"];
+        const sectionIndex = sectionOrder.indexOf(sectionName);
+        const sectionY = sectionIndex * height;
+        scrollViewRef.current?.scrollTo({ y: sectionY, animated: true });
+      }
+    );
+  }
+};
 
   const sections = ["home", "services", "faq"];
 
@@ -72,20 +80,23 @@ export default function Page() {
       <Header sections={sections} scrollToSection={scrollToSection} />
       <ScrollView
         ref={scrollViewRef}
-        pagingEnabled={isDesktop} // <-- Solo habilitar paging en desktop
+        pagingEnabled={isLargeScreen} // Ahora incluye tablets
         showsVerticalScrollIndicator={false}
         className="flex-1"
+        snapToInterval={isLargeScreen ? height : undefined}
+        snapToAlignment="start"
+        decelerationRate="fast"
       >
-        <View ref={sectionRefs.home}>
+        <View ref={sectionRefs.home} style={{ height: isLargeScreen ? height : 'auto' }}>
           <LandingSection scrollToSection={scrollToSection} />
         </View>
-        <View ref={sectionRefs.services}>
+        <View ref={sectionRefs.services} style={{ height: isLargeScreen ? height : 'auto' }}>
           <ServicesSection scrollToSection={scrollToSection} />
         </View>
-        <View ref={sectionRefs.faq}>
+        <View ref={sectionRefs.faq} style={{ height: isLargeScreen ? height : 'auto' }}>
           <FAQSection scrollToSection={scrollToSection} />
         </View>
-        <View ref={sectionRefs.contact}>
+        <View ref={sectionRefs.contact} style={{ height: isLargeScreen ? height : 'auto' }}>
           <ContactSection />
         </View>
         <Footer scrollToSection={scrollToSection} />
@@ -130,7 +141,6 @@ function Header({
   const isDesktop = width >= 1024;
 
   useEffect(() => {
-    // Solo para web, ignora en móvil
     if (typeof window !== "undefined") {
       const handleScroll = () => {
         const show = window.scrollY > 50;
@@ -324,7 +334,8 @@ function LandingSection({
 }: {
   scrollToSection: (section: string, force?: boolean) => void;
 }) {
-  const isDesktop = window.innerWidth >= 1024;
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 1024;
   return (
     <FadeInView>
   <View className="flex flex-1 px-6 w-full h-screen">
@@ -452,13 +463,12 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
       setQuestionSent(false);
     }, 1500);
   };
-
   const handleCloseModal = () => {
     setModalVisible(false);
   };
 
   return (
-    <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 pt-40 lg:pt-10 lg:h-screen">
+    <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 pt-20 lg:pt-10 lg:h-screen">
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
@@ -707,6 +717,7 @@ function FAQSection({
 
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
+  const isTablet = width >= 768 && width < 1024;
 
   const isContactValid =
     (contactType === "email" && /\S+@\S+\.\S+/.test(contactInfo)) ||
@@ -735,17 +746,22 @@ function FAQSection({
   ];
 
   return (
-    <View className="flex flex-col items-center gap-2 bg-[#FFFFFF] mb-40 px-2 lg:px-32 pt-32 w-full">
+    <View className="flex flex-col items-center gap-2 bg-[#FFFFFF] px-2 py-36 w-full">
       {/* Título centrado */}
       <Text className="mb-10 font-bold text-[#315072] text-2xl lg:text-3xl text-center">
         Frequently Asked Questions
       </Text>
       {/* Preguntas y respuesta */}
-      <View className="flex flex-row justify-center items-start gap-8 mb-10 w-full max-w-6xl">
+      <View
+        className={`
+          flex flex-row justify-center items-start mb-10 w-full px-4
+          ${isMobile ? "gap-4 max-w-xl  " : isTablet ? "gap-6 max-w-4xl" : "gap-8 max-w-6xl"}
+        `}
+      >
         {/* Columna de preguntas */}
-        <View className="flex flex-col flex-1 gap-4">
+        <View className={`lg:flex-col  flex-row flex-1  ${isMobile ? "gap-2" : "gap-4"}`}>
           {columns.map((faqsCol, colIdx) => (
-            <View key={colIdx} className="flex-1 px-5 w-full">
+            <View key={colIdx} className="flex-1">
               {faqsCol.map((faq, idx) => {
                 const realIdx = colIdx * colLength + idx;
                 return (
@@ -755,8 +771,8 @@ function FAQSection({
                       setSelectedIndex(realIdx);
                       if (isMobile) setShowAnswerModal(true);
                     }}
-                    className={`mb-2 px-3 py-3 rounded-xl border border-[#e1f0ff] bg-[#f7fbff]  shadow-sm transition-all ${
-                      selectedIndex === realIdx && !isMobile ? "bg-[#9ecefd] border-[#3899fa]" : ""
+                    className={`mb-2 px-3 py-3 rounded-xl border border-[#e1f0ff] bg-[#f7fbff] shadow-sm transition-all ${
+                      selectedIndex === realIdx && !isMobile ? "bg-[#9dccfc] border-[#0080ff]" : ""
                     }`}
                   >
                     <Text className={`font-semibold text-[#315072] text-base ${selectedIndex === realIdx && !isMobile ? "" : ""}`}>
@@ -768,17 +784,16 @@ function FAQSection({
             </View>
           ))}
         </View>
-        {/* Respuesta solo en escritorio/tablet */}
+        {/* Respuesta solo en tablet/desktop */}
         {!isMobile && (
-          <View className="flex-col">
-            <View className="flex-1 bg-[#f7fbff] shadow-sm p-6 border border-[#e1f0ff] rounded-xl max-w-xl min-h-[220px]">
-              <Text className="mb-2 font-bold text-[#315072] text-lg">
-                {faqs[selectedIndex].question}
-              </Text>
-              <Text className="text-[#315072] text-base whitespace-pre-line">
-                {faqs[selectedIndex].answer}
-              </Text>
-              <View className="mt-20 pb-6 rounded-xl w-full">
+          <View className={`flex-1 bg-[#f7fbff] shadow-sm p-4 lg:p-6 border border-[#e1f0ff] rounded-xl max-w-xl min-h-[220px] ${isTablet ? "ml-4" : "ml-8"}`}>
+            <Text className="mb-2 font-bold text-[#315072] text-lg">
+              {faqs[selectedIndex].question}
+            </Text>
+            <Text className="text-[#315072] text-base whitespace-pre-line">
+              {faqs[selectedIndex].answer}
+            </Text>
+            <View className="mt-10 pb-6 rounded-xl w-full">
               <Text className="mb-2 font-bold text-[#315072] text-lg text-center">
                 Make a Question
               </Text>
@@ -812,11 +827,8 @@ function FAQSection({
                 </Text>
               )}
             </View>
-            </View>
-            
           </View>
         )}
-        
       </View>
       {/* Modal de respuesta en móvil */}
       <Modal
@@ -842,8 +854,6 @@ function FAQSection({
           </View>
         </View>
       </Modal>
-      {/* Make a Question centrado */}
-      
       {/* Modal para pedir contacto */}
       <Modal
         visible={showContactModal}
