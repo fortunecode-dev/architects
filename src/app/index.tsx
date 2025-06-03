@@ -570,7 +570,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
         onRequestClose={handleCloseModal}
       >
         <View className="flex-col-reverse flex-1 justify-center items-center bg-black/40">
-          <View className="relative lg:flex-row flex-col-reverse gap-5 bg-white my-2 p-6 rounded-xl w-11/12 max-w-4xl h-5/6 lg:h-auto">
+          <View className="relative lg:flex-row flex-col-reverse gap-5 bg-white my-2 p-6 rounded-xl w-11/12 max-w-4xl h-4/5 lg:h-auto">
             <TouchableOpacity
               onPress={handleCloseModal}
               className="top-4 right-4 z-10 absolute"
@@ -578,11 +578,11 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
               <Ionicons name="close" size={28} color="#315072" />
             </TouchableOpacity>
             
-            <View className="flex-col flex-1 gap-5 mb-0 pr-0 lg:pr-6 min-w-0 max-w-full">
+            <View className="flex-col flex-1 gap-2 mb-0 pr-0 lg:pr-6 min-w-0 max-w-full">
               <Text className="font-bold text-[#315072] text-2xl">
                 {selectedService?.title}
               </Text>
-              <Text className="my-0 text-[#315072] lg:text-md text-sm">{selectedService?.cont}</Text>
+              <Text className="my-0 text-[#315072] lg:text-md text-xs">{selectedService?.cont}</Text>
               <View className="flex flex-row flex-wrap gap-2 w-full">
                 <TouchableOpacity
                   onPress={handleCloseModal}
@@ -652,7 +652,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                 </View>
                 
                 {/* Image Counter */}
-                <View className="right-2 bottom-2 absolute bg-black/50 px-2 py-1 rounded-md">
+                <View className="right-2 bottom-2 absolute bg-black/50 px-2 rounded-md">
                   <Text className="text-white text-xs">
                     {currentImageIndex + 1}/{selectedService?.images.length}
                   </Text>
