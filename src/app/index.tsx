@@ -347,8 +347,8 @@ function LandingSection({
       <Image
         source={require("../../assets/Images Renderizadas/FIGMA GIFF.gif")}
         style={{
-          width: isDesktop ? 680 : 300,
-          height: isDesktop ? 280 : 120,
+          width: isDesktop ? 680 : isTablet ? 500 : 300,
+          height: isDesktop ? 280 : isTablet ? 200 : 150, 
         } }
         resizeMode="contain"
         className="bg-blue-200/80 lg:bg-transparent mb-4 lg:mb-0 rounded-lg"
@@ -384,7 +384,7 @@ function LandingSection({
           source={require("../../assets/Images Renderizadas/portada.webp")}
           style={{
             width: 1250,
-            height: 900,
+            height: 950,
             resizeMode: "cover",
           }}
           className="z-30"
@@ -569,21 +569,21 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
         animationType="fade"
         onRequestClose={handleCloseModal}
       >
-        <View className="flex-col-reverse flex-1 justify-center items-center bg-black/40">
-          <View className="relative lg:flex-row flex-col-reverse gap-5 bg-white my-2 p-6 rounded-xl w-11/12 max-w-4xl h-full lg:h-auto">
+        <View className="flex-col-reverse flex-1 justify-center items-center gap-2 bg-black/40">
+          <View className="relative lg:flex-row flex-col-reverse justify-center gap-5 bg-white mx-2 p-6 rounded-xl max-w-4xl">
             <TouchableOpacity
               onPress={handleCloseModal}
-              className="top-4 right-4 z-10 absolute"
+              className="top-4 right-4 z-10 absolute justify-center items-center hover:bg-blue-200/80 p-2 rounded-full"
             >
               <Ionicons name="close" size={28} color="#315072" />
             </TouchableOpacity>
             
-            <View className="flex-col flex-1 gap-2 mb-0 pr-0 lg:pr-6 min-w-0 max-w-full">
+            <View className="flex-col flex-1 justify-center gap-2 mb-0 pr-0 lg:pr-6 pb-3 min-w-0 max-w-full">
               <Text className="font-bold text-[#315072] text-2xl">
                 {selectedService?.title}
               </Text>
-              <Text className="my-0 text-[#315072] lg:text-md text-xs">{selectedService?.cont}</Text>
-              <View className="flex flex-row flex-wrap gap-2 w-full">
+              <Text className="my-0 pb-3 text-[#315072] lg:text-md text-xs">{selectedService?.cont}</Text>
+              <View className="flex flex-row flex-wrap gap-2 pt-2 w-full">
                 <TouchableOpacity
                   onPress={handleCloseModal}
                   className="bg-gray-200 px-4 py-2 rounded-md"
@@ -608,14 +608,14 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
               </View>
             </View>
             
-            <View className="relative flex-1 justify-center items-center mt-0">
+            <View className="relative flex-1 justify-center items-center pt-7">
               {/* Enhanced Carousel */}
-              <View className="relative justify-center items-center w-full">
+              <View className="justify-center items-center w-full h-full">
                 <Image
                   source={selectedService?.images[currentImageIndex]}
                   style={{ 
-                    width: isDesktop ? 300 : isTablet ? 520 : 200, 
-                    height: isDesktop ? 260 : isTablet ? 280 : 160, 
+                    width: isDesktop ? 300 : isTablet ? 480 : 220, 
+                    height: isDesktop ? 260 : isTablet ? 250 : 160, 
                     borderRadius: 16,
                   }}
                   resizeMode="cover"
