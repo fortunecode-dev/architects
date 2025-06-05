@@ -579,10 +579,10 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
             </TouchableOpacity>
             
             <View className="flex-col flex-1 justify-center gap-2 mb-0 pr-0 lg:pr-6 pb-3 min-w-0 max-w-full">
-              <Text className="font-bold text-[#315072] text-2xl">
+              <Text className="hidden lg:block font-bold text-[#315072] text-2xl">
                 {selectedService?.title}
               </Text>
-              <Text className="my-0 text-[#315072] lg:text-md text-xs">{selectedService?.cont}</Text>
+              <Text className="my-0 pt-8 lg:pt-0 text-[#315072] lg:text-md text-xs">{selectedService?.cont}</Text>
               <View className="flex flex-row flex-wrap gap-2 pt-2 w-full">
                 <TouchableOpacity
                   onPress={handleCloseModal}
@@ -608,29 +608,45 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
               </View>
             </View>
             
-            <View className="relative flex-1 justify-center items-center pt-7">
+            <View className="relative flex-1 pt-3">
+              <View className="lg:hidden top-0 right-0 left-0 z-10 my-2 rounded-t-xl">
+                {services.map((service, index) => {
+                    if (service.title === selectedService?.title) {
+                      return (
+                        <View key={index} className="w-full h-full">
+                          <Text className="font-bold text-[#315072] text-2xl">
+                            {service.title}
+                          </Text>
+                        </View>
+                      );
+                    }
+                    return null;
+                  })}
+              </View>
               {/* Enhanced Carousel */}
               <View className="justify-center items-center w-full h-full">
                 <Image
                   source={selectedService?.images[currentImageIndex]}
                   style={{ 
-                    width: isDesktop ? 300 : isTablet ? 480 : 220, 
-                    height: isDesktop ? 260 : isTablet ? 250 : 160, 
+                    width: isDesktop ? 300 : isTablet ? 420 : 280, 
+                    height: isDesktop ? 260 : isTablet ? 220 : 160, 
+                    marginTop: isTablet ? 15 : 0, 
                     borderRadius: 16,
                   }}
                   resizeMode="cover"
+                  className="shadow-lg mt-10 lg:mt-0 mb-2"
                 />
                 
                 {/* Navigation Arrows */}
                 <TouchableOpacity
                   onPress={handlePrevImage}
-                  className="top-1/2 left-2 absolute bg-[#badcffab] p-2 rounded-full -translate-y-1/2"
+                  className="top-1/2 left-0 absolute p-1 rounded-full -translate-y-1/2"
                 >
                   <Ionicons name="chevron-back" size={24} color="#315072" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleNextImage}
-                  className="top-1/2 right-2 absolute bg-[#badcffab] p-2 rounded-full -translate-y-1/2"
+                  className="top-1/2 right-0 absolute p-1 rounded-full -translate-y-1/2"
                 >
                   <Ionicons name="chevron-forward" size={24} color="#315072" />
                 </TouchableOpacity>
