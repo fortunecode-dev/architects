@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   Animated,
   ViewProps,
@@ -12,11 +12,10 @@ import {
   Alert,
   TextInputProps,
   TextInput,
-  Touchable,
 } from "react-native";
+import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Modal, Pressable } from "react-native";
-import FastImage from 'react-native-fast-image';
 import {
   MAIL_CONTACT,
   PHONE_CONTACT,
@@ -26,6 +25,7 @@ import {
 import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useWindowDimensions } from "react-native";
+import useScrolled from "@/hooks/useScroll";
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const COLORS = {
   primary: "#315072",
@@ -55,49 +55,67 @@ export default function Page() {
   const isDesktop = width >= 1024;
   const isTablet = width >= 768 && width < 1024;
   const isLargeScreen = isDesktop || isTablet;
+  const { isScrolled, onScroll } = useScrolled();
 
   const scrollToSection = (sectionName: string, forceScroll = false) => {
     if (isLargeScreen || forceScroll) {
-    sectionRefs[sectionName].current?.measureLayout(
-      scrollViewRef.current?.getInnerViewNode(),
-      (x, y) => {
-        scrollViewRef.current?.scrollTo({ y, animated: true });
-      },
-      () => {
-        // Fallback para tablets donde measureLayout puede fallar
-        const sectionOrder = ["home", "services", "faq", "contact"];
-        const sectionIndex = sectionOrder.indexOf(sectionName);
-        const sectionY = sectionIndex * height;
-        scrollViewRef.current?.scrollTo({ y: sectionY, animated: true });
-      }
-    );
-  }
-};
+      sectionRefs[sectionName].current?.measureLayout(
+        scrollViewRef.current?.getInnerViewNode(),
+        (x, y) => {
+          scrollViewRef.current?.scrollTo({ y, animated: true });
+        },
+        () => {
+          // Fallback para tablets donde measureLayout puede fallar
+          const sectionOrder = ["home", "services", "faq", "contact"];
+          const sectionIndex = sectionOrder.indexOf(sectionName);
+          const sectionY = sectionIndex * height;
+          scrollViewRef.current?.scrollTo({ y: sectionY, animated: true });
+        }
+      );
+    }
+  };
 
   const sections = ["home", "services", "faq"];
 
   return (
     <View className="flex-1 bg-white">
-      <Header sections={sections} scrollToSection={scrollToSection} />
+      <Header
+        sections={sections}
+        scrollToSection={scrollToSection}
+        isScrolled={isScrolled}
+      />
       <ScrollView
         ref={scrollViewRef}
         pagingEnabled={isLargeScreen} // Ahora incluye tablets
         showsVerticalScrollIndicator={false}
         className="flex-1"
+        onScroll={onScroll}
         snapToInterval={isLargeScreen ? height : undefined}
         snapToAlignment="start"
         decelerationRate="fast"
       >
-        <View ref={sectionRefs.home} style={{ height: isLargeScreen ? height : 'auto' }}>
+        <View
+          ref={sectionRefs.home}
+          style={{ height: isLargeScreen ? height : "auto" }}
+        >
           <LandingSection scrollToSection={scrollToSection} />
         </View>
-        <View ref={sectionRefs.services} style={{ height: isLargeScreen ? height : 'auto' }}>
+        <View
+          ref={sectionRefs.services}
+          style={{ height: isLargeScreen ? height : "auto" }}
+        >
           <ServicesSection scrollToSection={scrollToSection} />
         </View>
-        <View ref={sectionRefs.faq} style={{ height: isLargeScreen ? height : 'auto' }}>
+        <View
+          ref={sectionRefs.faq}
+          style={{ height: isLargeScreen ? height : "auto" }}
+        >
           <FAQSection scrollToSection={scrollToSection} />
         </View>
-        <View ref={sectionRefs.contact} style={{ height: isLargeScreen ? height : 'auto' }}>
+        <View
+          ref={sectionRefs.contact}
+          style={{ height: isLargeScreen ? height : "auto" }}
+        >
           <ContactSection />
         </View>
         <Footer scrollToSection={scrollToSection} />
@@ -131,202 +149,202 @@ export function FadeInView({
 function Header({
   sections,
   scrollToSection,
+  isScrolled,
 }: {
   sections: string[];
   scrollToSection: (section: string, force?: boolean) => void;
+  isScrolled: boolean;
 }) {
   const { top } = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const { width } = useWindowDimensions();
+
   const isDesktop = width >= 1024;
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleScroll = () => {
-        const show = window.scrollY > 50;
-        if (show !== isScrolled) setIsScrolled(show);
-      };
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    }
-  }, [isScrolled]);
-
+  const intensity = isScrolled ? 400 : 0;
+  
   return (
     <View
-      style={{ paddingTop: top }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#e1f0ff] border-b border-[#c9e4ff]`}
+      style={{
+        paddingTop: top,
+      }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent`}
     >
-      <View className="flex flex-row justify-between items-center mx-auto px-4 py-2 w-full max-w-7xl h-12">
-        {" "}
-        {/* Cambiado px-6 a px-4, py-3 a py-2, h-16 a h-14 */}
-        {/* Left: Logo */}
-        <View className="flex flex-row flex-shrink-0 items-center">
-          {" "}
-          <TouchableOpacity onPress={() => scrollToSection("home")}>
-            <Image
-              source={require("../../public/logo.svg")}
-              style={{
-                marginTop: 12,
-                width: 158, // Reducido de 90 a 80
-                resizeMode: "contain",
-                opacity: 1,
-              }}
-            />
-          </TouchableOpacity>
-        </View>
-        {/* Center: Sections as Row */}
-        <View className="hidden md:flex flex-row flex-1 justify-center items-center gap-4">
-          {" "}
-          {/* Reducido gap de 6 a 4 */}
-          {sections.map((section) => (
-            <TouchableOpacity
-              key={section}
-              onPress={() => scrollToSection(section)}
-              className="group relative py-1"
-            >
-              <Text
-                className={`font-bold text-sm capitalize transition-colors duration-200 text-[#315072]`}
-              >
-                {section}
-              </Text>
-              <View
-                className={`absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-[#495a6d]`}
+      <BlurView
+        intensity={400}
+        tint={null}
+        style={{
+          width: "100%",
+
+        }}
+      >
+        <View className="flex flex-row justify-between items-center mx-auto px-4 py-2 w-full max-w-7xl h-12">
+          {/* Left: Logo */}
+          <View className="flex flex-row flex-shrink-0 items-center">
+            <TouchableOpacity onPress={() => scrollToSection("home")}>
+              <Image
+                source={require("../../public/logo.svg")}
+                style={{
+                  marginTop: 12,
+                  width: 158,
+                  resizeMode: "contain",
+                  opacity: 1,
+                }}
               />
             </TouchableOpacity>
-          ))}
-        </View>
-        {/* Right: Contact Button */}
-        <View className="hidden md:flex flex-row flex-shrink-0 items-center">
-          <TouchableOpacity
-            className={`px-3 py-1.5 rounded-md transition-all duration-300 bg-[#badcff] hover:bg-[#a6d2ff]`}
-            onPress={() => scrollToSection("contact")}
-          >
-            <Text className={`font-bold text-sm text-[#315072]`}>Contact</Text>
-          </TouchableOpacity>
-          {/* Iconos de redes sociales */}
-          <TouchableOpacity
-            onPress={() => Linking.openURL("https://www.facebook.com/tu-negocio")}
-            className="ml-3"
-            accessibilityLabel="Facebook"
-          >
-            <Ionicons name="logo-facebook" size={26} color="#315072" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => Linking.openURL("https://www.instagram.com/tu-negocio")}
-            className="ml-2"
-            accessibilityLabel="Instagram"
-          >
-            <Ionicons name="logo-instagram" size={26} color="#315072" />
-          </TouchableOpacity>
-        </View>
-        {/* Mobile Menu Button (sin cambios ya que ya es compacto) */}
-        <View className="md:hidden flex-shrink-0">
-          <TouchableOpacity
-            onPress={() => setMenuOpen(!menuOpen)}
-            className="-mr-2 p-2"
-          >
-            <View className="relative justify-center w-6 h-6">
-              <View
-                className={`absolute w-6 h-0.5 rounded-full ${
-                  isScrolled ? "bg-[#315072]" : "bg-[#315072]"
-                } transition-all duration-300 ${
-                  menuOpen ? "rotate-45 top-1/2" : "top-0"
-                }`}
-              />
-              <View
-                className={`absolute w-6 h-0.5 rounded-full ${
-                  isScrolled ? "bg-[#315072]" : "bg-[#315072]"
-                } transition-all duration-300 ${
-                  menuOpen ? "opacity-0" : "top-1/2"
-                }`}
-              />
-              <View
-                className={`absolute w-6 h-0.5 rounded-full ${
-                  isScrolled ? "bg-[#315072]" : "bg-[#315072]"
-                } transition-all duration-300 ${
-                  menuOpen ? "-rotate-45 top-1/2" : "top-full"
-                }`}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+          </View>
 
-      {/* Mobile Menu (sin cambios ya que no afecta la altura del header) */}
-      {menuOpen && (
-        <View
-          className={`md:hidden h-screen justify-center items-center ${
-            isScrolled ? "bg-[#f5e5a6]" : "bg-[#315072]"
-          } px-6 py-4 border-t ${
-            isScrolled ? "border-[#c9e4ff]" : "border-white/20"
-          } w-full`}
-        >
-          <View className="max-w-7xl">
-            <Text
-              className={`mb-4 font-bold text-3xl  ${
-                isScrolled ? "text-[#d4a017]" : "text-white"
-              }`}
-            >
-              DWELLINGPLUS
-            </Text>
-
+          {/* Center: Sections as Row */}
+          <View className="hidden md:flex flex-row flex-1 justify-center items-center gap-4">
             {sections.map((section) => (
               <TouchableOpacity
                 key={section}
-                onPress={() => {
-                  scrollToSection(section, true);
-                  setMenuOpen(false);
-                }}
-                className={`py-3 border-b ${
-                  isScrolled ? "border-[#e8d8a0]" : "border-white/20"
-                } last:border-0`}
+                onPress={() => scrollToSection(section)}
+                className="group relative py-1"
               >
                 <Text
-                  className={`font-medium text-lg capitalize text-center ${
-                    isScrolled ? "text-[#315072]" : "text-white"
+                  className={`font-bold text-sm uppercase transition-colors duration-200 ${
+                    isScrolled ? "text-[#315072]" : "text-[#315072]"
                   }`}
                 >
                   {section}
                 </Text>
+                <View
+                  className={`absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-300 ${
+                    isScrolled ? "bg-[#495a6d]" : "bg-[#315072]"
+                  }`}
+                />
               </TouchableOpacity>
             ))}
-            <View className="mt-6">
-              <TouchableOpacity
-                onPress={() => {
-                  scrollToSection("contact", true);
-                  setMenuOpen(false);
-                }}
-                className={`w-full px-4 py-3 rounded-md shadow-sm ${
-                  isScrolled ? "bg-[#f0c14b]" : "bg-white"
-                }`}
-              >
-                <Text
-                  className={`font-medium text-sm text-center ${
-                    isScrolled ? "text-[#39506b]" : "text-[#315072]"
+          </View>
+
+          {/* Right: Contact Button */}
+          <View className="hidden md:flex flex-row flex-shrink-0 items-center">
+            {/* Iconos de redes sociales */}
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL("https://www.facebook.com/tu-negocio")
+              }
+              accessibilityLabel="Facebook"
+            >
+              <Ionicons name="logo-facebook" size={26} color={"#315072"} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL("https://www.instagram.com/tu-negocio")
+              }
+              className="ml-3"
+              accessibilityLabel="Instagram"
+            >
+              <Ionicons name="logo-instagram" size={26} color={"#315072"} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              className={`px-3 py-1.5 rounded-md transition-all duration-300 bg-[#315072] hover:bg-[#a6d2ff]" ml-3`}
+              onPress={() => scrollToSection("contact")}
+            >
+              <Text className={`font-bold text-sm text-white`}>Contact</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Mobile Menu Button */}
+          <View className="md:hidden flex-shrink-0">
+            <TouchableOpacity
+              onPress={() => setMenuOpen(!menuOpen)}
+              className="-mr-2 p-2"
+            >
+              <View className="relative justify-center w-6 h-6">
+                <View
+                  className={`absolute w-6 h-0.5 rounded-full bg-[#315072] transition-all duration-300 ${
+                    menuOpen ? "rotate-45 top-1/2" : "top-0"
                   }`}
-                >
-                  Contact
-                </Text>
-              </TouchableOpacity>
-              <View className="flex flex-row justify-center gap-4 mt-4">
+                />
+                <View
+                  className={`absolute w-6 h-0.5 rounded-full bg-[#315072] transition-all duration-300 ${
+                    menuOpen ? "opacity-0" : "top-1/2"
+                  }`}
+                />
+                <View
+                  className={`absolute w-6 h-0.5 rounded-full bg-[#315072] transition-all duration-300 ${
+                    menuOpen ? "-rotate-45 top-1/2" : "top-full"
+                  }`}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <View
+            className={`md:hidden h-screen justify-center items-center  px-6 py-4 border-t ${
+              isScrolled ? "border-[#c9e4ff]" : "border-white/20"
+            } w-full`}
+          >
+            <View className="max-w-7xl">
+              <Text className={`mb-4 font-bold text-3xl text-[#315072]`}>
+                DWELLINGPLUS
+              </Text>
+
+              {sections.map((section) => (
                 <TouchableOpacity
-                  onPress={() => Linking.openURL("https://www.facebook.com/tu-negocio")}
-                  accessibilityLabel="Facebook"
+                  key={section}
+                  onPress={() => {
+                    scrollToSection(section, true);
+                    setMenuOpen(false);
+                  }}
+                  className={`py-3 border-b border-[#315072] last:border-0`}
                 >
-                  <Ionicons name="logo-facebook" size={28} color="#fff" />
+                  <Text
+                    className={`font-medium text-lg uppercase  text-center text-[#315072]`}
+                  >
+                    {section}
+                  </Text>
                 </TouchableOpacity>
+              ))}
+              <View className="mt-6">
                 <TouchableOpacity
-                  onPress={() => Linking.openURL("https://www.instagram.com/tu-negocio")}
-                  accessibilityLabel="Instagram"
+                  onPress={() => {
+                    scrollToSection("contact", true);
+                    setMenuOpen(false);
+                  }}
+                  className={`w-full px-4 py-3 rounded-md shadow-sm bg-[#315072]`}
                 >
-                  <Ionicons name="logo-instagram" size={28} color="#fff" />
+                  <Text
+                    className={`text-sm text-center  font-weight-600  text-white `}
+                  >
+                    Contact
+                  </Text>
                 </TouchableOpacity>
+                <View className="flex flex-row justify-center gap-4 mt-4">
+                  <TouchableOpacity
+                    onPress={() =>
+                      Linking.openURL("https://www.facebook.com/tu-negocio")
+                    }
+                    accessibilityLabel="Facebook"
+                  >
+                    <Ionicons
+                      name="logo-facebook"
+                      size={28}
+                      color={"#315072"}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      Linking.openURL("https://www.instagram.com/tu-negocio")
+                    }
+                    accessibilityLabel="Instagram"
+                  >
+                    <Ionicons
+                      name="logo-instagram"
+                      size={28}
+                      color={"#315072"}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      )}
+        )}
+      </BlurView>
     </View>
   );
 }
@@ -338,69 +356,77 @@ function LandingSection({
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
   const isTablet = width >= 768 && width < 1024;
+
   return (
     <FadeInView>
-  <View className="flex flex-1 px-6 w-full h-screen">
-    <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
-      {/* Columna izquierda */}
-      <View className="z-50 flex flex-col justify-center items-center lg:items-start m-auto w-full lg:w-1/2 h-full">
-      <Image
-        source={require("../../assets/Images Renderizadas/FIGMA GIFF.gif")}
-        style={{
-          width: isDesktop ? 680 : isTablet ? 500 : 300,
-          height: isDesktop ? 280 : isTablet ? 200 : 150, 
-        } }
-        resizeMode="contain"
-        className="bg-blue-200/80 lg:bg-transparent mb-4 lg:mb-0 rounded-lg"
-      />
-        <Text className="bg-blue-200/80 lg:bg-transparent shadow-lg lg:shadow-transparent mt-5 mb-8 p-5 lg:p-0 pt-5 rounded-xl font-medium text-[#315072] text-lg lg:text-xl">
-          Our goal is to help you develop your property. We work with
-          passion to meet the expectations of home owners and developers.
-        </Text>
-        <View className="flex flex-row justify-center lg:justify-start items-center lg:items-start gap-12 mt-2 w-full">
-        
-        <TouchableOpacity
-          onPress={() => scrollToSection("contact")}
-          className="bg-blue-200 hover:bg-blue-100 px-4 py-2 rounded-md"
-        >
-          <Text className="font-medium text-[#315072] text-base text-center">
-            Get Started
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => scrollToSection("services", true)}
-          className="bg-blue-200 hover:bg-blue-100 px-4 py-2 rounded-md"
-        >
-          <Text className="font-medium text-[#315072] text-base text-center">
-            More Information →
-          </Text>
-        </TouchableOpacity>
-      </View>
-      </View>
-      
-      {/* Columna derecha */}
-      <View className="z-0 absolute lg:relative lg:flex lg:flex-col justify-center items-center lg:bg-blue-50 w-full lg:w-2/3 h-full" style={{ clipPath: isDesktop ? "polygon(10% 0, 100% 0, 100% 100%, 0% 100%)" : "none" }}>
+      <View className="flex flex-1 w-full h-screen relative">
+        {/* Imagen de fondo */}
         <Image
-          source={require("../../assets/Images Renderizadas/portada.webp")}
+          source={"landing.jpg"}
           style={{
-            width: 1250,
-            height: 950,
-            resizeMode: "cover",
+            position: "absolute",
+            width: "100%",
+            height: "100%",
           }}
-          className="z-30"
+          resizeMode="cover"
+          className="z-0"
         />
+
+        {/* Contenido superpuesto */}
+        <View className="flex flex-1 px-6 w-full h-screen z-10 bg-black/10">
+          <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
+            {/* Columna izquierda */}
+            <View className="z-50 flex flex-col justify-center items-center  m-auto w-full  h-full">
+              <View className="w-full flex justify-center items-center">
+                <Image
+                  source={"logo-navy.png"}
+                  style={{
+                    width: isDesktop ? 680 : 500,
+                    height: isDesktop ? 280 : 200,
+                    marginTop: "-280px",
+                  }}
+                  resizeMode="contain"
+                  className="mb-4 "
+                />
+              </View>
+
+              <View className="flex flex-col justify-end items-center gap-4 mt-2 w-full">
+                <Text className=" mt-5 mb-8 p-2 lg:p-0 pt-5  font-medium text-[#315072] text-lg lg:text-xl">
+                  Our goal is to help you develop your property. We work with
+                  passion to meet the expectations of home owners and
+                  developers.
+                </Text>
+                <View className="flex flex-row justify-center items-center gap-4 mt-2 w-full">
+                  <TouchableOpacity
+                    onPress={() => scrollToSection("services", true)}
+                    className="hover:bg-blue-200 px-4 py-2 rounded-md"
+                  >
+                    <Text className="font-medium text-[#315072] font-weight-600 text-base text-center">
+                      More Information
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => scrollToSection("contact")}
+                    className="bg-[#315072] hover:bg-blue-200 px-4 py-2 rounded-md"
+                  >
+                    <Text className="font-medium text-white text-base text-center">
+                      Get Started →
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
       </View>
-      
-    </View>
-    
-  </View>
-</FadeInView>
+    </FadeInView>
   );
 }
-
-
-
-function ServicesSection({ scrollToSection }: { scrollToSection?: (section: string, force?: boolean) => void }) {
+function ServicesSection({
+  scrollToSection,
+}: {
+  scrollToSection?: (section: string, force?: boolean) => void;
+}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedService, setSelectedService] = useState<any>(null);
   const [questionModalVisible, setQuestionModalVisible] = useState(false);
@@ -415,7 +441,8 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
   const services = [
     {
       title: "Let's build an ADU",
-      description: "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU).",
+      description:
+        "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU).",
       cont: "Turn your available space into a source of value with an Accessory Dwelling Unit (ADU). Our ADU construction service allows you to make the most of your property, whether to generate rental income, comfortably house family members, or expand your living space. We design functional and efficient solutions that comply with local regulations, optimizing energy and materials for a sustainable home. With a smart investment, an ADU can offer you financial independence and flexibility, adapting to your current and future needs.",
       images: [
         require("../../assets/Images Renderizadas/ADU/SharedScreenshot 2.webp"),
@@ -426,7 +453,8 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
     },
     {
       title: "Home Remodeling and Addition",
-      description: "Transform your home to better suit your lifestyle and family needs.",
+      description:
+        "Transform your home to better suit your lifestyle and family needs.",
       cont: "Our home remodeling and expansion services are designed to optimize your existing floor plan, creating more functional, comfortable and efficient spaces. Whether it's redistributing key areas, expanding bedrooms or modernizing bathrooms, we help you make the most of every square foot in a strategic way. With intelligent design and construction solutions, we turn your home into an environment that flows naturally and enhances your well-being.",
       images: [
         require("../../assets/Images Renderizadas/HOME_REMODELATION_&_ADITION/236c150e96ab40ff7d55eff89e1df194.webp"),
@@ -437,7 +465,8 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
     },
     {
       title: "Inspiring Backyard Spaces",
-      description: "Turn your backyard into an oasis designed for comfort and conviviality.",
+      description:
+        "Turn your backyard into an oasis designed for comfort and conviviality.",
       cont: "Our outdoor transformation service creates living areas with elegant pergolas, fire pits for warm moments, grills for unforgettable gatherings and a perfect balance of concrete pavers and natural grass. Cozy lighting enhances every detail, creating an ideal environment for relaxing, sharing and making the most of your home. Our architects and designers will turn your patio into a dream space for the whole family.",
       images: [
         require("../../assets/Images Renderizadas/BACKYARD/171bab5615fb26781618d8ac56311a9a.webp"),
@@ -448,7 +477,8 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
     },
     {
       title: "General Construction and Repair",
-      description: "We offer comprehensive solutions for construction, maintenance, painting, and repairs.",
+      description:
+        "We offer comprehensive solutions for construction, maintenance, painting, and repairs.",
       cont: "We offer comprehensive solutions for construction, maintenance, painting, repair of roofs, walls, floors and any damaged area of the building. Whether you need to develop a project from scratch or restore existing structures, our team is ready to deliver quality results. From structural improvements to detailed renovations, we provide reliable service tailored to your needs.",
       images: [
         require("../../assets/Images Renderizadas/GENERAL REPAIR/15640787a9376f5b01b69b5c345656da.webp"),
@@ -459,7 +489,8 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
     },
     {
       title: "Financial Support",
-      description: "We help you access the financial resources available to develop construction and renovation projects.",
+      description:
+        "We help you access the financial resources available to develop construction and renovation projects.",
       cont: "Through credit options or structured loans, homeowners can invest in an Auxiliary Dwelling Unit (ADU) or improve their home, distributing the payment in affordable installments. This service provides financial flexibility, facilitating the materialization of projects without compromising economic stability.",
       images: [
         require("../../assets/Images Renderizadas/FINANCING/71j10cyRf8L._SL1360_.webp"),
@@ -497,13 +528,13 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
   };
 
   const handleNextImage = () => {
-    setCurrentImageIndex(prev => 
+    setCurrentImageIndex((prev) =>
       prev === selectedService.images.length - 1 ? 0 : prev + 1
     );
   };
 
   const handlePrevImage = () => {
-    setCurrentImageIndex(prev => 
+    setCurrentImageIndex((prev) =>
       prev === 0 ? selectedService.images.length - 1 : prev - 1
     );
   };
@@ -517,7 +548,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
     <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 pt-20 lg:pt-10 lg:h-screen">
       <ScrollView
         ref={scrollViewRef}
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         showsVerticalScrollIndicator={false}
       >
         <View className="mx-auto w-full max-w-6xl">
@@ -552,7 +583,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                   {service.title}
                 </Text>
                 <Text className="text-[#315072]">{service.description}</Text>
-                
+
                 <Text className="mt-4 font-medium text-[#315072] transition-colors duration-300">
                   Read More →
                 </Text>
@@ -577,12 +608,14 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
             >
               <Ionicons name="close" size={28} color="#315072" />
             </TouchableOpacity>
-            
+
             <View className="flex-col flex-1 justify-center gap-2 mb-0 pr-0 lg:pr-6 pb-3 min-w-0 max-w-full">
               <Text className="hidden lg:block font-bold text-[#315072] text-2xl">
                 {selectedService?.title}
               </Text>
-              <Text className="my-0 pt-8 lg:pt-0 text-[#315072] lg:text-md text-xs">{selectedService?.cont}</Text>
+              <Text className="my-0 pt-8 lg:pt-0 text-[#315072] lg:text-md text-xs">
+                {selectedService?.cont}
+              </Text>
               <View className="flex flex-row flex-wrap gap-2 pt-2 w-full">
                 <TouchableOpacity
                   onPress={handleCloseModal}
@@ -597,46 +630,50 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                   }}
                   className="bg-[#e1f0ff] px-4 py-2 rounded-md"
                 >
-                  <Text className="font-medium text-[#315072]">Make a Question</Text>
+                  <Text className="font-medium text-[#315072]">
+                    Make a Question
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleGetStarted}
                   className="z-70 bg-[#badcff] px-4 py-2 rounded-md pointer"
                 >
-                  <Text className="font-medium text-[#315072]">Get Started</Text>
+                  <Text className="font-medium text-[#315072]">
+                    Get Started
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
-            
+
             <View className="relative flex-1 pt-3">
               <View className="lg:hidden top-0 right-0 left-0 z-10 my-2 rounded-t-xl">
                 {services.map((service, index) => {
-                    if (service.title === selectedService?.title) {
-                      return (
-                        <View key={index} className="w-full h-full">
-                          <Text className="font-bold text-[#315072] text-2xl">
-                            {service.title}
-                          </Text>
-                        </View>
-                      );
-                    }
-                    return null;
-                  })}
+                  if (service.title === selectedService?.title) {
+                    return (
+                      <View key={index} className="w-full h-full">
+                        <Text className="font-bold text-[#315072] text-2xl">
+                          {service.title}
+                        </Text>
+                      </View>
+                    );
+                  }
+                  return null;
+                })}
               </View>
               {/* Enhanced Carousel */}
               <View className="justify-center items-center w-full h-full">
                 <Image
                   source={selectedService?.images[currentImageIndex]}
-                  style={{ 
-                    width: isDesktop ? 300 : isTablet ? 420 : 280, 
-                    height: isDesktop ? 260 : isTablet ? 220 : 160, 
-                    marginTop: isTablet ? 15 : 0, 
+                  style={{
+                    width: isDesktop ? 300 : isTablet ? 420 : 280,
+                    height: isDesktop ? 260 : isTablet ? 220 : 160,
+                    marginTop: isTablet ? 15 : 0,
                     borderRadius: 16,
                   }}
                   resizeMode="cover"
                   className="shadow-lg mt-10 lg:mt-0 mb-2"
                 />
-                
+
                 {/* Navigation Arrows */}
                 <TouchableOpacity
                   onPress={handlePrevImage}
@@ -650,7 +687,7 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                 >
                   <Ionicons name="chevron-forward" size={24} color="#315072" />
                 </TouchableOpacity>
-                
+
                 {/* Indicators */}
                 <View className="flex-row justify-center mt-2">
                   {selectedService?.images.map((_, index) => (
@@ -660,13 +697,15 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                     >
                       <View
                         className={`w-2 h-2 mx-1 rounded-full ${
-                          index === currentImageIndex ? 'bg-[#315072]' : 'bg-gray-300'
+                          index === currentImageIndex
+                            ? "bg-[#315072]"
+                            : "bg-gray-300"
                         }`}
                       />
                     </TouchableOpacity>
                   ))}
                 </View>
-                
+
                 {/* Image Counter */}
                 <View className="right-2 bottom-2 absolute bg-black/50 px-2 rounded-md">
                   <Text className="text-white text-xs">
@@ -725,7 +764,9 @@ function ServicesSection({ scrollToSection }: { scrollToSection?: (section: stri
                     : "bg-gray-300"
                 }`}
               >
-                <Text className="font-bold text-[#315072] text-center">Send</Text>
+                <Text className="font-bold text-[#315072] text-center">
+                  Send
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -749,7 +790,7 @@ function FAQSection({
         " - Architectural plans\n" +
         " - City permit management\n" +
         " - Construction and project management\n" +
-        " - Financing solutions for your project"
+        " - Financing solutions for your project",
     },
     {
       question: "What is an ADU, and how can it benefit my property?",
@@ -773,11 +814,13 @@ function FAQSection({
     },
     {
       question: "How long does a remodel or new construction take?",
-      answer: "The timeline for construction depends on the project's complexity and scope. A full ADU construction typically takes 4 to 6 months, from design to completion, depending on permitting delays, material availability, and site conditions. Interior remodels or backyard enhancements may take less time, usually between a few weeks to several months. At DWELLING PLUS, we prioritize efficiency without compromising quality. We establish realistic timelines and keep clients informed about progress, ensuring expectations are met. Our streamlined processes and experienced team help minimize delays while delivering high-quality results."
+      answer:
+        "The timeline for construction depends on the project's complexity and scope. A full ADU construction typically takes 4 to 6 months, from design to completion, depending on permitting delays, material availability, and site conditions. Interior remodels or backyard enhancements may take less time, usually between a few weeks to several months. At DWELLING PLUS, we prioritize efficiency without compromising quality. We establish realistic timelines and keep clients informed about progress, ensuring expectations are met. Our streamlined processes and experienced team help minimize delays while delivering high-quality results.",
     },
     {
       question: "What types of designs and visualizations do you provide?",
-      answer: "Before construction begins, we provide clients with comprehensive visualizations to help them make informed decisions. This includes conceptual sketches, 2D architectural plans, and detailed 3D renders that showcase how the final structure will look. We also offer virtual walkthroughs, allowing homeowners to 'step inside' their future space through digital simulations. These tools help clients explore different layouts, materials, and aesthetics before committing to a design. Visualization is a crucial part of our process, ensuring that expectations align with reality while eliminating costly design changes later in construction."
+      answer:
+        "Before construction begins, we provide clients with comprehensive visualizations to help them make informed decisions. This includes conceptual sketches, 2D architectural plans, and detailed 3D renders that showcase how the final structure will look. We also offer virtual walkthroughs, allowing homeowners to 'step inside' their future space through digital simulations. These tools help clients explore different layouts, materials, and aesthetics before committing to a design. Visualization is a crucial part of our process, ensuring that expectations align with reality while eliminating costly design changes later in construction.",
     },
     {
       question: "Can you help me maximize my property's value?",
@@ -786,16 +829,19 @@ function FAQSection({
     },
     {
       question: "How do you ensure transparency and speed in construction?",
-      answer: "We believe that construction should be a stress-free process. Our approach combines clear communication, structured timelines, and efficient project management to minimize disruptions. From the initial consultation to the final build, we provide homeowners with regular updates, detailed cost breakdowns, and realistic completion schedules. Transparency is key—we ensure that every step is clearly outlined, so clients understand what to expect. Additionally, our established relationships with suppliers and city authorities allow us to accelerate permitting and sourcing, ensuring that projects move forward smoothly."
+      answer:
+        "We believe that construction should be a stress-free process. Our approach combines clear communication, structured timelines, and efficient project management to minimize disruptions. From the initial consultation to the final build, we provide homeowners with regular updates, detailed cost breakdowns, and realistic completion schedules. Transparency is key—we ensure that every step is clearly outlined, so clients understand what to expect. Additionally, our established relationships with suppliers and city authorities allow us to accelerate permitting and sourcing, ensuring that projects move forward smoothly.",
     },
     {
       question: "What kinds of backyard projects do you build?",
-      answer: "We specialize in creating beautiful, functional outdoor spaces that enhance the homeowner’s quality of life. Our backyard projects include customized patios, pergolas, outdoor kitchens, fire pits, and landscaping features that maximize enjoyment and usability. We also design recreational areas for families, such as play zones, seating arrangements, and shaded spaces. Whether homeowners seek a relaxing retreat, a stylish entertainment area, or an outdoor workspace, we tailor backyard designs to match individual lifestyles and property layouts."
+      answer:
+        "We specialize in creating beautiful, functional outdoor spaces that enhance the homeowner’s quality of life. Our backyard projects include customized patios, pergolas, outdoor kitchens, fire pits, and landscaping features that maximize enjoyment and usability. We also design recreational areas for families, such as play zones, seating arrangements, and shaded spaces. Whether homeowners seek a relaxing retreat, a stylish entertainment area, or an outdoor workspace, we tailor backyard designs to match individual lifestyles and property layouts.",
     },
     {
       question: "How do I get started with DWELLING PLUS?",
-      answer: "Getting started is simple! Contact us for a personalized consultation where we assess your property, discuss your vision, and present initial design concepts. Once a project direction is chosen, we handle everything—from detailed planning and city permits to construction and final inspections. Our goal is to streamline the process, ensuring a hassle-free experience while delivering high-quality results. Whether you're interested in building an ADU, renovating your home, or enhancing your backyard, DWELLING PLUS is ready to bring your ideas to life."
-    }
+      answer:
+        "Getting started is simple! Contact us for a personalized consultation where we assess your property, discuss your vision, and present initial design concepts. Once a project direction is chosen, we handle everything—from detailed planning and city permits to construction and final inspections. Our goal is to streamline the process, ensuring a hassle-free experience while delivering high-quality results. Whether you're interested in building an ADU, renovating your home, or enhancing your backyard, DWELLING PLUS is ready to bring your ideas to life.",
+    },
   ];
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
@@ -803,7 +849,9 @@ function FAQSection({
   const [question, setQuestion] = useState("");
   const [showContactModal, setShowContactModal] = useState(false);
   const [contactInfo, setContactInfo] = useState("");
-  const [contactType, setContactType] = useState<"email" | "phone" | null>(null);
+  const [contactType, setContactType] = useState<"email" | "phone" | null>(
+    null
+  );
   const [submitted, setSubmitted] = useState(false);
 
   const { width } = useWindowDimensions();
@@ -831,10 +879,7 @@ function FAQSection({
 
   // Divide las preguntas en 2 columnas
   const colLength = Math.ceil(faqs.length / 2);
-  const columns = [
-    faqs.slice(0, colLength),
-    faqs.slice(colLength)
-  ];
+  const columns = [faqs.slice(0, colLength), faqs.slice(colLength)];
 
   return (
     <View className="flex flex-col items-center gap-2 bg-[#FFFFFF] px-2 py-36 w-full">
@@ -846,11 +891,21 @@ function FAQSection({
       <View
         className={`
           flex flex-row justify-center items-start mb-10 w-full px-4
-          ${isMobile ? "gap-4 max-w-xl  " : isTablet ? "gap-6 max-w-4xl" : "gap-8 max-w-6xl"}
+          ${
+            isMobile
+              ? "gap-4 max-w-xl  "
+              : isTablet
+              ? "gap-6 max-w-4xl"
+              : "gap-8 max-w-6xl"
+          }
         `}
       >
         {/* Columna de preguntas */}
-        <View className={`lg:flex-col  flex-row flex-1  ${isMobile ? "gap-2" : "gap-4"}`}>
+        <View
+          className={`lg:flex-col  flex-row flex-1  ${
+            isMobile ? "gap-2" : "gap-4"
+          }`}
+        >
           {columns.map((faqsCol, colIdx) => (
             <View key={colIdx} className="flex-1">
               {faqsCol.map((faq, idx) => {
@@ -863,10 +918,16 @@ function FAQSection({
                       if (isMobile) setShowAnswerModal(true);
                     }}
                     className={`mb-2 px-3 py-3 rounded-xl border border-[#e1f0ff] bg-[#f7fbff] shadow-sm transition-all ${
-                      selectedIndex === realIdx && !isMobile ? "bg-[#9dccfc] border-[#0080ff]" : ""
+                      selectedIndex === realIdx && !isMobile
+                        ? "bg-[#9dccfc] border-[#0080ff]"
+                        : ""
                     }`}
                   >
-                    <Text className={`font-semibold text-[#315072] text-base ${selectedIndex === realIdx && !isMobile ? "" : ""}`}>
+                    <Text
+                      className={`font-semibold text-[#315072] text-base ${
+                        selectedIndex === realIdx && !isMobile ? "" : ""
+                      }`}
+                    >
                       {faq.question}
                     </Text>
                   </TouchableOpacity>
@@ -877,7 +938,11 @@ function FAQSection({
         </View>
         {/* Respuesta solo en tablet/desktop */}
         {!isMobile && (
-          <View className={`flex-1 bg-[#f7fbff] shadow-sm p-4 lg:p-6 border border-[#e1f0ff] rounded-xl max-w-xl min-h-[220px] ${isTablet ? "ml-4" : "ml-8"}`}>
+          <View
+            className={`flex-1 bg-[#f7fbff] shadow-sm p-4 lg:p-6 border border-[#e1f0ff] rounded-xl max-w-xl min-h-[220px] ${
+              isTablet ? "ml-4" : "ml-8"
+            }`}
+          >
             <Text className="mb-2 font-bold text-[#315072] text-lg">
               {faqs[selectedIndex].question}
             </Text>
@@ -905,8 +970,7 @@ function FAQSection({
                     question.trim().length < 5
                       ? "bg-[#e1f0ff]"
                       : "bg-[#a6d2ff] hover:bg-[#e1f0ff]"
-                  }`
-                }
+                  }`}
               >
                 <Text className="font-bold text-[#315072] text-center">
                   Send
@@ -994,12 +1058,12 @@ function FAQSection({
                 onPress={handleContactSubmit}
                 disabled={!isContactValid}
                 className={`px-4 py-2 rounded-md ${
-                  isContactValid
-                    ? "bg-[#badcff]"
-                    : "bg-gray-300"
+                  isContactValid ? "bg-[#badcff]" : "bg-gray-300"
                 }`}
               >
-                <Text className="font-bold text-[#315072] text-center">Send</Text>
+                <Text className="font-bold text-[#315072] text-center">
+                  Send
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -1024,7 +1088,7 @@ function ContactSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [searchDebounce, setSearchDebounce] = useState<NodeJS.Timeout>();
+  const [searchDebounce, setSearchDebounce] = useState<any>();
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
   const [showContactModal, setShowContactModal] = useState(false);
@@ -1480,6 +1544,9 @@ function Footer({ scrollToSection }: any) {
             <Text className="mt-1 text-[#315072] text-xs">
               Map data © OpenStreetMap contributors
             </Text>
+            <a href="https://www.vecteezy.com/free-photos/mobile-homes">
+              Mobile Homes Stock photos by Vecteezy
+            </a>
           </View>
 
           <View className="gap-8 grid grid-cols-2">
@@ -1525,13 +1592,17 @@ function Footer({ scrollToSection }: any) {
           </View>
           <View className="flex flex-row justify-center gap-4 mt-4">
             <TouchableOpacity
-              onPress={() => Linking.openURL("https://www.facebook.com/tu-negocio")}
+              onPress={() =>
+                Linking.openURL("https://www.facebook.com/tu-negocio")
+              }
               accessibilityLabel="Facebook"
             >
               <Ionicons name="logo-facebook" size={28} color="#120" />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => Linking.openURL("https://www.instagram.com/tu-negocio")}
+              onPress={() =>
+                Linking.openURL("https://www.instagram.com/tu-negocio")
+              }
               accessibilityLabel="Instagram"
             >
               <Ionicons name="logo-instagram" size={28} color="#120" />
