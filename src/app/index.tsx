@@ -78,7 +78,7 @@ export default function Page() {
   const sections = ["home", "services", "faq"];
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-[#e5e5e5]">
       <Header
         sections={sections}
         scrollToSection={scrollToSection}
@@ -161,7 +161,7 @@ function Header({
 
   const isDesktop = width >= 1024;
   const intensity = isScrolled ? 400 : 0;
-  
+
   return (
     <View
       style={{
@@ -174,7 +174,6 @@ function Header({
         tint={null}
         style={{
           width: "100%",
-
         }}
       >
         <View className="flex flex-row justify-between items-center mx-auto px-4 py-2 w-full max-w-7xl h-12">
@@ -545,7 +544,7 @@ function ServicesSection({
     setModalVisible(true);
   };
   return (
-    <View className="flex flex-col justify-center items-center bg-[#FFFFFF] px-6 pt-20 lg:pt-10 lg:h-screen">
+    <View className="flex flex-col justify-center items-center bg-[#e5e5e5] px-6 pt-20 lg:pt-10 lg:h-screen">
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
@@ -567,7 +566,7 @@ function ServicesSection({
               <Pressable
                 onPress={() => openModalWithService(service)}
                 key={index}
-                className="flex flex-col justify-between bg-[#e1f0ff] hover:shadow-sm mb-2 p-3 border border-[#c9e4ff] rounded-xl transition-shadow duration-300"
+                className="flex flex-col justify-between bg-[#315072]  mb-2 p-3 border border-[#527193] rounded-xl transition-shadow duration-300"
               >
                 <Image
                   source={service.images[0]}
@@ -579,12 +578,12 @@ function ServicesSection({
                   }}
                   resizeMode="cover"
                 />
-                <Text className="mb-1 lg:mb-2 font-semibold text-[#315072] text-xl">
+                <Text className="mb-1 lg:mb-2 font-semibold text-[#e5e5e5] text-xl">
                   {service.title}
                 </Text>
-                <Text className="text-[#315072]">{service.description}</Text>
+                <Text className="text-[#e5e5e5]">{service.description}</Text>
 
-                <Text className="mt-4 font-medium text-[#315072] transition-colors duration-300">
+                <Text className="mt-4 font-medium text-[#e5e5e5] transition-colors duration-300">
                   Read More →
                 </Text>
               </Pressable>
@@ -882,7 +881,7 @@ function FAQSection({
   const columns = [faqs.slice(0, colLength), faqs.slice(colLength)];
 
   return (
-    <View className="flex flex-col items-center gap-2 bg-[#FFFFFF] px-2 py-36 w-full">
+    <View className="flex flex-col items-center gap-2 bg-[#e5e5e5] px-2 py-36 w-full">
       {/* Título centrado */}
       <Text className="mb-10 font-bold text-[#315072] text-2xl lg:text-3xl text-center">
         Frequently Asked Questions
@@ -1228,7 +1227,7 @@ function ContactSection() {
   };
 
   return (
-    <View className="flex justify-center items-center bg-[#FFFFFF] px-6 w-full">
+    <View className="flex justify-center items-center bg-[#e5e5e5] px-6 w-full">
       {/* Modal SOLO en móvil */}
       {!isDesktop && (
         <Modal
@@ -1287,11 +1286,11 @@ function ContactSection() {
 
       <View className="flex lg:flex-row flex-col gap-5 bg-white drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl">
         {/* Contact Info */}
-        <View className="bg-[#e1f0ff] drop-shadow-md px-10 pt-7 rounded-xl w-full lg:w-1/2">
-          <Text className="mb-2 lg:mb-6 font-bold text-[#315072] text-2xl md:text-3xl text-left">
+        <View className="bg-[#315072] drop-shadow-md px-10 pt-7 rounded-xl w-full lg:w-1/2">
+          <Text className="mb-2 lg:mb-6 font-bold text-[#e5e5e5] text-2xl md:text-3xl text-left">
             Contact Information
           </Text>
-          <Text className="flex text-[#315072] lg:text-lg text-xl lg:text-left text-center">
+          <Text className="flex text-[#e5e5e5] lg:text-lg text-xl lg:text-left text-center">
             Get in touch with us{" "}
             <Text className="hidden lg:flex">
               for any questions or inquiries.
@@ -1333,12 +1332,12 @@ function ContactSection() {
                     onPress={() => Linking.openURL(`tel:${PHONE_CONTACT}`)}
                     className="flex-row justify-start items-center gap-2 hover:drop-shadow-md lg:pb-5 border-[#ffffff63] border-b-2 w-96"
                   >
-                    <Ionicons name="call" color={"#315072"} size={30} />
+                    <Ionicons name="call" color={"#e5e5e5"} size={30} />
                     <View className="gap-0 lg:gap-3 p-2">
-                      <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
+                      <Text className="lg:flex items-center gap-5 font-semibold text-[#e5e5e5] lg:text-md text-lg">
                         {PHONE_CONTACT}
                       </Text>
-                      <Text className="lg:flex items-center gap-5">
+                      <Text className="lg:flex items-center gap-5 text-[#e5e5e5]">
                         Call now for a free consultation
                       </Text>
                     </View>
@@ -1347,12 +1346,14 @@ function ContactSection() {
                     onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                     className="flex-row justify-start items-center gap-2 hover:drop-shadow-md border-[#ffffff63] w-96"
                   >
-                    <Ionicons name="mail" color={"#315072"} size={30} />
+                    <Ionicons name="mail" color={"#e5e5e5"} size={30} />
                     <View className="gap-0 lg:gap-3 p-2">
-                      <Text className="lg:flex items-center gap-5 font-semibold text-[#315072] lg:text-md text-lg">
+                      <Text className="lg:flex items-center gap-5 font-semibold text-[#e5e5e5] lg:text-md text-lg">
                         {MAIL_CONTACT}
                       </Text>
-                      <Text>Email us to discuss your project</Text>
+                      <Text className="lg:flex items-center gap-5 text-[#e5e5e5]">
+                        Email us to discuss your project
+                      </Text>
                     </View>
                   </TouchableOpacity>
                 </View>
