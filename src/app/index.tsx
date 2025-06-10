@@ -26,17 +26,20 @@ import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useWindowDimensions } from "react-native";
 import useScrolled from "@/hooks/useScroll";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import { LinearGradient } from "react-native-svg";
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const COLORS = {
-  primary: "#315072",
-  secondary: "#f0c14b",
-  accent: "#d4a017",
-  background: "#FFFFFF",
-  card: "#f9f1d9",
-  text: "#315072",
-  lightText: "#f5e5a6",
-  border: "#c9e4ff",
-  error: "#e53e3e",
+  blueDark: "#315072",        
+  blueDarker: "#293b51",      
+  white: "#e9eef5",           
+  whiteSoft: "#f4f7fb",       
+  border: "#1b2636",          
+  error: "#e53e3e",           
+  accent: "#709ac0",          
+  accentSoft: "#a2bdd7",      
+  gray: "#9ca3af",            
+  blackOverlay: "rgba(0,0,0,0.4)", 
 };
 
 const FONTS = {
@@ -78,7 +81,7 @@ export default function Page() {
   const sections = ["home", "services", "faq"];
 
   return (
-    <View className="flex-1 bg-[#e5e5e5]">
+    <View className="flex-1" style={{ backgroundColor: COLORS.whiteSoft }}>
       <Header
         sections={sections}
         scrollToSection={scrollToSection}
@@ -86,7 +89,7 @@ export default function Page() {
       />
       <ScrollView
         ref={scrollViewRef}
-        pagingEnabled={isLargeScreen} // Ahora incluye tablets
+        pagingEnabled={isLargeScreen}
         showsVerticalScrollIndicator={false}
         className="flex-1"
         onScroll={onScroll}
@@ -160,7 +163,6 @@ function Header({
   const { width } = useWindowDimensions();
 
   const isDesktop = width >= 1024;
-  const intensity = isScrolled ? 400 : 0;
 
   return (
     <View
@@ -201,16 +203,18 @@ function Header({
                 className="group relative py-1"
               >
                 <Text
-                  className={`font-bold text-sm uppercase transition-colors duration-200 ${
-                    isScrolled ? "text-[#315072]" : "text-[#315072]"
-                  }`}
+                  className={`font-bold text-sm uppercase transition-colors duration-200`}
+                  style={{ color: COLORS.blueDark }}
                 >
                   {section}
                 </Text>
                 <View
-                  className={`absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-300 ${
-                    isScrolled ? "bg-[#495a6d]" : "bg-[#315072]"
-                  }`}
+                  className={`absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-300`}
+                  style={{
+                    backgroundColor: isScrolled
+                      ? COLORS.blueDarker
+                      : COLORS.blueDark,
+                  }}
                 />
               </TouchableOpacity>
             ))}
@@ -225,7 +229,7 @@ function Header({
               }
               accessibilityLabel="Facebook"
             >
-              <Ionicons name="logo-facebook" size={26} color={"#315072"} />
+              <Ionicons name="logo-facebook" size={26} color={COLORS.blueDark} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
@@ -234,13 +238,16 @@ function Header({
               className="ml-3"
               accessibilityLabel="Instagram"
             >
-              <Ionicons name="logo-instagram" size={26} color={"#315072"} />
+              <Ionicons name="logo-instagram" size={26} color={COLORS.blueDark} />
             </TouchableOpacity>
             <TouchableOpacity
-              className={`px-3 py-1.5 rounded-md transition-all duration-300 bg-[#315072] hover:bg-[#a6d2ff]" ml-3`}
+              className={`px-3 py-1.5 rounded-md transition-all duration-300`}
+              style={{ backgroundColor: COLORS.blueDark, marginLeft: 12 }}
               onPress={() => scrollToSection("contact")}
             >
-              <Text className={`font-bold text-sm text-white`}>Contact</Text>
+              <Text className={`font-bold text-sm`} style={{ color: COLORS.white }}>
+                Contact
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -250,21 +257,34 @@ function Header({
               onPress={() => setMenuOpen(!menuOpen)}
               className="-mr-2 p-2"
             >
-              <View className="relative justify-center w-6 h-6">
+              <View className="relative w-6 h-6">
                 <View
-                  className={`absolute w-6 h-0.5 rounded-full bg-[#315072] transition-all duration-300 ${
-                    menuOpen ? "rotate-45 top-1/2" : "top-0"
-                  }`}
+                  className={`absolute w-6 h-0.5 rounded-full transition-all duration-300`}
+                  style={{
+                    backgroundColor: COLORS.blueDark,
+                    transform: menuOpen
+                      ? [{ rotate: "45deg" }, { translateY: 12 }]
+                      : [],
+                    top: menuOpen ? "50%" : 0,
+                  }}
                 />
                 <View
-                  className={`absolute w-6 h-0.5 rounded-full bg-[#315072] transition-all duration-300 ${
-                    menuOpen ? "opacity-0" : "top-1/2"
-                  }`}
+                  className={`absolute w-6 h-0.5 rounded-full transition-all duration-300`}
+                  style={{
+                    backgroundColor: COLORS.blueDark,
+                    opacity: menuOpen ? 0 : 1,
+                    top: "50%",
+                  }}
                 />
                 <View
-                  className={`absolute w-6 h-0.5 rounded-full bg-[#315072] transition-all duration-300 ${
-                    menuOpen ? "-rotate-45 top-1/2" : "top-full"
-                  }`}
+                  className={`absolute w-6 h-0.5 rounded-full transition-all duration-300`}
+                  style={{
+                    backgroundColor: COLORS.blueDark,
+                    transform: menuOpen
+                      ? [{ rotate: "-45deg" }, { translateY: 12 }]
+                      : [],
+                    top: menuOpen ? "50%" : "100%",
+                  }}
                 />
               </View>
             </TouchableOpacity>
@@ -274,12 +294,16 @@ function Header({
         {/* Mobile Menu */}
         {menuOpen && (
           <View
-            className={`md:hidden h-screen justify-center items-center  px-6 py-4 border-t ${
-              isScrolled ? "border-[#c9e4ff]" : "border-white/20"
-            } w-full`}
+            className={`md:hidden h-screen justify-center items-center  px-6 py-4 border-t w-full`}
+            style={{
+              borderColor: isScrolled ? COLORS.accentSoft : COLORS.white + "33",
+            }}
           >
             <View className="max-w-7xl">
-              <Text className={`mb-4 font-bold text-3xl text-[#315072]`}>
+              <Text
+                className={`mb-4 font-bold text-3xl`}
+                style={{ color: COLORS.blueDark }}
+              >
                 DWELLINGPLUS
               </Text>
 
@@ -290,10 +314,12 @@ function Header({
                     scrollToSection(section, true);
                     setMenuOpen(false);
                   }}
-                  className={`py-3 border-b border-[#315072] last:border-0`}
+                  className={`py-3 border-b last:border-0`}
+                  style={{ borderColor: COLORS.blueDark }}
                 >
                   <Text
-                    className={`font-medium text-lg uppercase  text-center text-[#315072]`}
+                    className={`font-medium text-lg uppercase  text-center`}
+                    style={{ color: COLORS.blueDark }}
                   >
                     {section}
                   </Text>
@@ -305,10 +331,12 @@ function Header({
                     scrollToSection("contact", true);
                     setMenuOpen(false);
                   }}
-                  className={`w-full px-4 py-3 rounded-md shadow-sm bg-[#315072]`}
+                  className={`w-full px-4 py-3 rounded-md shadow-sm`}
+                  style={{ backgroundColor: COLORS.blueDark }}
                 >
                   <Text
-                    className={`text-sm text-center  font-weight-600  text-white `}
+                    className={`text-sm text-center  font-weight-600`}
+                    style={{ color: COLORS.white }}
                   >
                     Contact
                   </Text>
@@ -323,7 +351,7 @@ function Header({
                     <Ionicons
                       name="logo-facebook"
                       size={28}
-                      color={"#315072"}
+                      color={COLORS.blueDark}
                     />
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -335,7 +363,7 @@ function Header({
                     <Ionicons
                       name="logo-instagram"
                       size={28}
-                      color={"#315072"}
+                      color={COLORS.blueDark}
                     />
                   </TouchableOpacity>
                 </View>
@@ -354,43 +382,45 @@ function LandingSection({
 }) {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
-  const isTablet = width >= 768 && width < 1024;
 
   return (
     <FadeInView>
-      <View className="flex flex-1 w-full h-screen relative">
-        {/* Imagen de fondo */}
-        <Image
-          source={"landing.jpg"}
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-          }}
-          resizeMode="cover"
-          className="z-0"
+      <View className="relative flex flex-1">
+        {/* Fondo claro */}
+        <View
+          className="absolute inset-0 w-full h-full"
+          style={{ backgroundColor: COLORS.whiteSoft, zIndex: 0 }}
         />
 
-        {/* Contenido superpuesto */}
-        <View className="flex flex-1 px-6 w-full h-screen z-10 bg-black/10">
+        {/* Imagen */}
+        <Image
+          source={"landing.jpg"}
+          className="hidden lg:block z-10 absolute w-full h-screen cover"
+        />
+        <Image
+        source={"landingCell.jpg"}
+        className="lg:hidden block z-10 absolute w-full h-screen cover"
+        />
+        {/* Contenido */}
+        <View className="z-20 flex flex-1 justify-center items-center w-full h-screen">
           <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
-            {/* Columna izquierda */}
-            <View className="z-50 flex flex-col justify-center items-center  m-auto w-full  h-full">
-              <View className="w-full flex justify-center items-center">
+            <View className="flex flex-col justify-center items-center m-auto w-full h-full">
+              <View className="flex justify-center items-center mt-44 w-full">
                 <Image
                   source={"logo-navy.png"}
                   style={{
-                    width: isDesktop ? 680 : 500,
-                    height: isDesktop ? 280 : 200,
+                    width: isDesktop ? 680 : 350,
+                    height: isDesktop ? 280 : 250,
                     marginTop: "-280px",
                   }}
                   resizeMode="contain"
-                  className="mb-4 "
                 />
               </View>
-
-              <View className="flex flex-col justify-end items-center gap-4 mt-2 w-full">
-                <Text className=" mt-5 mb-8 p-2 lg:p-0 pt-5  font-medium text-[#315072] text-lg lg:text-xl">
+              <View className="flex flex-col justify-center items-center gap-4 lg:mt-2">
+                <Text
+                  className="drop-shadow-lg lg:mt-5 mb-8 p-4 lg:p-0 lg:pt-5 rounded-md font-medium text-lg lg:text-xl"
+                  style={{ color: COLORS.blueDark, backgroundColor: isDesktop ? "none" : COLORS.whiteSoft }}
+                >
                   Our goal is to help you develop your property. We work with
                   passion to meet the expectations of home owners and
                   developers.
@@ -398,17 +428,43 @@ function LandingSection({
                 <View className="flex flex-row justify-center items-center gap-4 mt-2 w-full">
                   <TouchableOpacity
                     onPress={() => scrollToSection("services", true)}
-                    className="hover:bg-blue-200 px-4 py-2 rounded-md"
+                    style={{
+                      borderColor: COLORS.blueDark,
+                      backgroundColor: isDesktop ? "none" : COLORS.whiteSoft,
+                      borderWidth: 1,
+                      borderRadius: 6,
+                      paddingHorizontal: 16,
+                      paddingVertical: 8,
+                    }}
                   >
-                    <Text className="font-medium text-[#315072] font-weight-600 text-base text-center">
+                    <Text
+                      style={{
+                        color: COLORS.blueDark,
+                        fontWeight: "600",
+                        fontSize: 16,
+                        textAlign: "center",
+                      }}
+                    >
                       More Information
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => scrollToSection("contact")}
-                    className="bg-[#315072] hover:bg-blue-200 px-4 py-2 rounded-md"
+                    style={{
+                      backgroundColor: COLORS.blueDark,
+                      borderRadius: 6,
+                      paddingHorizontal: 16,
+                      paddingVertical: 8,
+                    }}
                   >
-                    <Text className="font-medium text-white text-base text-center">
+                    <Text
+                      style={{
+                        color: COLORS.white,
+                        fontWeight: "600",
+                        fontSize: 16,
+                        textAlign: "center",
+                      }}
+                    >
                       Get Started →
                     </Text>
                   </TouchableOpacity>
@@ -543,30 +599,39 @@ function ServicesSection({
     setCurrentImageIndex(0);
     setModalVisible(true);
   };
+
   return (
-    <View className="flex flex-col justify-center items-center bg-[#e5e5e5] px-6 pt-20 lg:pt-10 lg:h-screen">
+    <View
+      className="flex flex-col justify-center items-center py-5 pt-12 md:w-full md:h-screen"
+      style={{ backgroundColor: COLORS.white }}
+    >
       <ScrollView
-        ref={scrollViewRef}
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         showsVerticalScrollIndicator={false}
       >
         <View className="mx-auto w-full max-w-6xl">
-          <Text className="mb-3 font-bold text-[#315072] text-3xl md:text-4xl text-center">
+          <Text
+            className="mb-3 font-bold text-3xl md:text-4xl text-center"
+            style={{ color: COLORS.blueDark }}
+          >
             Our Services
           </Text>
           <Text
-            className="mb-10 font-extralight text-[#315072] text-lg md:text-xl text-center"
-            style={{ fontFamily: "Arial" }}
+            className="mb-10 px-4 font-extralight text-lg md:text-xl text-center"
+            style={{ color: COLORS.blueDark, fontFamily: "Arial" }}
           >
             We offer a wide range of services to meet your needs.
           </Text>
-
-          <View className="gap-4 lg:gap-5 grid grid-cols-1 md:grid-cols-3 mx-5">
+          <View className="gap-4 lg:gap-5 grid grid-cols-1 md:grid-cols-3 px-5">
             {services.map((service, index) => (
               <Pressable
                 onPress={() => openModalWithService(service)}
                 key={index}
-                className="flex flex-col justify-between bg-[#315072]  mb-2 p-3 border border-[#527193] rounded-xl transition-shadow duration-300"
+                className="flex flex-col justify-between mb-2 p-3 border rounded-xl transition-shadow duration-300"
+                style={{
+                  backgroundColor: COLORS.blueDark,
+                  borderColor: COLORS.border,
+                }}
               >
                 <Image
                   source={service.images[0]}
@@ -578,12 +643,19 @@ function ServicesSection({
                   }}
                   resizeMode="cover"
                 />
-                <Text className="mb-1 lg:mb-2 font-semibold text-[#e5e5e5] text-xl">
+                <Text
+                  className="mb-1 lg:mb-2 font-semibold text-xl"
+                  style={{ color: COLORS.white }}
+                >
                   {service.title}
                 </Text>
-                <Text className="text-[#e5e5e5]">{service.description}</Text>
-
-                <Text className="mt-4 font-medium text-[#e5e5e5] transition-colors duration-300">
+                <Text style={{ color: COLORS.white }}>
+                  {service.description}
+                </Text>
+                <Text
+                  className="mt-4 font-medium transition-colors duration-300"
+                  style={{ color: COLORS.whiteSoft }}
+                >
                   Read More →
                 </Text>
               </Pressable>
@@ -599,45 +671,64 @@ function ServicesSection({
         animationType="fade"
         onRequestClose={handleCloseModal}
       >
-        <View className="flex-col-reverse flex-1 justify-center items-center gap-2 bg-black/40">
-          <View className="relative lg:flex-row flex-col-reverse justify-center gap-5 bg-white mx-2 p-5 rounded-xl max-w-4xl">
+        <View className="flex-col-reverse flex-1 justify-center items-center gap-2"
+          style={{ backgroundColor: COLORS.blackOverlay }}>
+          <View className="relative lg:flex-row flex-col-reverse justify-center gap-5"
+            style={{ backgroundColor: COLORS.white, marginHorizontal: 8, padding: 20, borderRadius: 16, maxWidth: 900 }}>
             <TouchableOpacity
               onPress={handleCloseModal}
-              className="top-4 right-4 z-10 absolute justify-center items-center hover:bg-blue-200/80 p-2 rounded-full"
+              className="top-4 right-4 z-10 absolute justify-center items-center p-2 rounded-full"
             >
-              <Ionicons name="close" size={28} color="#315072" />
+              <Ionicons name="close" size={28} color={COLORS.blueDark} />
             </TouchableOpacity>
 
             <View className="flex-col flex-1 justify-center gap-2 mb-0 pr-0 lg:pr-6 pb-3 min-w-0 max-w-full">
-              <Text className="hidden lg:block font-bold text-[#315072] text-2xl">
+              <Text className="hidden lg:block font-bold text-2xl"
+                style={{ color: COLORS.blueDark }}>
                 {selectedService?.title}
               </Text>
-              <Text className="my-0 pt-8 lg:pt-0 text-[#315072] lg:text-md text-xs">
+              <Text className="my-0 pt-8 lg:pt-0 lg:text-md text-xs"
+                style={{ color: COLORS.blueDark }}>
                 {selectedService?.cont}
               </Text>
               <View className="flex flex-row flex-wrap gap-2 pt-2 w-full">
                 <TouchableOpacity
                   onPress={handleCloseModal}
-                  className="bg-gray-200 px-4 py-2 rounded-md"
+                  style={{
+                    backgroundColor: COLORS.accentSoft,
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
+                    borderRadius: 6,
+                  }}
                 >
-                  <Text className="font-medium text-[#315072]">Close</Text>
+                  <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>Close</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
                     setModalVisible(false);
                     setTimeout(() => setQuestionModalVisible(true), 300);
                   }}
-                  className="bg-[#e1f0ff] px-4 py-2 rounded-md"
+                  style={{
+                    backgroundColor: COLORS.accent,
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
+                    borderRadius: 6,
+                  }}
                 >
-                  <Text className="font-medium text-[#315072]">
+                  <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>
                     Make a Question
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleGetStarted}
-                  className="z-70 bg-[#badcff] px-4 py-2 rounded-md pointer"
+                  style={{
+                    backgroundColor: COLORS.accent,
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
+                    borderRadius: 6,
+                  }}
                 >
-                  <Text className="font-medium text-[#315072]">
+                  <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>
                     Get Started
                   </Text>
                 </TouchableOpacity>
@@ -650,7 +741,8 @@ function ServicesSection({
                   if (service.title === selectedService?.title) {
                     return (
                       <View key={index} className="w-full h-full">
-                        <Text className="font-bold text-[#315072] text-2xl">
+                        <Text className="font-bold text-2xl"
+                          style={{ color: COLORS.blueDark }}>
                           {service.title}
                         </Text>
                       </View>
@@ -659,7 +751,7 @@ function ServicesSection({
                   return null;
                 })}
               </View>
-              {/* Enhanced Carousel */}
+              {/* Carousel */}
               <View className="justify-center items-center w-full h-full">
                 <Image
                   source={selectedService?.images[currentImageIndex]}
@@ -678,13 +770,13 @@ function ServicesSection({
                   onPress={handlePrevImage}
                   className="top-1/2 left-0 absolute p-1 rounded-full -translate-y-1/2"
                 >
-                  <Ionicons name="chevron-back" size={24} color="#315072" />
+                  <Ionicons name="chevron-back" size={24} color={COLORS.blueDark} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleNextImage}
                   className="top-1/2 right-0 absolute p-1 rounded-full -translate-y-1/2"
                 >
-                  <Ionicons name="chevron-forward" size={24} color="#315072" />
+                  <Ionicons name="chevron-forward" size={24} color={COLORS.blueDark} />
                 </TouchableOpacity>
 
                 {/* Indicators */}
@@ -695,19 +787,31 @@ function ServicesSection({
                       onPress={() => setCurrentImageIndex(index)}
                     >
                       <View
-                        className={`w-2 h-2 mx-1 rounded-full ${
-                          index === currentImageIndex
-                            ? "bg-[#315072]"
-                            : "bg-gray-300"
-                        }`}
+                        style={{
+                          width: 8,
+                          height: 8,
+                          marginHorizontal: 2,
+                          borderRadius: 4,
+                          backgroundColor:
+                            index === currentImageIndex
+                              ? COLORS.blueDark
+                              : COLORS.gray,
+                        }}
                       />
                     </TouchableOpacity>
                   ))}
                 </View>
 
                 {/* Image Counter */}
-                <View className="right-2 bottom-2 absolute bg-black/50 px-2 rounded-md">
-                  <Text className="text-white text-xs">
+                <View style={{
+                  position: "absolute",
+                  right: 8,
+                  bottom: 8,
+                  backgroundColor: COLORS.blackOverlay,
+                  paddingHorizontal: 8,
+                  borderRadius: 6,
+                }}>
+                  <Text style={{ color: COLORS.white, fontSize: 12 }}>
                     {currentImageIndex + 1}/{selectedService?.images.length}
                   </Text>
                 </View>
@@ -724,9 +828,22 @@ function ServicesSection({
         animationType="fade"
         onRequestClose={() => setQuestionModalVisible(false)}
       >
-        <View className="flex-1 justify-center items-center bg-black/40">
-          <View className="bg-white p-6 rounded-xl w-11/12 max-w-xs">
-            <Text className="mb-4 font-bold text-[#315072] text-lg text-center">
+        <View className="flex-1 justify-center items-center"
+          style={{ backgroundColor: COLORS.blackOverlay }}>
+          <View style={{
+            backgroundColor: COLORS.white,
+            padding: 24,
+            borderRadius: 16,
+            width: "90%",
+            maxWidth: 400,
+          }}>
+            <Text style={{
+              marginBottom: 16,
+              fontWeight: "bold",
+              color: COLORS.blueDark,
+              fontSize: 18,
+              textAlign: "center",
+            }}>
               Make a Question
             </Text>
             <TextInput
@@ -735,35 +852,56 @@ function ServicesSection({
               placeholder="Write your question here..."
               multiline
               numberOfLines={4}
-              className="bg-white mb-3 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
-              textAlignVertical="top"
+              style={{
+                backgroundColor: COLORS.white,
+                marginBottom: 12,
+                padding: 12,
+                borderColor: COLORS.accent,
+                borderWidth: 1,
+                borderRadius: 8,
+                color: COLORS.blueDark,
+                textAlignVertical: "top",
+              }}
             />
             {questionSent && (
-              <Text className="mb-2 text-green-700 text-center">
+              <Text style={{
+                marginBottom: 8,
+                color: "green",
+                textAlign: "center",
+              }}>
                 Thanks, we will get back to you soon!
               </Text>
             )}
-            <View className="flex flex-row justify-between mt-2">
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 8 }}>
               <TouchableOpacity
                 onPress={() => {
                   setQuestionModalVisible(false);
                   setQuestionText("");
                   setQuestionSent(false);
                 }}
-                className="bg-gray-200 px-4 py-2 rounded-md"
+                style={{
+                  backgroundColor: COLORS.accentSoft,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  borderRadius: 6,
+                }}
               >
-                <Text className="text-[#315072] text-center">Close</Text>
+                <Text style={{ color: COLORS.blueDark, textAlign: "center" }}>Close</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleSendQuestion}
                 disabled={questionText.trim().length < 5 || questionSent}
-                className={`px-4 py-2 rounded-md ${
-                  questionText.trim().length >= 5 && !questionSent
-                    ? "bg-[#badcff]"
-                    : "bg-gray-300"
-                }`}
+                style={{
+                  backgroundColor:
+                    questionText.trim().length >= 5 && !questionSent
+                      ? COLORS.accent
+                      : COLORS.gray,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  borderRadius: 6,
+                }}
               >
-                <Text className="font-bold text-[#315072] text-center">
+                <Text style={{ fontWeight: "bold", color: COLORS.blueDark, textAlign: "center" }}>
                   Send
                 </Text>
               </TouchableOpacity>
@@ -848,9 +986,7 @@ function FAQSection({
   const [question, setQuestion] = useState("");
   const [showContactModal, setShowContactModal] = useState(false);
   const [contactInfo, setContactInfo] = useState("");
-  const [contactType, setContactType] = useState<"email" | "phone" | null>(
-    null
-  );
+  const [contactType, setContactType] = useState<"email" | "phone" | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
   const { width } = useWindowDimensions();
@@ -881,9 +1017,15 @@ function FAQSection({
   const columns = [faqs.slice(0, colLength), faqs.slice(colLength)];
 
   return (
-    <View className="flex flex-col items-center gap-2 bg-[#e5e5e5] px-2 py-36 w-full">
+    <View
+      className="flex flex-col justify-center items-center gap-2 px-2 w-full h-screen"
+      style={{ backgroundColor: COLORS.whiteSoft, paddingTop: 26 }}
+    >
       {/* Título centrado */}
-      <Text className="mb-10 font-bold text-[#315072] text-2xl lg:text-3xl text-center">
+      <Text
+        className="pb-5 font-bold text-2xl lg:text-3xl text-center"
+        style={{ color: COLORS.blueDark }}
+      >
         Frequently Asked Questions
       </Text>
       {/* Preguntas y respuesta */}
@@ -892,7 +1034,7 @@ function FAQSection({
           flex flex-row justify-center items-start mb-10 w-full px-4
           ${
             isMobile
-              ? "gap-4 max-w-xl  "
+              ? "gap-4 max-w-xl"
               : isTablet
               ? "gap-6 max-w-4xl"
               : "gap-8 max-w-6xl"
@@ -901,7 +1043,7 @@ function FAQSection({
       >
         {/* Columna de preguntas */}
         <View
-          className={`lg:flex-col  flex-row flex-1  ${
+          className={`lg:flex-col flex-row flex-1 ${
             isMobile ? "gap-2" : "gap-4"
           }`}
         >
@@ -916,16 +1058,24 @@ function FAQSection({
                       setSelectedIndex(realIdx);
                       if (isMobile) setShowAnswerModal(true);
                     }}
-                    className={`mb-2 px-3 py-3 rounded-xl border border-[#e1f0ff] bg-[#f7fbff] shadow-sm transition-all ${
-                      selectedIndex === realIdx && !isMobile
-                        ? "bg-[#9dccfc] border-[#0080ff]"
-                        : ""
-                    }`}
+                    className="mb-2 px-3 py-3 border rounded-xl transition-all"
+                    style={{
+                      borderColor:
+                        selectedIndex === realIdx && !isMobile
+                          ? COLORS.accent
+                          : COLORS.accentSoft,
+                      backgroundColor:
+                        selectedIndex === realIdx && !isMobile
+                          ? COLORS.accent
+                          : COLORS.whiteSoft,
+                      shadowColor: COLORS.gray,
+                      shadowOpacity: 0.1,
+                      shadowRadius: 2,
+                    }}
                   >
                     <Text
-                      className={`font-semibold text-[#315072] text-base ${
-                        selectedIndex === realIdx && !isMobile ? "" : ""
-                      }`}
+                      className="font-semibold text-base"
+                      style={{ color: COLORS.blueDark }}
                     >
                       {faq.question}
                     </Text>
@@ -938,18 +1088,31 @@ function FAQSection({
         {/* Respuesta solo en tablet/desktop */}
         {!isMobile && (
           <View
-            className={`flex-1 bg-[#f7fbff] shadow-sm p-4 lg:p-6 border border-[#e1f0ff] rounded-xl max-w-xl min-h-[220px] ${
+            className={`flex-1 shadow-sm p-4 lg:p-6 border rounded-xl max-w-xl min-h-[220px] ${
               isTablet ? "ml-4" : "ml-8"
             }`}
+            style={{
+              backgroundColor: COLORS.whiteSoft,
+              borderColor: COLORS.accentSoft,
+            }}
           >
-            <Text className="mb-2 font-bold text-[#315072] text-lg">
+            <Text
+              className="mb-2 font-bold text-lg"
+              style={{ color: COLORS.blueDark }}
+            >
               {faqs[selectedIndex].question}
             </Text>
-            <Text className="text-[#315072] text-base whitespace-pre-line">
+            <Text
+              className="text-base whitespace-pre-line"
+              style={{ color: COLORS.blueDark }}
+            >
               {faqs[selectedIndex].answer}
             </Text>
             <View className="mt-10 pb-6 rounded-xl w-full">
-              <Text className="mb-2 font-bold text-[#315072] text-lg text-center">
+              <Text
+                className="mb-2 font-bold text-lg text-center"
+                style={{ color: COLORS.blueDark }}
+              >
                 Make a Question
               </Text>
               <TextInput
@@ -958,25 +1121,39 @@ function FAQSection({
                 placeholder="Write your question here . . . "
                 multiline
                 numberOfLines={3}
-                className="bg-white mb-3 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
+                className="mb-3 p-3 rounded-md"
+                style={{
+                  backgroundColor: COLORS.white,
+                  borderColor: COLORS.accent,
+                  borderWidth: 1,
+                  color: COLORS.blueDark,
+                }}
                 textAlignVertical="top"
+                placeholderTextColor={COLORS.gray}
               />
               <TouchableOpacity
                 onPress={handleSendQuestion}
                 disabled={question.trim().length < 5}
-                className={`w-full px-4 py-2 rounded-md 
-                  ${
+                className="px-4 py-2 rounded-md w-full"
+                style={{
+                  backgroundColor:
                     question.trim().length < 5
-                      ? "bg-[#e1f0ff]"
-                      : "bg-[#a6d2ff] hover:bg-[#e1f0ff]"
-                  }`}
+                      ? COLORS.accentSoft
+                      : COLORS.accent,
+                }}
               >
-                <Text className="font-bold text-[#315072] text-center">
+                <Text
+                  className="font-bold text-center"
+                  style={{ color: COLORS.blueDark }}
+                >
                   Send
                 </Text>
               </TouchableOpacity>
               {submitted && (
-                <Text className="mt-4 text-green-700 text-center">
+                <Text
+                  className="mt-4 text-center"
+                  style={{ color: "green" }}
+                >
                   ¡Gracias! Pronto te daremos respuesta.
                 </Text>
               )}
@@ -991,18 +1168,30 @@ function FAQSection({
         animationType="fade"
         onRequestClose={() => setShowAnswerModal(false)}
       >
-        <View className="flex-1 justify-center items-center bg-black/40">
-          <View className="relative bg-white p-6 rounded-xl w-11/12 max-w-md">
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: COLORS.blackOverlay }}
+        >
+          <View
+            className="relative p-6 rounded-xl w-11/12 max-w-md"
+            style={{ backgroundColor: COLORS.white }}
+          >
             <TouchableOpacity
               onPress={() => setShowAnswerModal(false)}
               className="top-3 right-3 z-10 absolute"
             >
-              <Ionicons name="close" size={28} color="#315072" />
+              <Ionicons name="close" size={28} color={COLORS.blueDark} />
             </TouchableOpacity>
-            <Text className="mb-4 font-bold text-[#315072] text-lg">
+            <Text
+              className="mb-4 font-bold text-lg"
+              style={{ color: COLORS.blueDark }}
+            >
               {faqs[selectedIndex].question}
             </Text>
-            <Text className="text-[#315072] text-base whitespace-pre-line">
+            <Text
+              className="text-base whitespace-pre-line"
+              style={{ color: COLORS.blueDark }}
+            >
               {faqs[selectedIndex].answer}
             </Text>
           </View>
@@ -1015,13 +1204,24 @@ function FAQSection({
         animationType="fade"
         onRequestClose={() => setShowContactModal(false)}
       >
-        <View className="flex-1 justify-center items-center bg-black/40">
-          <View className="bg-white p-6 rounded-xl w-11/12 max-w-xs">
-            <Text className="mb-4 font-bold text-[#315072] text-lg text-center">
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: COLORS.blackOverlay }}
+        >
+          <View
+            className="p-6 rounded-xl w-11/12 max-w-xs"
+            style={{ backgroundColor: COLORS.white }}
+          >
+            <Text
+              className="mb-4 font-bold text-lg text-center"
+              style={{ color: COLORS.blueDark }}
+            >
               Give us a way to contact you
             </Text>
             {/* Correo */}
-            <Text className="mb-1 text-[#315072]">Mail</Text>
+            <Text className="mb-1" style={{ color: COLORS.blueDark }}>
+              Mail
+            </Text>
             <TextInput
               value={contactType === "email" ? contactInfo : ""}
               onChangeText={(text) => {
@@ -1030,11 +1230,20 @@ function FAQSection({
               }}
               placeholder="Your email address"
               keyboardType="email-address"
-              className="bg-white mb-2 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
+              className="mb-2 p-3 rounded-md"
+              style={{
+                backgroundColor: COLORS.white,
+                borderColor: COLORS.accent,
+                borderWidth: 1,
+                color: COLORS.blueDark,
+              }}
               autoCapitalize="none"
+              placeholderTextColor={COLORS.gray}
             />
             {/* Teléfono */}
-            <Text className="mb-1 text-[#315072]">Phone</Text>
+            <Text className="mb-1" style={{ color: COLORS.blueDark }}>
+              Phone
+            </Text>
             <TextInput
               value={contactType === "phone" ? contactInfo : ""}
               onChangeText={(text) => {
@@ -1043,24 +1252,46 @@ function FAQSection({
               }}
               placeholder="Your phone number"
               keyboardType="phone-pad"
-              className="bg-white mb-4 p-3 border border-[#c9e4ff] rounded-md text-[#315072]"
+              className="mb-4 p-3 rounded-md"
+              style={{
+                backgroundColor: COLORS.white,
+                borderColor: COLORS.accent,
+                borderWidth: 1,
+                color: COLORS.blueDark,
+              }}
+              placeholderTextColor={COLORS.gray}
             />
             {/* Botones */}
             <View className="flex flex-row justify-between mt-2">
               <TouchableOpacity
                 onPress={() => setShowContactModal(false)}
-                className="bg-gray-200 px-4 py-2 rounded-md"
+                style={{
+                  backgroundColor: COLORS.accentSoft,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  borderRadius: 6,
+                }}
               >
-                <Text className="text-[#315072] text-center">Close</Text>
+                <Text style={{ color: COLORS.blueDark, textAlign: "center" }}>
+                  Close
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleContactSubmit}
                 disabled={!isContactValid}
-                className={`px-4 py-2 rounded-md ${
-                  isContactValid ? "bg-[#badcff]" : "bg-gray-300"
-                }`}
+                style={{
+                  backgroundColor: isContactValid
+                    ? COLORS.accent
+                    : COLORS.gray,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  borderRadius: 6,
+                }}
               >
-                <Text className="font-bold text-[#315072] text-center">
+                <Text
+                  className="font-bold text-center"
+                  style={{ color: COLORS.blueDark }}
+                >
                   Send
                 </Text>
               </TouchableOpacity>
@@ -1227,7 +1458,10 @@ function ContactSection() {
   };
 
   return (
-    <View className="flex justify-center items-center bg-[#e5e5e5] px-6 w-full">
+    <View
+      className="flex justify-center items-center px-6 w-full h-screen"
+      style={{ backgroundColor: COLORS.whiteSoft }}
+    >
       {/* Modal SOLO en móvil */}
       {!isDesktop && (
         <Modal
@@ -1236,151 +1470,209 @@ function ContactSection() {
           animationType="fade"
           onRequestClose={() => setShowContactModal(false)}
         >
-          <View className="flex-1 justify-center items-center bg-black/40">
-            <View className="bg-white p-6 rounded-xl w-11/12 max-w-xs">
-              <Text className="mb-4 font-bold text-[#315072] text-xl text-center">
+          <View
+            className="flex-1 justify-center items-center"
+            style={{ backgroundColor: COLORS.blackOverlay }}
+          >
+            <View
+              style={{
+                backgroundColor: COLORS.white,
+                padding: 24,
+                borderRadius: 16,
+                width: "90%",
+                maxWidth: 400,
+              }}
+            >
+              <Text
+                style={{
+                  marginBottom: 16,
+                  fontWeight: "bold",
+                  color: COLORS.blueDark,
+                  fontSize: 20,
+                  textAlign: "center",
+                }}
+              >
                 Contact Us
               </Text>
-              <View className="space-y-4">
+              <View style={{ gap: 16 }}>
                 <TouchableOpacity
                   onPress={() => {
                     Linking.openURL(`tel:${PHONE_CONTACT}`);
                     setShowContactModal(false);
                   }}
-                  className="flex-row items-center gap-3 py-2"
+                  style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 8 }}
                 >
-                  <Ionicons name="call" color="#315072" size={28} />
-                  <Text className="text-[#315072] text-lg">Phone</Text>
+                  <Ionicons name="call" color={COLORS.blueDark} size={28} />
+                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>Phone</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
                     Linking.openURL(`sms:${PHONE_CONTACT}`);
                     setShowContactModal(false);
                   }}
-                  className="flex-row items-center gap-3 py-2"
+                  style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 8 }}
                 >
-                  <MaterialIcons name="sms" color="#315072" size={28} />
-                  <Text className="text-[#315072] text-lg">Message</Text>
+                  <MaterialIcons name="sms" color={COLORS.blueDark} size={28} />
+                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>Message</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
                     Linking.openURL(`https://wa.me/${WHATSAPP_CONTACT}`);
                     setShowContactModal(false);
                   }}
-                  className="flex-row items-center gap-3 py-2"
+                  style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 8 }}
                 >
-                  <Ionicons name="logo-whatsapp" color="#315072" size={28} />
-                  <Text className="text-[#315072] text-lg">Whatsapp</Text>
+                  <Ionicons name="logo-whatsapp" color={COLORS.blueDark} size={28} />
+                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>Whatsapp</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 onPress={() => setShowContactModal(false)}
-                className="self-center bg-[#FFFFFF] mt-6 px-4 py-2 rounded-md"
+                style={{
+                  alignSelf: "center",
+                  backgroundColor: COLORS.white,
+                  marginTop: 24,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  borderRadius: 8,
+                }}
               >
-                <Text className="font-medium text-[#315072]">Close</Text>
+                <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
       )}
 
-      <View className="flex lg:flex-row flex-col gap-5 bg-white drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl">
+      <View className="flex lg:flex-row flex-col gap-5 drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl"
+        style={{ backgroundColor: COLORS.white }}>
         {/* Contact Info */}
-        <View className="bg-[#315072] drop-shadow-md px-10 pt-7 rounded-xl w-full lg:w-1/2">
-          <Text className="mb-2 lg:mb-6 font-bold text-[#e5e5e5] text-2xl md:text-3xl text-left">
+        <View
+          style={{
+            backgroundColor: COLORS.blueDark,
+            paddingHorizontal: 40,
+            paddingTop: 28,
+            borderRadius: 16,
+            width: "100%",
+            maxWidth: isDesktop ? "50%" : "100%",
+          }}
+        >
+          <Text
+            style={{
+              marginBottom: isDesktop ? 24 : 8,
+              fontWeight: "bold",
+              color: COLORS.white,
+              fontSize: 28,
+              textAlign: "left",
+            }}
+          >
             Contact Information
           </Text>
-          <Text className="flex text-[#e5e5e5] lg:text-lg text-xl lg:text-left text-center">
+          <Text
+            style={{
+              color: COLORS.white,
+              fontSize: 18,
+              textAlign: isDesktop ? "left" : "center",
+              marginBottom: isDesktop ? 0 : 12,
+            }}
+          >
             Get in touch with us{" "}
-            <Text className="hidden lg:flex">
-              for any questions or inquiries.
-            </Text>
+            {isDesktop && (
+              <Text>
+                for any questions or inquiries.
+              </Text>
+            )}
           </Text>
           {/* Mensaje SOLO en móvil */}
           {!isDesktop && (
-            <View className="mt-2 mb-4">
-              <View>
-                <Text>
-                  Email us at{" "}
-                  <Text
-                    className="font-bold text-[#315072] underline"
-                    onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
-                  >
-                    {MAIL_CONTACT}
-                  </Text>{" "}
+            <View style={{ marginTop: 8, marginBottom: 16 }}>
+              <Text>
+                Email us at{" "}
+                <Text
+                  style={{ fontWeight: "bold", color: COLORS.blueDark, textDecorationLine: "underline" }}
+                  onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
+                >
+                  {MAIL_CONTACT}
+                </Text>{" "}
+              </Text>
+              <Text>
+                Or use this number{" "}
+                <Text
+                  style={{ fontWeight: "bold", color: COLORS.blueDark, textDecorationLine: "underline" }}
+                  onPress={() => setShowContactModal(true)}
+                >
+                  {PHONE_CONTACT}
                 </Text>
-                <Text>
-                  Or use this number{" "}
-                  <Text
-                    className="font-bold text-[#315072] underline"
-                    onPress={() => setShowContactModal(true)}
-                  >
-                    {PHONE_CONTACT}
-                  </Text>
-                </Text>
-              </View>
-              <Text className="flex flex-col text-[#315072] text-left"></Text>
+              </Text>
             </View>
           )}
 
           {/* Contactos visibles solo en escritorio */}
           {isDesktop && (
             <>
-              <View className="flex-row lg:grid lg:grid-cols-2 m-auto mt-0 lg:mt-20 pb-5">
-                <View className="flex flex-col items-start lg:gap-15">
+              <View style={{ flexDirection: "row", marginTop: 32, paddingBottom: 20 }}>
+                <View style={{ flex: 1 }}>
                   <TouchableOpacity
                     onPress={() => Linking.openURL(`tel:${PHONE_CONTACT}`)}
-                    className="flex-row justify-start items-center gap-2 hover:drop-shadow-md lg:pb-5 border-[#ffffff63] border-b-2 w-96"
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      borderBottomWidth: 2,
+                      borderBottomColor: COLORS.white + "63",
+                      paddingBottom: 12,
+                      marginBottom: 12,
+                    }}
                   >
-                    <Ionicons name="call" color={"#e5e5e5"} size={30} />
-                    <View className="gap-0 lg:gap-3 p-2">
-                      <Text className="lg:flex items-center gap-5 font-semibold text-[#e5e5e5] lg:text-md text-lg">
+                    <Ionicons name="call" color={COLORS.white} size={30} />
+                    <View style={{ marginLeft: 12 }}>
+                      <Text style={{ fontWeight: "bold", color: COLORS.white, fontSize: 18 }}>
                         {PHONE_CONTACT}
                       </Text>
-                      <Text className="lg:flex items-center gap-5 text-[#e5e5e5]">
+                      <Text style={{ color: COLORS.white }}>
                         Call now for a free consultation
                       </Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
-                    className="flex-row justify-start items-center gap-2 hover:drop-shadow-md border-[#ffffff63] w-96"
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
                   >
-                    <Ionicons name="mail" color={"#e5e5e5"} size={30} />
-                    <View className="gap-0 lg:gap-3 p-2">
-                      <Text className="lg:flex items-center gap-5 font-semibold text-[#e5e5e5] lg:text-md text-lg">
+                    <Ionicons name="mail" color={COLORS.white} size={30} />
+                    <View style={{ marginLeft: 12 }}>
+                      <Text style={{ fontWeight: "bold", color: COLORS.white, fontSize: 18 }}>
                         {MAIL_CONTACT}
                       </Text>
-                      <Text className="lg:flex items-center gap-5 text-[#e5e5e5]">
+                      <Text style={{ color: COLORS.white }}>
                         Email us to discuss your project
                       </Text>
                     </View>
                   </TouchableOpacity>
                 </View>
               </View>
-              <View className="flex flex-row justify-between gap-10 lg:gap-20 lg:grid lg:grid-cols-2 lg:m-auto mt-0 lg:mt-20 pb-5">
+              <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20, paddingBottom: 20 }}>
                 <TouchableOpacity
                   onPress={() => Linking.openURL(`sms:${PHONE_CONTACT}`)}
-                  className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
+                  style={{ flexDirection: "row", alignItems: "center" }}
                 >
                   <MaterialIcons
                     name="sms"
-                    color={"#315072"}
+                    color={COLORS.blueDark}
                     size={40}
-                    className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() =>
                     Linking.openURL(`https://wa.me/${WHATSAPP_CONTACT}`)
                   }
-                  className="flex-row justify-center items-center gap-2 hover:drop-shadow-md"
+                  style={{ flexDirection: "row", alignItems: "center" }}
                 >
                   <Ionicons
                     name="logo-whatsapp"
-                    color={"#315072"}
+                    color={COLORS.blueDark}
                     size={40}
-                    className="max-w-9 lg:max-w-8 max-h-9 lg:max-h-8"
                   />
                 </TouchableOpacity>
               </View>
@@ -1388,10 +1680,10 @@ function ContactSection() {
           )}
         </View>
 
-        {/* Form */}
-        <View className="flex-1 space-y-1 m-2 px-5 lg:px-0 pr-4 pb-3 min-w-0">
+        {/* Formulario */}
+        <View className="flex-1 space-y-1 m-2 px-5 pr-4 lg:pr-4 pb-3 min-w-0">
           <View className="flex flex-row justify-between gap-1 lg:pt-5 w-full overflow-hidden">
-            <View className="w-1/2">
+            <View style={{ flex: 1 }}>
               <InputField
                 label="First Name"
                 autoComplete="name"
@@ -1401,7 +1693,7 @@ function ContactSection() {
                 error={errors.name}
               />
             </View>
-            <View className="w-2/5 lg:w-60">
+            <View style={{ flex: 1, marginLeft: 8 }}>
               <InputField
                 label="Last Name"
                 autoComplete="family-name"
@@ -1413,7 +1705,7 @@ function ContactSection() {
           </View>
 
           <View className="relative flex flex-row justify-between gap-2 w-full overflow-hidden">
-            <View className="w-1/2">
+            <View style={{ flex: 1 }}>
               <InputField
                 label="Email"
                 autoComplete="email"
@@ -1424,7 +1716,7 @@ function ContactSection() {
                 error={errors.email}
               />
             </View>
-            <View className="w-2/5 lg:w-60">
+            <View style={{ flex: 1, marginLeft: 8 }}>
               <InputField
                 label="Phone"
                 autoComplete="tel"
@@ -1449,14 +1741,31 @@ function ContactSection() {
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             />
             {showSuggestions && addressSuggestions.length > 0 && (
-              <View className="top-full absolute bg-white shadow-lg mt-1 border border-gray-200 rounded-md w-full">
+              <View
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  right: 0,
+                  backgroundColor: COLORS.white,
+                  borderColor: COLORS.gray,
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  zIndex: 10,
+                }}
+              >
                 {addressSuggestions.map((item, index) => (
                   <TouchableOpacity
                     key={index}
                     onPress={() => handleAddressSelect(item)}
-                    className="p-3 border-gray-100 border-b"
+                    style={{
+                      padding: 12,
+                      borderBottomColor: COLORS.gray,
+                      borderBottomWidth:
+                        index !== addressSuggestions.length - 1 ? 1 : 0,
+                    }}
                   >
-                    <Text className="text-sm">{item.display}</Text>
+                    <Text style={{ color: COLORS.blueDark }}>{item.display}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -1465,7 +1774,7 @@ function ContactSection() {
 
           {/* Campos autocompletados (ciudad, estado, código postal) */}
           <View className="flex flex-row gap-4 w-full overflow-hidden">
-            <View className="flex-1">
+            <View style={{ flex: 1 }}>
               <InputField
                 label="City"
                 value={formData.city}
@@ -1473,7 +1782,7 @@ function ContactSection() {
                 placeholder="City"
               />
             </View>
-            <View className="w-1/4">
+            <View style={{ flex: 1 }}>
               <InputField
                 label="State"
                 value={formData.state}
@@ -1481,7 +1790,7 @@ function ContactSection() {
                 placeholder="State"
               />
             </View>
-            <View className="w-1/4">
+            <View style={{ flex: 1 }}>
               <InputField
                 label="ZIP Code"
                 autoComplete="postal-code"
@@ -1527,8 +1836,12 @@ function Footer({ scrollToSection }: any) {
 
   return (
     <View
-      className="bg-[#e1f0ff] border-[#badcff] border-t"
-      style={{ paddingBottom: bottom }}
+      style={{
+        backgroundColor: COLORS.accentSoft,
+        borderTopWidth: 1,
+        borderColor: COLORS.accent,
+        paddingBottom: bottom,
+      }}
     >
       <View className="mx-auto px-6 py-2 w-full max-w-6xl">
         <View className="flex md:flex-row flex-col justify-between items-center w-full">
@@ -1539,31 +1852,41 @@ function Footer({ scrollToSection }: any) {
                 className="mr-2 rounded-lg max-w-56 max-h-12"
               />
             </View>
-            <Text className="mt-2 text-[#315072] text-sm">
+            <Text style={{ marginTop: 8, color: COLORS.blueDark, fontSize: 14 }}>
               DwellingPlus © {new Date().getFullYear()} All rights reserved.
             </Text>
-            <Text className="mt-1 text-[#315072] text-xs">
+            <Text style={{ marginTop: 4, color: COLORS.blueDark, fontSize: 12 }}>
               Map data © OpenStreetMap contributors
             </Text>
-            <a href="https://www.vecteezy.com/free-photos/mobile-homes">
+            <Text
+              style={{
+                color: COLORS.blueDark,
+                fontSize: 12,
+                textDecorationLine: "underline",
+                marginTop: 2,
+              }}
+              onPress={() =>
+                Linking.openURL("https://www.vecteezy.com/free-photos/mobile-homes")
+              }
+            >
               Mobile Homes Stock photos by Vecteezy
-            </a>
+            </Text>
           </View>
 
           <View className="gap-8 grid grid-cols-2">
             <View className="space-y-2">
-              <Text className="font-semibold text-[#315072] text-sm">
+              <Text style={{ fontWeight: "bold", color: COLORS.blueDark, fontSize: 14 }}>
                 Content
               </Text>
               <View className="space-y-1">
                 <Text
-                  className="text-[#315072] text-sm"
+                  style={{ color: COLORS.blueDark, fontSize: 14 }}
                   onPress={() => scrollToSection?.("services", true)}
                 >
                   Services
                 </Text>
                 <Text
-                  className="text-[#315072] text-sm"
+                  style={{ color: COLORS.blueDark, fontSize: 14 }}
                   onPress={() => scrollToSection?.("faq", true)}
                 >
                   FAQs
@@ -1572,18 +1895,18 @@ function Footer({ scrollToSection }: any) {
             </View>
 
             <View className="space-y-2">
-              <Text className="font-semibold text-[#315072] text-sm">
+              <Text style={{ fontWeight: "bold", color: COLORS.blueDark, fontSize: 14 }}>
                 Company
               </Text>
               <View className="space-y-1">
                 <Text
-                  className="text-[#315072] text-sm"
+                  style={{ color: COLORS.blueDark, fontSize: 14 }}
                   onPress={() => setModalVisible("dwelling")}
                 >
                   About
                 </Text>
                 <Text
-                  className="text-[#315072] text-sm"
+                  style={{ color: COLORS.blueDark, fontSize: 14 }}
                   onPress={() => setModalVisible("fortuneCode")}
                 >
                   Development
@@ -1598,7 +1921,7 @@ function Footer({ scrollToSection }: any) {
               }
               accessibilityLabel="Facebook"
             >
-              <Ionicons name="logo-facebook" size={28} color="#120" />
+              <Ionicons name="logo-facebook" size={28} color={COLORS.blueDark} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
@@ -1606,7 +1929,7 @@ function Footer({ scrollToSection }: any) {
               }
               accessibilityLabel="Instagram"
             >
-              <Ionicons name="logo-instagram" size={28} color="#120" />
+              <Ionicons name="logo-instagram" size={28} color={COLORS.blueDark} />
             </TouchableOpacity>
           </View>
         </View>
@@ -1617,19 +1940,36 @@ function Footer({ scrollToSection }: any) {
         animationType="fade"
         onRequestClose={() => setModalVisible(null)}
       >
-        <View className="flex-1 justify-center items-center bg-black/40">
-          <View className="bg-white p-6 rounded-xl w-11/12 max-w-xl">
-            <Text className="mb-2 text-[#315072] text-2xl">
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: COLORS.blackOverlay }}
+        >
+          <View
+            style={{
+              backgroundColor: COLORS.white,
+              padding: 24,
+              borderRadius: 16,
+              width: "90%",
+              maxWidth: 400,
+            }}
+          >
+            <Text style={{ marginBottom: 8, color: COLORS.blueDark, fontSize: 22 }}>
               {about[modalVisible]?.title}
             </Text>
-            <Text className="my-6 text-[#315072] text-lg">
+            <Text style={{ marginBottom: 24, color: COLORS.blueDark, fontSize: 16 }}>
               {about[modalVisible]?.info}
             </Text>
             <TouchableOpacity
               onPress={() => setModalVisible(null)}
-              className="self-end bg-[#FFFFFF] hover:bg-[#ffd753] px-4 py-2 rounded-md transition-colors duration-300"
+              style={{
+                alignSelf: "flex-end",
+                backgroundColor: COLORS.whiteSoft,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                borderRadius: 8,
+              }}
             >
-              <Text className="font-medium text-[#315072]">Close</Text>
+              <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -1667,32 +2007,39 @@ function InputField({
 }: InputFieldProps) {
   return (
     <View className="mb-1 lg:mb-3">
-      <Text className="mb-1 font-medium text-[#315072] text-sm lg:text-xl">
+      <Text
+        className="mb-1 font-medium text-sm lg:text-xl"
+        style={{ color: COLORS.blueDark }}
+      >
         {label}
-        {error && <Text className="text-red-500"> *</Text>}
+        {error && <Text style={{ color: COLORS.error }}> *</Text>}
       </Text>
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#9ca3af"
+        placeholderTextColor={COLORS.gray}
         keyboardType={keyboardType}
         onFocus={onFocus}
         onBlur={onBlur}
         editable={editable}
         autoCapitalize={autoCapitalize}
         autoComplete={autoComplete}
-        className={`bg-white px-3 border ${
-          error
-            ? "border-red-500"
+        className="px-3 rounded-md h-10"
+        style={{
+          backgroundColor: editable ? COLORS.white : COLORS.whiteSoft,
+          borderColor: error
+            ? COLORS.error
             : editable
-            ? "border-[#c9e4ff]"
-            : "border-gray-300"
-        } rounded-md h-10 text-[#315072] ${!editable && "bg-gray-100"}`}
-        selectionColor="#f0c14b"
+            ? COLORS.accent
+            : COLORS.gray,
+          borderWidth: 1,
+          color: COLORS.blueDark,
+        }}
+        selectionColor={COLORS.accent}
       />
       {error && (
-        <Text className="mt-1 text-red-500 text-xs">
+        <Text style={{ color: COLORS.error, fontSize: 12 }}>
           This field is required
         </Text>
       )}
@@ -1712,7 +2059,10 @@ function TextAreaField({
 }) {
   return (
     <View>
-      <Text className="mt-4 mb-1 font-medium text-[#315072] text-md lg:text-xl">
+      <Text
+        className="mt-4 mb-1 font-medium text-md lg:text-xl"
+        style={{ color: COLORS.blueDark }}
+      >
         {label}
       </Text>
       <TextInput
@@ -1721,8 +2071,16 @@ function TextAreaField({
         placeholder={placeholder}
         multiline={true}
         numberOfLines={3}
-        className="bg-white p-2 border border-[#c9e4ff] rounded-md h-24p lg:h-32 text-[#3150727a]"
+        className="p-2 rounded-md"
+        style={{
+          backgroundColor: COLORS.white,
+          borderColor: COLORS.accent,
+          borderWidth: 1,
+          color: COLORS.blueDark,
+          minHeight: 96,
+        }}
         textAlignVertical="top"
+        placeholderTextColor={COLORS.gray}
       />
     </View>
   );
@@ -1741,11 +2099,15 @@ function SubmitButton({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      className={`mt-4 px-6 py-2 lg:py-3 rounded-md ${
-        disabled ? "bg-gray-400" : "bg-[#badcff]"
-      } hover:bg-[#e1f0ff]`}
+      className="mt-4 px-6 py-2 lg:py-3 rounded-md"
+      style={{
+        backgroundColor: disabled ? COLORS.gray : COLORS.accent,
+      }}
     >
-      <Text className="font-medium text-[#315072] text-base text-center hover:">
+      <Text
+        className="font-medium text-base text-center"
+        style={{ color: COLORS.blueDark }}
+      >
         {label}
       </Text>
     </TouchableOpacity>
