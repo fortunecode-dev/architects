@@ -1010,7 +1010,7 @@ function FAQSection({
 
   return (
     <View
-      className="flex flex-col justify-center items-center gap-2 px-2 w-full h-screen"
+      className="flex flex-col justify-center items-center gap-2 px-2 pt-22 w-full"
       style={{ backgroundColor: COLORS.whiteSoft, paddingTop: 26 }}
     >
       {/* Título centrado */}
