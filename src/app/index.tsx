@@ -418,7 +418,7 @@ function LandingSection({
               </View>
               <View className="flex flex-col justify-center items-center gap-4 lg:mt-2">
                 <Text
-                  className="drop-shadow-lg lg:mt-5 mb-2 p-4 lg:p-0 rounded-md font-medium text-md lg:text-2xl"
+                  className="drop-shadow-lg lg:mt-5 mb-2 lg:p-0 py-4 rounded-md font-medium text-md lg:text-2xl"
                   style={{ color: COLORS.blueDark}}
                 >
                   Our goal is to help you develop your property. We work with
@@ -429,7 +429,7 @@ function LandingSection({
                   <TouchableOpacity
                     onPress={() => scrollToSection("services", true)}
                     style={{
-                      borderColor: COLORS.blueDarker,
+                      borderColor: COLORS.blueDark,
                       borderWidth: 1,
                       borderRadius: 6,
                       paddingHorizontal: 16,
