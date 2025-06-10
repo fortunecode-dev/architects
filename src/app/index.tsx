@@ -26,9 +26,8 @@ import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useWindowDimensions } from "react-native";
 import useScrolled from "@/hooks/useScroll";
-import { Colors } from "react-native/Libraries/NewAppScreen";
-import { LinearGradient } from "react-native-svg";
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const {height: SCREEN_HEIGHT} = Dimensions.get("screen")
 const COLORS = {
   blueDark: "#315072",        
   blueDarker: "#293b51",      
@@ -405,22 +404,22 @@ function LandingSection({
         {/* Contenido */}
         <View className="z-20 flex flex-1 justify-center items-center w-full h-screen">
           <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
-            <View className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full" style={{paddingTop: isDesktop ? 0 : isTablet ? SCREEN_WIDTH *.2 : 80}}>
+            <View className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full" style={{paddingTop: isDesktop ? 0 : SCREEN_HEIGHT * .1}}>
               <View className="flex justify-center items-center w-full">
                 <Image
                   source={"logo-navy.png"}
                   style={{
                     width: SCREEN_WIDTH * .9,
-                    height: isDesktop ? 280 : isTablet ? 200 : 160,
+                    height: isDesktop ? SCREEN_HEIGHT * .23 : SCREEN_HEIGHT * .16,
                     resizeMode: "contain",
                   }}
                   resizeMode="contain"
                 />
               </View>
-              <View className="flex flex-col justify-center items-center gap-4 lg:mt-2">
+              <View className="flex flex-col justify-center items-center gap-2">
                 <Text
-                  className="justify-center items-center lg:mt-5 mb-2 lg:p-0 md:py-4 font-semibold text-xl lg:text-xl text-center"
-                  style={{ color: COLORS.blueDark, fontSize: isDesktop ? 24 : isTablet ? 22 : 18}}
+                  className="justify-center items-center lg:mt-5 mb-1 lg:p-0 md:py-4 font-semibold text-center"
+                  style={{ color: COLORS.blueDark, fontSize: isDesktop ? 22 : SCREEN_WIDTH * .038}}
 
                 >
                   Our goal is to help you develop your property. We work with
