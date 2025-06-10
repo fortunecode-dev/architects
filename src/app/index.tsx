@@ -382,6 +382,7 @@ function LandingSection({
 }) {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
+  const isTablet = width >= 650 && width < 1024;
 
   return (
     <FadeInView>
@@ -404,33 +405,31 @@ function LandingSection({
         {/* Contenido */}
         <View className="z-20 flex flex-1 justify-center items-center w-full h-screen">
           <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
-            <View className="flex flex-col justify-center items-center m-auto w-full h-full">
-              <View className="flex justify-center items-center mt-44 w-full">
+            <View className="lg:flex flex-col justify-start lg:justify-center items-center m-auto lg:pb-6 w-full h-full" style={{paddingTop: isDesktop ? 0 : isTablet ? 180 : 120}}>
+              <View className="flex justify-center items-center w-full">
                 <Image
                   source={"logo-navy.png"}
                   style={{
-                    width: isDesktop ? 680 : 350,
-                    height: isDesktop ? 280 : 250,
-                    marginTop: "-280px",
+                    width: isDesktop ? 680 : isTablet ? 580 : 370,
+                    height: isDesktop ? 250 : isTablet ? 220 : 140,
                   }}
                   resizeMode="contain"
                 />
               </View>
               <View className="flex flex-col justify-center items-center gap-4 lg:mt-2">
                 <Text
-                  className="drop-shadow-lg lg:mt-5 mb-8 p-4 lg:p-0 lg:pt-5 rounded-md font-medium text-lg lg:text-xl"
-                  style={{ color: COLORS.blueDark, backgroundColor: isDesktop ? "none" : COLORS.whiteSoft }}
+                  className="drop-shadow-lg lg:mt-5 mb-2 p-4 lg:p-0 rounded-md font-medium text-md lg:text-2xl"
+                  style={{ color: COLORS.blueDark}}
                 >
                   Our goal is to help you develop your property. We work with
                   passion to meet the expectations of home owners and
                   developers.
                 </Text>
-                <View className="flex flex-row justify-center items-center gap-4 mt-2 w-full">
+                <View className="flex flex-row justify-center items-center gap-4 w-full">
                   <TouchableOpacity
                     onPress={() => scrollToSection("services", true)}
                     style={{
-                      borderColor: COLORS.blueDark,
-                      backgroundColor: isDesktop ? "none" : COLORS.whiteSoft,
+                      borderColor: COLORS.blueDarker,
                       borderWidth: 1,
                       borderRadius: 6,
                       paddingHorizontal: 16,
@@ -439,7 +438,7 @@ function LandingSection({
                   >
                     <Text
                       style={{
-                        color: COLORS.blueDark,
+                        color: COLORS.blueDarker,
                         fontWeight: "600",
                         fontSize: 16,
                         textAlign: "center",
@@ -691,27 +690,18 @@ function ServicesSection({
                 style={{ color: COLORS.blueDark }}>
                 {selectedService?.cont}
               </Text>
-              <View className="flex flex-row flex-wrap gap-2 pt-2 w-full">
-                <TouchableOpacity
-                  onPress={handleCloseModal}
-                  style={{
-                    backgroundColor: COLORS.accentSoft,
-                    paddingHorizontal: 16,
-                    paddingVertical: 8,
-                    borderRadius: 6,
-                  }}
-                >
-                  <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>Close</Text>
-                </TouchableOpacity>
+              <View className="flex flex-row flex-wrap justify-end items-end gap-2 pt-2 w-full">
+                
                 <TouchableOpacity
                   onPress={() => {
                     setModalVisible(false);
                     setTimeout(() => setQuestionModalVisible(true), 300);
                   }}
                   style={{
-                    backgroundColor: COLORS.accent,
-                    paddingHorizontal: 16,
-                    paddingVertical: 8,
+                    borderColor: COLORS.border,
+                    borderWidth: 1,
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
                     borderRadius: 6,
                   }}
                 >
@@ -722,13 +712,15 @@ function ServicesSection({
                 <TouchableOpacity
                   onPress={handleGetStarted}
                   style={{
-                    backgroundColor: COLORS.accent,
-                    paddingHorizontal: 16,
-                    paddingVertical: 8,
+                    borderColor: COLORS.border,
+                    backgroundColor:COLORS.blueDark,
+                    borderWidth: 1,
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
                     borderRadius: 6,
                   }}
                 >
-                  <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>
+                  <Text style={{ color: COLORS.whiteSoft, fontWeight: "500" }}>
                     Get Started
                   </Text>
                 </TouchableOpacity>
@@ -1586,19 +1578,19 @@ function ContactSection() {
           {/* Mensaje SOLO en móvil */}
           {!isDesktop && (
             <View style={{ marginTop: 8, marginBottom: 16 }}>
-              <Text>
+              <Text style={{color: COLORS.whiteSoft }}>
                 Email us at{" "}
                 <Text
-                  style={{ fontWeight: "bold", color: COLORS.blueDark, textDecorationLine: "underline" }}
+                  style={{ fontWeight: "bold", color: COLORS.whiteSoft, textDecorationLine: "underline" }}
                   onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                 >
                   {MAIL_CONTACT}
                 </Text>{" "}
               </Text>
-              <Text>
+              <Text style={{color: COLORS.whiteSoft }}>
                 Or use this number{" "}
                 <Text
-                  style={{ fontWeight: "bold", color: COLORS.blueDark, textDecorationLine: "underline" }}
+                  style={{ fontWeight: "bold", color: COLORS.whiteSoft, textDecorationLine: "underline" }}
                   onPress={() => setShowContactModal(true)}
                 >
                   {PHONE_CONTACT}
@@ -2099,14 +2091,15 @@ function SubmitButton({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      className="mt-4 px-6 py-2 lg:py-3 rounded-md"
+      className="px-6 py-2 lg:py-3 rounded-md"
       style={{
-        backgroundColor: disabled ? COLORS.gray : COLORS.accent,
+        backgroundColor: disabled ? COLORS.blueDarker : COLORS.blueDark,
+        marginTop: 15
       }}
     >
       <Text
         className="font-medium text-base text-center"
-        style={{ color: COLORS.blueDark }}
+        style={{ color: COLORS.whiteSoft }}
       >
         {label}
       </Text>
