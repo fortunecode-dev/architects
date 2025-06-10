@@ -404,13 +404,13 @@ function LandingSection({
         {/* Contenido */}
         <View className="z-20 flex flex-1 justify-center items-center w-full h-screen">
           <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
-            <View className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full" style={{paddingTop: isDesktop ? 0 : SCREEN_HEIGHT * .1}}>
+            <View className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full" style={{paddingTop: isDesktop ? 0 : isTablet ? SCREEN_WIDTH * .25 : SCREEN_WIDTH * .30}}>
               <View className="flex justify-center items-center w-full">
                 <Image
                   source={"logo-navy.png"}
                   style={{
                     width: SCREEN_WIDTH * .9,
-                    height: isDesktop ? SCREEN_HEIGHT * .23 : SCREEN_HEIGHT * .16,
+                    height: isDesktop ? SCREEN_WIDTH * .20 : isTablet ? SCREEN_WIDTH * .25 : SCREEN_WIDTH * .42,
                     resizeMode: "contain",
                   }}
                   resizeMode="contain"
