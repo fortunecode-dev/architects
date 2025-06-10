@@ -405,32 +405,31 @@ function LandingSection({
         {/* Contenido */}
         <View className="z-20 flex flex-1 justify-center items-center w-full h-screen">
           <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
-            <View className="lg:flex flex-col justify-start lg:justify-center items-center m-auto lg:pb-6 w-full h-full" style={{paddingTop: isDesktop ? 0 : isTablet ? 180 : 120}}>
+            <View className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full" style={{paddingTop: isDesktop ? 0 : isTablet ? 180 : 120}}>
               <View className="flex justify-center items-center w-full">
                 <Image
                   source={"logo-navy.png"}
                   style={{
-                    width: isDesktop ? 680 : isTablet ? 580 : 370,
-                    height: isDesktop ? 250 : isTablet ? 220 : 140,
+                    width: SCREEN_WIDTH * .9,
+                    height: isDesktop ? 280 : isTablet ? 200 : 150,
+                    resizeMode: "contain",
                   }}
                   resizeMode="contain"
                 />
               </View>
               <View className="flex flex-col justify-center items-center gap-4 lg:mt-2">
                 <Text
-                  className="drop-shadow-lg lg:mt-5 mb-2 lg:p-0 py-4 rounded-md font-medium text-md lg:text-2xl"
+                  className="drop-shadow-lg lg:mt-5 mb-2 lg:p-0 py-4 rounded-md font-semibold text-lg lg:text-xl"
                   style={{ color: COLORS.blueDark}}
                 >
                   Our goal is to help you develop your property. We work with
                   passion to meet the expectations of home owners and
                   developers.
                 </Text>
-                <View className="flex flex-row justify-center items-center gap-4 w-full">
+                <View className="flex flex-row justify-end items-center gap-4 w-full">
                   <TouchableOpacity
                     onPress={() => scrollToSection("services", true)}
                     style={{
-                      borderColor: COLORS.blueDark,
-                      borderWidth: 1,
                       borderRadius: 6,
                       paddingHorizontal: 16,
                       paddingVertical: 8,
