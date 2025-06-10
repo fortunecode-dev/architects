@@ -382,7 +382,7 @@ function LandingSection({
 }) {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
-  const isTablet = width >= 650 && width < 1024;
+  const isTablet = width >= 500 && width < 1024;
 
   return (
     <FadeInView>
@@ -405,7 +405,7 @@ function LandingSection({
         {/* Contenido */}
         <View className="z-20 flex flex-1 justify-center items-center w-full h-screen">
           <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
-            <View className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full" style={{paddingTop: isDesktop ? 0 : isTablet ? 180 : 120}}>
+            <View className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full" style={{paddingTop: isDesktop ? 0 : isTablet ? SCREEN_WIDTH *.2 : 80}}>
               <View className="flex justify-center items-center w-full">
                 <Image
                   source={"logo-navy.png"}
@@ -419,8 +419,9 @@ function LandingSection({
               </View>
               <View className="flex flex-col justify-center items-center gap-4 lg:mt-2">
                 <Text
-                  className="drop-shadow-lg lg:mt-5 mb-2 lg:p-0 py-4 rounded-md font-semibold text-lg lg:text-xl"
-                  style={{ color: COLORS.blueDark}}
+                  className="lg:mt-5 mb-2 lg:p-0 py-4 font-semibold text-md lg:text-xl"
+                  style={{ color: COLORS.blueDark, fontSize: isDesktop ? 24 : isTablet ? 20 : 14}}
+
                 >
                   Our goal is to help you develop your property. We work with
                   passion to meet the expectations of home owners and
