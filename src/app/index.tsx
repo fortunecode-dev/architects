@@ -411,7 +411,7 @@ function LandingSection({
                   source={"logo-navy.png"}
                   style={{
                     width: SCREEN_WIDTH * .9,
-                    height: isDesktop ? 280 : isTablet ? 200 : 150,
+                    height: isDesktop ? 280 : isTablet ? 200 : 160,
                     resizeMode: "contain",
                   }}
                   resizeMode="contain"
@@ -419,15 +419,15 @@ function LandingSection({
               </View>
               <View className="flex flex-col justify-center items-center gap-4 lg:mt-2">
                 <Text
-                  className="lg:mt-5 mb-2 lg:p-0 py-4 font-semibold text-md lg:text-xl"
-                  style={{ color: COLORS.blueDark, fontSize: isDesktop ? 24 : isTablet ? 20 : 14}}
+                  className="justify-center items-center lg:mt-5 mb-2 lg:p-0 md:py-4 font-semibold text-xl lg:text-xl text-center"
+                  style={{ color: COLORS.blueDark, fontSize: isDesktop ? 24 : isTablet ? 22 : 18}}
 
                 >
                   Our goal is to help you develop your property. We work with
                   passion to meet the expectations of home owners and
                   developers.
                 </Text>
-                <View className="flex flex-row justify-end items-center gap-4 w-full">
+                <View className="flex flex-row justify-center items-center gap-4 w-full">
                   <TouchableOpacity
                     onPress={() => scrollToSection("services", true)}
                     style={{
