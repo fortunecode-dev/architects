@@ -410,7 +410,7 @@ function LandingSection({
                   source={"logo-navy.png"}
                   style={{
                     width: SCREEN_WIDTH * .9,
-                    height: isDesktop ? SCREEN_WIDTH * .20 : isTablet ? SCREEN_WIDTH * .25 : SCREEN_WIDTH * .42,
+                    height: isDesktop ? SCREEN_WIDTH * .15 : isTablet ? SCREEN_WIDTH * .25 : SCREEN_WIDTH * .42,
                     resizeMode: "contain",
                   }}
                   resizeMode="contain"
@@ -1009,7 +1009,7 @@ function FAQSection({
 
   return (
     <View
-      className="flex flex-col justify-center items-center gap-2 px-2 pt-22 w-full"
+      className="flex flex-col justify-center items-center gap-2 px-2 pt-22 w-full lg:h-screen"
       style={{ backgroundColor: COLORS.whiteSoft, paddingTop: 26 }}
     >
       {/* Título centrado */}
