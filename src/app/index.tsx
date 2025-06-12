@@ -2008,7 +2008,7 @@ function InputField({
     <View className="mb-1 lg:mb-3 w-full">
       <Text
         className="mb-0 font-medium lg:text-md text-sm"
-        style={{ color: COLORS.blueDark }}
+        style={{ color: COLORS.blueDark, }}
       >
         {label}
         {error && <Text style={{ color: COLORS.error }}> *</Text>}
@@ -2314,7 +2314,7 @@ function ContactSection2() {
     return (
       <View className="flex justify-center items-center bg-[#FFFFFF] my-0 w-full">
         <View className="flex lg:flex-row flex-col gap-5 bg-white drop-shadow-xl mx-auto my-20 rounded-xl"
-        style={{width: isDesktop ? SCREEN_WIDTH * .4 : SCREEN_HEIGHT * .35 , height: SCREEN_HEIGHT * .75}}
+        style={{width: isDesktop ? SCREEN_WIDTH * .4 : SCREEN_HEIGHT * .35 }}
         >
           {/* Formulario */}
           <View className="flex-1 justify-between m-4 lg:px-0 pr-4 pb-3">
