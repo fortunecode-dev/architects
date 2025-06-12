@@ -125,6 +125,7 @@ export default function Page() {
         </View>
         <View
           ref={sectionRefs.contact2}
+          style={{ height: isLargeScreen ? height : "auto" }}
         >
           <ContactSection2 />
         </View>
@@ -2314,7 +2315,7 @@ function ContactSection2() {
     return (
       <View className="flex justify-center items-center bg-[#FFFFFF] my-0 w-full">
         <View className="flex lg:flex-row flex-col gap-5 bg-white drop-shadow-xl mx-auto my-20 rounded-xl"
-        style={{width: isDesktop ? SCREEN_WIDTH * .4 : SCREEN_HEIGHT * .35 }}
+        style={{width: isDesktop ? SCREEN_WIDTH * .4 : SCREEN_WIDTH * .95}}
         >
           {/* Formulario */}
           <View className="flex-1 justify-between m-4 lg:px-0 pr-4 pb-3">
