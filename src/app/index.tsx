@@ -16,12 +16,8 @@ import {
 import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Modal, Pressable } from "react-native";
-<<<<<<< HEAD
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
-=======
-import { useRouter } from "expo-router";
->>>>>>> 580207195cc589d3f04f0ea31819b958f1a50f89
 import {
   MAIL_CONTACT,
   PHONE_CONTACT,
@@ -32,20 +28,19 @@ import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useWindowDimensions } from "react-native";
 import useScrolled from "@/hooks/useScroll";
-
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const { height: SCREEN_HEIGHT } = Dimensions.get("screen");
+const {height: SCREEN_HEIGHT} = Dimensions.get("screen")
 const COLORS = {
-  blueDark: "#315072",
-  blueDarker: "#293b51",
-  white: "#e9eef5",
-  whiteSoft: "#f4f7fb",
-  border: "#1b2636",
-  error: "#e53e3e",
-  accent: "#709ac0",
-  accentSoft: "#a2bdd7",
-  gray: "#9ca3af",
-  blackOverlay: "rgba(0,0,0,0.4)",
+  blueDark: "#315072",        
+  blueDarker: "#293b51",      
+  white: "#e9eef5",           
+  whiteSoft: "#f4f7fb",       
+  border: "#1b2636",          
+  error: "#e53e3e",           
+  accent: "#709ac0",          
+  accentSoft: "#a2bdd7",      
+  gray: "#9ca3af",            
+  blackOverlay: "rgba(0,0,0,0.4)", 
 };
 
 const FONTS = {
@@ -241,11 +236,7 @@ function Header({
               }
               accessibilityLabel="Facebook"
             >
-              <Ionicons
-                name="logo-facebook"
-                size={26}
-                color={COLORS.blueDark}
-              />
+              <Ionicons name="logo-facebook" size={26} color={COLORS.blueDark} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
@@ -254,21 +245,14 @@ function Header({
               className="ml-3"
               accessibilityLabel="Instagram"
             >
-              <Ionicons
-                name="logo-instagram"
-                size={26}
-                color={COLORS.blueDark}
-              />
+              <Ionicons name="logo-instagram" size={26} color={COLORS.blueDark} />
             </TouchableOpacity>
             <TouchableOpacity
               className={`px-3 py-1.5 rounded-md transition-all duration-300`}
               style={{ backgroundColor: COLORS.blueDark, marginLeft: 12 }}
               onPress={() => scrollToSection("contact")}
             >
-              <Text
-                className={`font-bold text-sm`}
-                style={{ color: COLORS.white }}
-              >
+              <Text className={`font-bold text-sm`} style={{ color: COLORS.white }}>
                 Contact
               </Text>
             </TouchableOpacity>
@@ -422,32 +406,19 @@ function LandingSection({
           className="hidden lg:block z-10 absolute w-full h-screen cover"
         />
         <Image
-          source={"landingCell.jpg"}
-          className="lg:hidden block z-10 absolute w-full h-screen cover"
+        source={"landingCell.jpg"}
+        className="lg:hidden block z-10 absolute w-full h-screen cover"
         />
         {/* Contenido */}
         <View className="z-20 flex flex-1 justify-center items-center w-full h-screen">
           <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
-            <View
-              className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full"
-              style={{
-                paddingTop: isDesktop
-                  ? 0
-                  : isTablet
-                  ? SCREEN_WIDTH * 0.25
-                  : SCREEN_WIDTH * 0.3,
-              }}
-            >
+            <View className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full" style={{paddingTop: isDesktop ? 0 : isTablet ? SCREEN_WIDTH * .25 : SCREEN_WIDTH * .30}}>
               <View className="flex justify-center items-center w-full">
                 <Image
                   source={"logo-navy.png"}
                   style={{
-                    width: SCREEN_WIDTH * 0.9,
-                    height: isDesktop
-                      ? SCREEN_WIDTH * 0.15
-                      : isTablet
-                      ? SCREEN_WIDTH * 0.25
-                      : SCREEN_WIDTH * 0.42,
+                    width: SCREEN_WIDTH * .9,
+                    height: isDesktop ? SCREEN_WIDTH * .15 : isTablet ? SCREEN_WIDTH * .25 : SCREEN_WIDTH * .42,
                     resizeMode: "contain",
                   }}
                   resizeMode="contain"
@@ -456,10 +427,8 @@ function LandingSection({
               <View className="flex flex-col justify-center items-center gap-2">
                 <Text
                   className="justify-center items-center lg:mt-5 mb-1 lg:p-0 md:py-4 font-semibold text-center"
-                  style={{
-                    color: COLORS.blueDark,
-                    fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.038,
-                  }}
+                  style={{ color: COLORS.blueDark, fontSize: isDesktop ? 22 : SCREEN_WIDTH * .038}}
+
                 >
                   Our goal is to help you develop your property. We work with
                   passion to meet the expectations of home owners and
@@ -708,20 +677,10 @@ function ServicesSection({
         animationType="fade"
         onRequestClose={handleCloseModal}
       >
-        <View
-          className="flex-col-reverse flex-1 justify-center items-center gap-2"
-          style={{ backgroundColor: COLORS.blackOverlay }}
-        >
-          <View
-            className="relative lg:flex-row flex-col-reverse justify-center gap-5"
-            style={{
-              backgroundColor: COLORS.white,
-              marginHorizontal: 8,
-              padding: 20,
-              borderRadius: 16,
-              maxWidth: 900,
-            }}
-          >
+        <View className="flex-col-reverse flex-1 justify-center items-center gap-2"
+          style={{ backgroundColor: COLORS.blackOverlay }}>
+          <View className="relative lg:flex-row flex-col-reverse justify-center gap-5"
+            style={{ backgroundColor: COLORS.white, marginHorizontal: 8, padding: 20, borderRadius: 16, maxWidth: 900 }}>
             <TouchableOpacity
               onPress={handleCloseModal}
               className="top-4 right-4 z-10 absolute justify-center items-center p-2 rounded-full"
@@ -730,19 +689,16 @@ function ServicesSection({
             </TouchableOpacity>
 
             <View className="flex-col flex-1 justify-center gap-2 mb-0 pr-0 lg:pr-6 pb-3 min-w-0 max-w-full">
-              <Text
-                className="hidden lg:block font-bold text-2xl"
-                style={{ color: COLORS.blueDark }}
-              >
+              <Text className="hidden lg:block font-bold text-2xl"
+                style={{ color: COLORS.blueDark }}>
                 {selectedService?.title}
               </Text>
-              <Text
-                className="my-0 pt-8 lg:pt-0 lg:text-md text-xs"
-                style={{ color: COLORS.blueDark }}
-              >
+              <Text className="my-0 pt-8 lg:pt-0 lg:text-md text-xs"
+                style={{ color: COLORS.blueDark }}>
                 {selectedService?.cont}
               </Text>
               <View className="flex flex-row flex-wrap justify-end items-end gap-2 pt-2 w-full">
+                
                 <TouchableOpacity
                   onPress={() => {
                     setModalVisible(false);
@@ -764,7 +720,7 @@ function ServicesSection({
                   onPress={handleGetStarted}
                   style={{
                     borderColor: COLORS.border,
-                    backgroundColor: COLORS.blueDark,
+                    backgroundColor:COLORS.blueDark,
                     borderWidth: 1,
                     paddingHorizontal: 10,
                     paddingVertical: 5,
@@ -784,10 +740,8 @@ function ServicesSection({
                   if (service.title === selectedService?.title) {
                     return (
                       <View key={index} className="w-full h-full">
-                        <Text
-                          className="font-bold text-2xl"
-                          style={{ color: COLORS.blueDark }}
-                        >
+                        <Text className="font-bold text-2xl"
+                          style={{ color: COLORS.blueDark }}>
                           {service.title}
                         </Text>
                       </View>
@@ -815,21 +769,13 @@ function ServicesSection({
                   onPress={handlePrevImage}
                   className="top-1/2 left-0 absolute p-1 rounded-full -translate-y-1/2"
                 >
-                  <Ionicons
-                    name="chevron-back"
-                    size={24}
-                    color={COLORS.blueDark}
-                  />
+                  <Ionicons name="chevron-back" size={24} color={COLORS.blueDark} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleNextImage}
                   className="top-1/2 right-0 absolute p-1 rounded-full -translate-y-1/2"
                 >
-                  <Ionicons
-                    name="chevron-forward"
-                    size={24}
-                    color={COLORS.blueDark}
-                  />
+                  <Ionicons name="chevron-forward" size={24} color={COLORS.blueDark} />
                 </TouchableOpacity>
 
                 {/* Indicators */}
@@ -856,16 +802,14 @@ function ServicesSection({
                 </View>
 
                 {/* Image Counter */}
-                <View
-                  style={{
-                    position: "absolute",
-                    right: 8,
-                    bottom: 8,
-                    backgroundColor: COLORS.blackOverlay,
-                    paddingHorizontal: 8,
-                    borderRadius: 6,
-                  }}
-                >
+                <View style={{
+                  position: "absolute",
+                  right: 8,
+                  bottom: 8,
+                  backgroundColor: COLORS.blackOverlay,
+                  paddingHorizontal: 8,
+                  borderRadius: 6,
+                }}>
                   <Text style={{ color: COLORS.white, fontSize: 12 }}>
                     {currentImageIndex + 1}/{selectedService?.images.length}
                   </Text>
@@ -883,28 +827,22 @@ function ServicesSection({
         animationType="fade"
         onRequestClose={() => setQuestionModalVisible(false)}
       >
-        <View
-          className="flex-1 justify-center items-center"
-          style={{ backgroundColor: COLORS.blackOverlay }}
-        >
-          <View
-            style={{
-              backgroundColor: COLORS.white,
-              padding: 24,
-              borderRadius: 16,
-              width: "90%",
-              maxWidth: 400,
-            }}
-          >
-            <Text
-              style={{
-                marginBottom: 16,
-                fontWeight: "bold",
-                color: COLORS.blueDark,
-                fontSize: 18,
-                textAlign: "center",
-              }}
-            >
+        <View className="flex-1 justify-center items-center"
+          style={{ backgroundColor: COLORS.blackOverlay }}>
+          <View style={{
+            backgroundColor: COLORS.white,
+            padding: 24,
+            borderRadius: 16,
+            width: "90%",
+            maxWidth: 400,
+          }}>
+            <Text style={{
+              marginBottom: 16,
+              fontWeight: "bold",
+              color: COLORS.blueDark,
+              fontSize: 18,
+              textAlign: "center",
+            }}>
               Make a Question
             </Text>
             <TextInput
@@ -925,23 +863,15 @@ function ServicesSection({
               }}
             />
             {questionSent && (
-              <Text
-                style={{
-                  marginBottom: 8,
-                  color: "green",
-                  textAlign: "center",
-                }}
-              >
+              <Text style={{
+                marginBottom: 8,
+                color: "green",
+                textAlign: "center",
+              }}>
                 Thanks, we will get back to you soon!
               </Text>
             )}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 8,
-              }}
-            >
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 8 }}>
               <TouchableOpacity
                 onPress={() => {
                   setQuestionModalVisible(false);
@@ -955,9 +885,7 @@ function ServicesSection({
                   borderRadius: 6,
                 }}
               >
-                <Text style={{ color: COLORS.blueDark, textAlign: "center" }}>
-                  Close
-                </Text>
+                <Text style={{ color: COLORS.blueDark, textAlign: "center" }}>Close</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleSendQuestion}
@@ -972,13 +900,7 @@ function ServicesSection({
                   borderRadius: 6,
                 }}
               >
-                <Text
-                  style={{
-                    fontWeight: "bold",
-                    color: COLORS.blueDark,
-                    textAlign: "center",
-                  }}
-                >
+                <Text style={{ fontWeight: "bold", color: COLORS.blueDark, textAlign: "center" }}>
                   Send
                 </Text>
               </TouchableOpacity>
@@ -1063,9 +985,7 @@ function FAQSection({
   const [question, setQuestion] = useState("");
   const [showContactModal, setShowContactModal] = useState(false);
   const [contactInfo, setContactInfo] = useState("");
-  const [contactType, setContactType] = useState<"email" | "phone" | null>(
-    null
-  );
+  const [contactType, setContactType] = useState<"email" | "phone" | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
   const { width } = useWindowDimensions();
@@ -1229,7 +1149,10 @@ function FAQSection({
                 </Text>
               </TouchableOpacity>
               {submitted && (
-                <Text className="mt-4 text-center" style={{ color: "green" }}>
+                <Text
+                  className="mt-4 text-center"
+                  style={{ color: "green" }}
+                >
                   ¡Gracias! Pronto te daremos respuesta.
                 </Text>
               )}
@@ -1356,7 +1279,9 @@ function FAQSection({
                 onPress={handleContactSubmit}
                 disabled={!isContactValid}
                 style={{
-                  backgroundColor: isContactValid ? COLORS.accent : COLORS.gray,
+                  backgroundColor: isContactValid
+                    ? COLORS.accent
+                    : COLORS.gray,
                   paddingHorizontal: 16,
                   paddingVertical: 8,
                   borderRadius: 6,
@@ -1574,55 +1499,30 @@ function ContactSection() {
                     Linking.openURL(`tel:${PHONE_CONTACT}`);
                     setShowContactModal(false);
                   }}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 12,
-                    paddingVertical: 8,
-                  }}
+                  style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 8 }}
                 >
                   <Ionicons name="call" color={COLORS.blueDark} size={28} />
-                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>
-                    Phone
-                  </Text>
+                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>Phone</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
                     Linking.openURL(`sms:${PHONE_CONTACT}`);
                     setShowContactModal(false);
                   }}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 12,
-                    paddingVertical: 8,
-                  }}
+                  style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 8 }}
                 >
                   <MaterialIcons name="sms" color={COLORS.blueDark} size={28} />
-                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>
-                    Message
-                  </Text>
+                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>Message</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
                     Linking.openURL(`https://wa.me/${WHATSAPP_CONTACT}`);
                     setShowContactModal(false);
                   }}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 12,
-                    paddingVertical: 8,
-                  }}
+                  style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 8 }}
                 >
-                  <Ionicons
-                    name="logo-whatsapp"
-                    color={COLORS.blueDark}
-                    size={28}
-                  />
-                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>
-                    Whatsapp
-                  </Text>
+                  <Ionicons name="logo-whatsapp" color={COLORS.blueDark} size={28} />
+                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>Whatsapp</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
@@ -1636,19 +1536,15 @@ function ContactSection() {
                   borderRadius: 8,
                 }}
               >
-                <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>
-                  Close
-                </Text>
+                <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
       )}
 
-      <View
-        className="flex lg:flex-row flex-col gap-5 drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl"
-        style={{ backgroundColor: COLORS.white }}
-      >
+      <View className="flex lg:flex-row flex-col gap-5 drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl"
+        style={{ backgroundColor: COLORS.white }}>
         {/* Contact Info */}
         <View
           style={{
@@ -1680,32 +1576,28 @@ function ContactSection() {
             }}
           >
             Get in touch with us{" "}
-            {isDesktop && <Text>for any questions or inquiries.</Text>}
+            {isDesktop && (
+              <Text>
+                for any questions or inquiries.
+              </Text>
+            )}
           </Text>
           {/* Mensaje SOLO en móvil */}
           {!isDesktop && (
             <View style={{ marginTop: 8, marginBottom: 16 }}>
-              <Text style={{ color: COLORS.whiteSoft }}>
+              <Text style={{color: COLORS.whiteSoft }}>
                 Email us at{" "}
                 <Text
-                  style={{
-                    fontWeight: "bold",
-                    color: COLORS.whiteSoft,
-                    textDecorationLine: "underline",
-                  }}
+                  style={{ fontWeight: "bold", color: COLORS.whiteSoft, textDecorationLine: "underline" }}
                   onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                 >
                   {MAIL_CONTACT}
                 </Text>{" "}
               </Text>
-              <Text style={{ color: COLORS.whiteSoft }}>
+              <Text style={{color: COLORS.whiteSoft }}>
                 Or use this number{" "}
                 <Text
-                  style={{
-                    fontWeight: "bold",
-                    color: COLORS.whiteSoft,
-                    textDecorationLine: "underline",
-                  }}
+                  style={{ fontWeight: "bold", color: COLORS.whiteSoft, textDecorationLine: "underline" }}
                   onPress={() => setShowContactModal(true)}
                 >
                   {PHONE_CONTACT}
@@ -1717,13 +1609,7 @@ function ContactSection() {
           {/* Contactos visibles solo en escritorio */}
           {isDesktop && (
             <>
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginTop: 32,
-                  paddingBottom: 20,
-                }}
-              >
+              <View style={{ flexDirection: "row", marginTop: 32, paddingBottom: 20 }}>
                 <View style={{ flex: 1 }}>
                   <TouchableOpacity
                     onPress={() => Linking.openURL(`tel:${PHONE_CONTACT}`)}
@@ -1738,13 +1624,7 @@ function ContactSection() {
                   >
                     <Ionicons name="call" color={COLORS.white} size={30} />
                     <View style={{ marginLeft: 12 }}>
-                      <Text
-                        style={{
-                          fontWeight: "bold",
-                          color: COLORS.white,
-                          fontSize: 18,
-                        }}
-                      >
+                      <Text style={{ fontWeight: "bold", color: COLORS.white, fontSize: 18 }}>
                         {PHONE_CONTACT}
                       </Text>
                       <Text style={{ color: COLORS.white }}>
@@ -1761,13 +1641,7 @@ function ContactSection() {
                   >
                     <Ionicons name="mail" color={COLORS.white} size={30} />
                     <View style={{ marginLeft: 12 }}>
-                      <Text
-                        style={{
-                          fontWeight: "bold",
-                          color: COLORS.white,
-                          fontSize: 18,
-                        }}
-                      >
+                      <Text style={{ fontWeight: "bold", color: COLORS.white, fontSize: 18 }}>
                         {MAIL_CONTACT}
                       </Text>
                       <Text style={{ color: COLORS.white }}>
@@ -1777,19 +1651,16 @@ function ContactSection() {
                   </TouchableOpacity>
                 </View>
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginTop: 20,
-                  paddingBottom: 20,
-                }}
-              >
+              <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20, paddingBottom: 20 }}>
                 <TouchableOpacity
                   onPress={() => Linking.openURL(`sms:${PHONE_CONTACT}`)}
                   style={{ flexDirection: "row", alignItems: "center" }}
                 >
-                  <MaterialIcons name="sms" color={COLORS.blueDark} size={40} />
+                  <MaterialIcons
+                    name="sms"
+                    color={COLORS.blueDark}
+                    size={40}
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() =>
@@ -1893,9 +1764,7 @@ function ContactSection() {
                         index !== addressSuggestions.length - 1 ? 1 : 0,
                     }}
                   >
-                    <Text style={{ color: COLORS.blueDark }}>
-                      {item.display}
-                    </Text>
+                    <Text style={{ color: COLORS.blueDark }}>{item.display}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -1952,7 +1821,6 @@ function ContactSection() {
 
 function Footer({ scrollToSection }: any) {
   const { bottom } = useSafeAreaInsets();
-  const router = useRouter();
   const [modalVisible, setModalVisible] = useState<null | string>(null);
   const about = {
     dwelling: {
@@ -1983,14 +1851,10 @@ function Footer({ scrollToSection }: any) {
                 className="mr-2 rounded-lg max-w-56 max-h-12"
               />
             </View>
-            <Text
-              style={{ marginTop: 8, color: COLORS.blueDark, fontSize: 14 }}
-            >
+            <Text style={{ marginTop: 8, color: COLORS.blueDark, fontSize: 14 }}>
               DwellingPlus © {new Date().getFullYear()} All rights reserved.
             </Text>
-            <Text
-              style={{ marginTop: 4, color: COLORS.blueDark, fontSize: 12 }}
-            >
+            <Text style={{ marginTop: 4, color: COLORS.blueDark, fontSize: 12 }}>
               Map data © OpenStreetMap contributors
             </Text>
             <Text
@@ -2001,35 +1865,16 @@ function Footer({ scrollToSection }: any) {
                 marginTop: 2,
               }}
               onPress={() =>
-                Linking.openURL(
-                  "https://www.vecteezy.com/free-photos/mobile-homes"
-                )
+                Linking.openURL("https://www.vecteezy.com/free-photos/mobile-homes")
               }
             >
               Mobile Homes Stock photos by Vecteezy
-            </Text>
-            <Text
-              style={{
-                color: COLORS.blueDark,
-                fontSize: 12,
-                textDecorationLine: "underline",
-                marginTop: 2,
-              }}
-              onPress={() => router.navigate("/admin")}
-            >
-              Admin Panel
             </Text>
           </View>
 
           <View className="gap-8 grid grid-cols-2">
             <View className="space-y-2">
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  color: COLORS.blueDark,
-                  fontSize: 14,
-                }}
-              >
+              <Text style={{ fontWeight: "bold", color: COLORS.blueDark, fontSize: 14 }}>
                 Content
               </Text>
               <View className="space-y-1">
@@ -2049,13 +1894,7 @@ function Footer({ scrollToSection }: any) {
             </View>
 
             <View className="space-y-2">
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  color: COLORS.blueDark,
-                  fontSize: 14,
-                }}
-              >
+              <Text style={{ fontWeight: "bold", color: COLORS.blueDark, fontSize: 14 }}>
                 Company
               </Text>
               <View className="space-y-1">
@@ -2081,11 +1920,7 @@ function Footer({ scrollToSection }: any) {
               }
               accessibilityLabel="Facebook"
             >
-              <Ionicons
-                name="logo-facebook"
-                size={28}
-                color={COLORS.blueDark}
-              />
+              <Ionicons name="logo-facebook" size={28} color={COLORS.blueDark} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
@@ -2093,11 +1928,7 @@ function Footer({ scrollToSection }: any) {
               }
               accessibilityLabel="Instagram"
             >
-              <Ionicons
-                name="logo-instagram"
-                size={28}
-                color={COLORS.blueDark}
-              />
+              <Ionicons name="logo-instagram" size={28} color={COLORS.blueDark} />
             </TouchableOpacity>
           </View>
         </View>
@@ -2121,14 +1952,10 @@ function Footer({ scrollToSection }: any) {
               maxWidth: 400,
             }}
           >
-            <Text
-              style={{ marginBottom: 8, color: COLORS.blueDark, fontSize: 22 }}
-            >
+            <Text style={{ marginBottom: 8, color: COLORS.blueDark, fontSize: 22 }}>
               {about[modalVisible]?.title}
             </Text>
-            <Text
-              style={{ marginBottom: 24, color: COLORS.blueDark, fontSize: 16 }}
-            >
+            <Text style={{ marginBottom: 24, color: COLORS.blueDark, fontSize: 16 }}>
               {about[modalVisible]?.info}
             </Text>
             <TouchableOpacity
@@ -2141,9 +1968,7 @@ function Footer({ scrollToSection }: any) {
                 borderRadius: 8,
               }}
             >
-              <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>
-                Close
-              </Text>
+              <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -2276,7 +2101,7 @@ function SubmitButton({
       className="px-6 py-2 lg:py-3 rounded-md"
       style={{
         backgroundColor: disabled ? COLORS.blueDarker : COLORS.blueDark,
-        marginTop: 15,
+        marginTop: 15
       }}
     >
       <Text
@@ -2288,7 +2113,6 @@ function SubmitButton({
     </TouchableOpacity>
   );
 }
-<<<<<<< HEAD
 function ContactSection2() {
     const [formData, setFormData] = useState({
       name: "",
@@ -2696,5 +2520,3 @@ function ContactSection2() {
       </View>
     );
   }
-=======
->>>>>>> 580207195cc589d3f04f0ea31819b958f1a50f89
