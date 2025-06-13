@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   RefreshControl,
+  useWindowDimensions,
 } from "react-native";
 import { Link, router, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -27,6 +28,8 @@ interface Client {
 }
 
 export default function ClientsPage() {
+  const { width } = useWindowDimensions();
+  const isSmallScreen = width < 768; // Tablet breakpoint
   const [sortConfig, setSortConfig] = useState<{
     key: keyof Client | null;
     direction: "ascending" | "descending";
@@ -119,6 +122,129 @@ export default function ClientsPage() {
     }
   };
 
+  const renderClientRow = (client: Client) => {
+    if (isSmallScreen) {
+      return (
+        <View key={client.id} style={styles.mobileCard}>
+          <View style={styles.mobileCardHeader}>
+            <Text style={styles.mobileCardTitle}>
+              {client.name} {client.lastName}
+            </Text>
+            <View
+              style={[
+                styles.statusBadge,
+                { backgroundColor: getStatusColor(client.status) },
+              ]}
+            >
+              <Text style={styles.statusText}>{client.status}</Text>
+            </View>
+          </View>
+          
+          <View style={styles.mobileCardRow}>
+            <MaterialIcons name="email" size={16} color="#64748B" />
+            <Text style={styles.mobileCardText} numberOfLines={1}>
+              {client.email}
+            </Text>
+          </View>
+          
+          <View style={styles.mobileCardRow}>
+            <MaterialIcons name="phone" size={16} color="#64748B" />
+            <Text style={styles.mobileCardText}>{client.phone}</Text>
+          </View>
+          
+          <View style={styles.mobileCardRow}>
+            <MaterialIcons name="location-on" size={16} color="#64748B" />
+            <Text style={styles.mobileCardText} numberOfLines={2}>
+              {client.address}
+            </Text>
+          </View>
+          
+          <View style={styles.mobileCardActions}>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.editButton]}
+              onPress={() =>
+                router.push({
+                  pathname: "/admin/client",
+                  params: { id: client.id },
+                })
+              }
+            >
+              <MaterialIcons name="edit" size={18} color="white" />
+              <Text style={styles.mobileActionText}>Edit</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[styles.actionButton, styles.deleteButton]}
+              onPress={() => handleDelete(client.id)}
+            >
+              <MaterialIcons name="delete" size={18} color="white" />
+              <Text style={styles.mobileActionText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+
+    return (
+      <View key={client.id} style={styles.tableRow}>
+        <View style={{ ...styles.dataCell, ...styles.nameCell }}>
+          <Text style={styles.cellText}>{client.name}</Text>
+        </View>
+        <View style={{ ...styles.dataCell, ...styles.lastNameCell }}>
+          <Text style={styles.cellText}>{client.lastName}</Text>
+        </View>
+        <View style={{ ...styles.dataCell, ...styles.emailCell }}>
+          <Text style={styles.cellText} numberOfLines={1}>
+            {client.email}
+          </Text>
+        </View>
+        <View style={{ ...styles.dataCell, ...styles.phoneCell }}>
+          <Text style={styles.cellText}>{client.phone}</Text>
+        </View>
+        <View style={{ ...styles.dataCell, ...styles.addressCell }}>
+          <Text style={styles.cellText} numberOfLines={2}>
+            {client.address}
+          </Text>
+        </View>
+        <View style={{ ...styles.dataCell, ...styles.statusCell }}>
+          <View
+            style={{
+              ...styles.statusBadge,
+              backgroundColor: getStatusColor(client.status),
+            }}
+          >
+            <Text style={styles.statusText}>{client.status}</Text>
+          </View>
+        </View>
+        <View style={{ ...styles.dataCell, ...styles.actionsCell }}>
+          <TouchableOpacity
+            style={{
+              ...styles.actionButton,
+              ...styles.editButton,
+            }}
+            onPress={() =>
+              router.push({
+                pathname: "/admin/client",
+                params: { id: client.id },
+              })
+            }
+          >
+            <MaterialIcons name="edit" size={18} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              ...styles.actionButton,
+              ...styles.deleteButton,
+            }}
+            onPress={() => handleDelete(client.id)}
+          >
+            <MaterialIcons name="delete" size={18} color="white" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       {/* Header Section */}
@@ -150,41 +276,43 @@ export default function ClientsPage() {
           />
         </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.sortButtonsContainer}
-        >
-          <Text style={styles.sortLabel}>Sort by:</Text>
-          {["name", "lastName", "email", "status"].map((key) => (
-            <TouchableOpacity
-              key={key}
-              onPress={() => requestSort(key as keyof Client)}
-              style={styles.sortButton}
-            >
-              <Text
-                style={{
-                  ...styles.sortButtonText,
-                  ...(sortConfig.key === key && styles.activeSortButtonText),
-                }}
+        {!isSmallScreen && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.sortButtonsContainer}
+          >
+            <Text style={styles.sortLabel}>Sort by:</Text>
+            {["name", "lastName", "email", "status"].map((key) => (
+              <TouchableOpacity
+                key={key}
+                onPress={() => requestSort(key as keyof Client)}
+                style={styles.sortButton}
               >
-                {key.charAt(0).toUpperCase() +
-                  key.slice(1).replace(/([A-Z])/g, " $1")}
-                {sortConfig.key === key && (
-                  <MaterialIcons
-                    name={
-                      sortConfig.direction === "ascending"
-                        ? "arrow-upward"
-                        : "arrow-downward"
-                    }
-                    size={16}
-                    color="#3B82F6"
-                  />
-                )}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+                <Text
+                  style={{
+                    ...styles.sortButtonText,
+                    ...(sortConfig.key === key && styles.activeSortButtonText),
+                  }}
+                >
+                  {key.charAt(0).toUpperCase() +
+                    key.slice(1).replace(/([A-Z])/g, " $1")}
+                  {sortConfig.key === key && (
+                    <MaterialIcons
+                      name={
+                        sortConfig.direction === "ascending"
+                          ? "arrow-upward"
+                          : "arrow-downward"
+                      }
+                      size={16}
+                      color="#3B82F6"
+                    />
+                  )}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
       </View>
 
       {/* Clients Table */}
@@ -194,8 +322,37 @@ export default function ClientsPage() {
         </View>
       ) : (
         <View style={styles.tableOuterContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View>
+          {isSmallScreen ? (
+            <ScrollView
+              style={styles.fullWidthScroll}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={["#3B82F6"]}
+                  tintColor="#3B82F6"
+                />
+              }
+            >
+              {filteredClients.length > 0 ? (
+                filteredClients.map(renderClientRow)
+              ) : (
+                <View style={styles.noResults}>
+                  <MaterialIcons
+                    name="search-off"
+                    size={40}
+                    color="#94A3B8"
+                  />
+                  <Text style={styles.noResultsText}>
+                    {clients.length === 0
+                      ? "No clients available"
+                      : "No matching clients found"}
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
+          ) : (
+            <View style={styles.fullWidthTableContainer}>
               {/* Table Header */}
               <View style={styles.tableHeader}>
                 <View style={{ ...styles.headerCell, ...styles.nameCell }}>
@@ -223,6 +380,7 @@ export default function ClientsPage() {
 
               {/* Table Rows */}
               <ScrollView
+                style={styles.fullWidthScroll}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}
@@ -233,78 +391,7 @@ export default function ClientsPage() {
                 }
               >
                 {filteredClients.length > 0 ? (
-                  filteredClients.map((client) => (
-                    <View key={client.id} style={styles.tableRow}>
-                      <View style={{ ...styles.dataCell, ...styles.nameCell }}>
-                        <Text style={styles.cellText}>{client.name}</Text>
-                      </View>
-                      <View
-                        style={{ ...styles.dataCell, ...styles.lastNameCell }}
-                      >
-                        <Text style={styles.cellText}>{client.lastName}</Text>
-                      </View>
-                      <View style={{ ...styles.dataCell, ...styles.emailCell }}>
-                        <Text style={styles.cellText} numberOfLines={1}>
-                          {client.email}
-                        </Text>
-                      </View>
-                      <View style={{ ...styles.dataCell, ...styles.phoneCell }}>
-                        <Text style={styles.cellText}>{client.phone}</Text>
-                      </View>
-                      <View
-                        style={{ ...styles.dataCell, ...styles.addressCell }}
-                      >
-                        <Text style={styles.cellText} numberOfLines={2}>
-                          {client.address}
-                        </Text>
-                      </View>
-                      <View
-                        style={{ ...styles.dataCell, ...styles.statusCell }}
-                      >
-                        <View
-                          style={{
-                            ...styles.statusBadge,
-                            backgroundColor: getStatusColor(client.status),
-                          }}
-                        >
-                          <Text style={styles.statusText}>{client.status}</Text>
-                        </View>
-                      </View>
-                      <View
-                        style={{ ...styles.dataCell, ...styles.actionsCell }}
-                      >
-                        {/* <Link href={`/client/${client.id}`} asChild> */}
-                        <TouchableOpacity
-                          style={{
-                            ...styles.actionButton,
-                            ...styles.editButton,
-                          }}
-                          onPress={() =>
-                            router.push({
-                              pathname: "/admin/client",
-                              params: { id: client.id },
-                            })
-                          }
-                        >
-                          <MaterialIcons name="edit" size={18} color="white" />
-                        </TouchableOpacity>
-                        {/* </Link> */}
-                        <TouchableOpacity
-                          style={{
-                            ...styles.actionButton,
-                            ...styles.deleteButton,
-                          }}
-                          onPress={() => handleDelete(client.id)}
-                        >
-                          <MaterialIcons
-                            name="delete"
-                            size={18}
-                            color="white"
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  ))
+                  filteredClients.map(renderClientRow)
                 ) : (
                   <View style={styles.noResults}>
                     <MaterialIcons
@@ -321,7 +408,7 @@ export default function ClientsPage() {
                 )}
               </ScrollView>
             </View>
-          </ScrollView>
+          )}
         </View>
       )}
     </View>
@@ -425,18 +512,29 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
+    width: "100%", // Asegura que ocupe todo el ancho disponible
+  },
+  fullWidthTableContainer: {
+    flex: 1,
+    width: "100%",
+  },
+  fullWidthScroll: {
+    width: "100%",
   },
   tableHeader: {
     flexDirection: "row",
     backgroundColor: "#F1F5F9",
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
+    width: "100%", // Ocupa todo el ancho
   },
   headerCell: {
     padding: 16,
     borderRightWidth: 1,
     borderRightColor: "#E2E8F0",
     justifyContent: "center",
+    flex: 1, // Hace que las celdas se expandan equitativamente
+    minWidth: 100, // Ancho mínimo para cada celda
   },
   dataCell: {
     padding: 16,
@@ -445,31 +543,34 @@ const styles = StyleSheet.create({
     borderRightColor: "#E2E8F0",
     borderBottomColor: "#E2E8F0",
     justifyContent: "center",
+    flex: 1, // Hace que las celdas se expandan equitativamente
+    minWidth: 100, // Ancho mínimo para cada celda
   },
   tableRow: {
     flexDirection: "row",
+    width: "100%", // Ocupa todo el ancho
   },
-  // Column width definitions
+  // Column width definitions (ahora usamos flex en lugar de width fijo)
   nameCell: {
-    width: 120,
+    flex: 1.2,
   },
   lastNameCell: {
-    width: 120,
+    flex: 1.2,
   },
   emailCell: {
-    width: 200,
+    flex: 1.5,
   },
   phoneCell: {
-    width: 150,
+    flex: 1.3,
   },
   addressCell: {
-    width: 200,
+    flex: 1.8,
   },
   statusCell: {
-    width: 100,
+    flex: 1,
   },
   actionsCell: {
-    width: 120,
+    flex: 1,
     flexDirection: "row",
     gap: 8,
     justifyContent: "center",
@@ -506,7 +607,7 @@ const styles = StyleSheet.create({
     padding: 40,
     alignItems: "center",
     justifyContent: "center",
-    minWidth: "100%",
+    width: "100%",
   },
   noResultsText: {
     marginTop: 12,
@@ -519,10 +620,51 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     borderRadius: 8,
+    width: "100%",
   },
   tableHeaderText: {
     fontWeight: "700",
     color: "#334155",
     fontSize: 14,
+  },
+  // Mobile styles
+  mobileCard: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E2E8F0",
+    width: "100%",
+  },
+  mobileCardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  mobileCardTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#1E293B",
+  },
+  mobileCardRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginVertical: 4,
+  },
+  mobileCardText: {
+    color: "#334155",
+    fontSize: 14,
+    flex: 1,
+  },
+  mobileCardActions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 12,
+    marginTop: 12,
+  },
+  mobileActionText: {
+    color: "white",
+    fontSize: 12,
+    marginLeft: 4,
   },
 });
