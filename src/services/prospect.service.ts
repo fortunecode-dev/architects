@@ -9,6 +9,22 @@ export async function getActiveProspects() {
     return data;
   } catch (error) {
     console.error("Error fetching prospect URL:", error);
+    return [
+      {
+        id: "ee068a75-a9ec-4aaa-add3-c79c91d1b46a",
+        name: "prospect test",
+        lastName: " test last name",
+        address: "test address",
+        email: "test email",
+        phone: "test phone",
+        state: " test state",
+        city: "test city",
+        postal: null,
+        metadata: {},
+        deleted: null,
+        attended: null,
+      },
+    ];
     return [];
   }
 }
