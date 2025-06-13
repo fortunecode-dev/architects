@@ -126,12 +126,12 @@ export default function Page() {
         >
           <ContactSection />
         </View>
-        <View
+        {/* <View
           ref={sectionRefs.contact2}
           style={{ height: isLargeScreen ? height : "auto" }}
-        >
-          {/* <ContactSection2 /> */}
-        </View>
+        > */}
+        {/* <ContactSection2 /> */}
+        {/* </View> */}
         <Footer scrollToSection={scrollToSection} />
       </ScrollView>
     </View>
