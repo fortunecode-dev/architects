@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   View,
   Text,
@@ -8,29 +9,81 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  Alert,
 } from "react-native";
+import {
+  getProspect,
+  updateProspect,
+  postProspect,
+} from "@/services/prospect.service";
 
-const NewClientForm = () => {
-  const [formData, setFormData] = useState({
-    firstName: "",
+type FormData = {
+  name: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+};
+
+const ClientForm = () => {
+  const router = useRouter();
+  const { id } = useLocalSearchParams();
+  const isEditing = !!id;
+
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
     lastName: "",
     email: "",
     phone: "",
     address: "",
-    status: "Active",
+    city: "",
+    state: "",
   });
 
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [isLoading, setIsLoading] = useState(false);
 
-  const validateForm = () => {
-    const newErrors:any = {};
+  // Cargar datos del cliente si estamos editando
+  useEffect(() => {
+    if (isEditing) {
+      const loadClientData = async () => {
+        setIsLoading(true);
+        try {
+          const client = await getProspect(id as string);
+          setFormData({
+            name: client.name || "",
+            lastName: client.lastName || "",
+            email: client.email || "",
+            phone: client.phone || "",
+            address: client.address || "",
+            city: client.city || "",
+            state: client.state || "",
+          });
+        } catch (error) {
+          Alert.alert("Error", "No se pudo cargar los datos del cliente");
+          router.back();
+        } finally {
+          setIsLoading(false);
+        }
+      };
 
-    if (!formData.firstName.trim())
-      newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+      loadClientData();
+    }
+  }, [id]);
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<FormData> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "First name is required, if is unknown use an alias";
+    }
+
     if (formData.email && !/^\S+@\S+\.\S+$/.test(formData.email)) {
       newErrors.email = "Invalid email format";
     }
+
     if (formData.phone && !/^[\d\s\+\-\(\)]{10,15}$/.test(formData.phone)) {
       newErrors.phone = "Invalid phone number";
     }
@@ -39,35 +92,52 @@ const NewClientForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (name, value) => {
-    setFormData({
-      ...formData,
+  const handleChange = (name: keyof FormData, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
 
-    // Clear error when user starts typing
+    // Limpiar error cuando el usuario comienza a escribir
     if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: null,
-      });
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateForm()) return;
 
-    // Here you would typically send the data to your backend
-    console.log(formData);
-    alert("Client created successfully!");
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      address: "",
-      status: "Active",
-    });
+    setIsLoading(true);
+    try {
+      if (isEditing) {
+        await updateProspect(id as string, formData);
+        Alert.alert("Éxito", "Cliente actualizado correctamente");
+      } else {
+        await postProspect(formData);
+        Alert.alert("Éxito", "Cliente creado correctamente");
+        // Resetear formulario solo en creación
+        setFormData({
+          name: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          address: "",
+          city: "",
+          state: "",
+        });
+      }
+      router.back();
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        `Ocurrió un error al ${isEditing ? "actualizar" : "crear"} el cliente`
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -80,30 +150,32 @@ const NewClientForm = () => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.formContainer}>
-          <Text style={styles.title}>New Client</Text>
+          <Text style={styles.title}>
+            {isEditing ? "Edit Client" : "New Client"}
+          </Text>
 
           {/* First Name */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>First Name *</Text>
             <TextInput
-              style={[styles.input, errors.firstName && styles.inputError]}
+              style={[styles.input, errors.name && styles.inputError]}
               placeholder="Enter first name"
-              value={formData.firstName}
-              onChangeText={(text) => handleChange("firstName", text)}
+              value={formData.name}
+              onChangeText={(text) => handleChange("name", text)}
+              editable={!isLoading}
             />
-            {errors.firstName && (
-              <Text style={styles.errorText}>{errors.firstName}</Text>
-            )}
+            {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
           </View>
 
           {/* Last Name */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Last Name *</Text>
+            <Text style={styles.label}>Last Name</Text>
             <TextInput
               style={[styles.input, errors.lastName && styles.inputError]}
               placeholder="Enter last name"
               value={formData.lastName}
               onChangeText={(text) => handleChange("lastName", text)}
+              editable={!isLoading}
             />
             {errors.lastName && (
               <Text style={styles.errorText}>{errors.lastName}</Text>
@@ -120,6 +192,7 @@ const NewClientForm = () => {
               autoCapitalize="none"
               value={formData.email}
               onChangeText={(text) => handleChange("email", text)}
+              editable={!isLoading}
             />
             {errors.email && (
               <Text style={styles.errorText}>{errors.email}</Text>
@@ -135,6 +208,7 @@ const NewClientForm = () => {
               keyboardType="phone-pad"
               value={formData.phone}
               onChangeText={(text) => handleChange("phone", text)}
+              editable={!isLoading}
             />
             {errors.phone && (
               <Text style={styles.errorText}>{errors.phone}</Text>
@@ -151,40 +225,61 @@ const NewClientForm = () => {
               numberOfLines={3}
               value={formData.address}
               onChangeText={(text) => handleChange("address", text)}
+              editable={!isLoading}
             />
           </View>
 
-          {/* Status */}
+          {/* City */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Status *</Text>
-            <View style={styles.statusContainer}>
-              {["Active", "Inactive", "Pending"].map((status) => (
-                <TouchableOpacity
-                  key={status}
-                  style={[
-                    styles.statusButton,
-                    formData.status === status && styles.statusButtonActive,
-                  ]}
-                  onPress={() => handleChange("status", status)}
-                >
-                  <Text
-                    style={
-                      formData.status === status
-                        ? styles.statusTextActive
-                        : styles.statusText
-                    }
-                  >
-                    {status}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <Text style={styles.label}>City</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter city"
+              value={formData.city}
+              onChangeText={(text) => handleChange("city", text)}
+              editable={!isLoading}
+            />
+          </View>
+
+          {/* State */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>State/Province</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter state or province"
+              value={formData.state}
+              onChangeText={(text) => handleChange("state", text)}
+              editable={!isLoading}
+            />
           </View>
 
           {/* Submit Button */}
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Create Client</Text>
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              isLoading && styles.submitButtonDisabled,
+            ]}
+            onPress={handleSubmit}
+            disabled={isLoading}
+          >
+            <Text style={styles.submitButtonText}>
+              {isLoading
+                ? "Processing..."
+                : isEditing
+                ? "Update Client"
+                : "Create Client"}
+            </Text>
           </TouchableOpacity>
+
+          {isEditing && (
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => router.back()}
+              disabled={isLoading}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -238,30 +333,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 5,
   },
-  statusContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  statusButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: "#cbd5e1",
-    backgroundColor: "#ffffff",
-  },
-  statusButtonActive: {
-    backgroundColor: "#3b82f6",
-    borderColor: "#3b82f6",
-  },
-  statusText: {
-    color: "#64748b",
-  },
-  statusTextActive: {
-    color: "#ffffff",
-    fontWeight: "600",
-  },
   submitButton: {
     backgroundColor: "#10b981",
     borderRadius: 8,
@@ -274,11 +345,28 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
+  submitButtonDisabled: {
+    backgroundColor: "#a7f3d0",
+  },
   submitButtonText: {
     color: "#ffffff",
     fontSize: 18,
     fontWeight: "600",
   },
+  cancelButton: {
+    backgroundColor: "#f8fafc",
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
+    borderRadius: 8,
+    padding: 16,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  cancelButtonText: {
+    color: "#64748b",
+    fontSize: 18,
+    fontWeight: "600",
+  },
 });
 
-export default NewClientForm;
+export default ClientForm;

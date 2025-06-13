@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,12 +9,16 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, router, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
+import {
+  deleteProspect,
+  getActiveProspects,
+} from "@/services/prospect.service";
 
 interface Client {
-  id: number;
-  firstName: string;
+  id: string;
+  name: string;
   lastName: string;
   email: string;
   phone: string;
@@ -35,59 +39,23 @@ export default function ClientsPage() {
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState<Client[]>([]);
 
-  useEffect(() => {
-    const fetchClients = async () => {
-      setLoading(true);
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const initialClients: any = [
-          {
-            id: 1,
-            firstName: "John",
-            lastName: "Doe",
-            email: "john.doe@example.com",
-            phone: "+1 555-123-4567",
-            address: "123 Main St, Anytown, USA",
-            status: "Active",
-          },
-          {
-            id: 2,
-            firstName: "Jane",
-            lastName: "Smith",
-            email: "jane.smith@example.com",
-            phone: "+1 555-987-6543",
-            address: "456 Oak Ave, Somewhere, USA",
-            status: "Inactive",
-          },
-          {
-            id: 3,
-            firstName: "Robert",
-            lastName: "Johnson",
-            email: "robert.j@example.com",
-            phone: "+1 555-456-7890",
-            address: "789 Pine Rd, Nowhere, USA",
-            status: "Active",
-          },
-          {
-            id: 4,
-            firstName: "Emily",
-            lastName: "Williams",
-            email: "emily.w@example.com",
-            phone: "+1 555-789-0123",
-            address: "321 Elm Blvd, Anywhere, USA",
-            status: "Pending",
-          },
-        ];
-        setClients(initialClients);
-      } catch (error) {
-        console.error("Failed to fetch clients:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      fetchClients();
+    }, [])
+  );
 
-    fetchClients();
-  }, []);
+  const fetchClients = async () => {
+    setLoading(true);
+    try {
+      const initialClients = await getActiveProspects();
+      setClients(initialClients);
+    } catch (error) {
+      console.error("Failed to fetch clients:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const requestSort = (key: keyof Client) => {
     let direction: "ascending" | "descending" = "ascending";
@@ -110,31 +78,32 @@ export default function ClientsPage() {
 
   const filteredClients = sortedClients.filter(
     (client) =>
-      client.firstName.toLowerCase().includes(filter.toLowerCase()) ||
-      client.lastName.toLowerCase().includes(filter.toLowerCase()) ||
-      client.email.toLowerCase().includes(filter.toLowerCase()) ||
-      client.phone.toLowerCase().includes(filter.toLowerCase()) ||
-      client.address.toLowerCase().includes(filter.toLowerCase()) ||
-      client.status.toLowerCase().includes(filter.toLowerCase())
+      client.name?.toLowerCase().includes(filter.toLowerCase()) ||
+      client.lastName?.toLowerCase().includes(filter.toLowerCase()) ||
+      client.email?.toLowerCase().includes(filter.toLowerCase()) ||
+      client.phone?.toLowerCase().includes(filter.toLowerCase()) ||
+      client.address?.toLowerCase().includes(filter.toLowerCase()) ||
+      client.status?.toLowerCase().includes(filter.toLowerCase())
   );
 
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await fetchClients();
     } finally {
       setRefreshing(false);
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setClients(clients.filter((client) => client.id !== id));
-    } finally {
+      await deleteProspect(id);
+    } catch {
       setLoading(false);
+      alert("An error has occurred deleting this prospect");
     }
+    fetchClients();
   };
 
   const getStatusColor = (status: string) => {
@@ -187,7 +156,7 @@ export default function ClientsPage() {
           contentContainerStyle={styles.sortButtonsContainer}
         >
           <Text style={styles.sortLabel}>Sort by:</Text>
-          {["firstName", "lastName", "email", "status"].map((key) => (
+          {["name", "lastName", "email", "status"].map((key) => (
             <TouchableOpacity
               key={key}
               onPress={() => requestSort(key as keyof Client)}
@@ -196,7 +165,7 @@ export default function ClientsPage() {
               <Text
                 style={{
                   ...styles.sortButtonText,
-                 ...( sortConfig.key === key && styles.activeSortButtonText),
+                  ...(sortConfig.key === key && styles.activeSortButtonText),
                 }}
               >
                 {key.charAt(0).toUpperCase() +
@@ -219,7 +188,7 @@ export default function ClientsPage() {
       </View>
 
       {/* Clients Table */}
-      {loading && clients.length === 0 ? (
+      {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3B82F6" />
         </View>
@@ -229,25 +198,25 @@ export default function ClientsPage() {
             <View>
               {/* Table Header */}
               <View style={styles.tableHeader}>
-                <View style={{...styles.headerCell, ...styles.firstNameCell}}>
+                <View style={{ ...styles.headerCell, ...styles.nameCell }}>
                   <Text style={styles.tableHeaderText}>First Name</Text>
                 </View>
-                <View style={{...styles.headerCell, ...styles.lastNameCell}}>
+                <View style={{ ...styles.headerCell, ...styles.lastNameCell }}>
                   <Text style={styles.tableHeaderText}>Last Name</Text>
                 </View>
-                <View style={{...styles.headerCell, ...styles.emailCell}}>
+                <View style={{ ...styles.headerCell, ...styles.emailCell }}>
                   <Text style={styles.tableHeaderText}>Email</Text>
                 </View>
-                <View style={{...styles.headerCell, ...styles.phoneCell}}>
+                <View style={{ ...styles.headerCell, ...styles.phoneCell }}>
                   <Text style={styles.tableHeaderText}>Phone</Text>
                 </View>
-                <View style={{...styles.headerCell, ...styles.addressCell}}>
+                <View style={{ ...styles.headerCell, ...styles.addressCell }}>
                   <Text style={styles.tableHeaderText}>Address</Text>
                 </View>
-                <View style={{...styles.headerCell, ...styles.statusCell}}>
+                <View style={{ ...styles.headerCell, ...styles.statusCell }}>
                   <Text style={styles.tableHeaderText}>Status</Text>
                 </View>
-                <View style={{...styles.headerCell, ...styles.actionsCell}}>
+                <View style={{ ...styles.headerCell, ...styles.actionsCell }}>
                   <Text style={styles.tableHeaderText}>Actions</Text>
                 </View>
               </View>
@@ -266,26 +235,32 @@ export default function ClientsPage() {
                 {filteredClients.length > 0 ? (
                   filteredClients.map((client) => (
                     <View key={client.id} style={styles.tableRow}>
-                      <View style={{...styles.dataCell, ...styles.firstNameCell}}>
-                        <Text style={styles.cellText}>{client.firstName}</Text>
+                      <View style={{ ...styles.dataCell, ...styles.nameCell }}>
+                        <Text style={styles.cellText}>{client.name}</Text>
                       </View>
-                      <View style={{...styles.dataCell, ...styles.lastNameCell}}>
+                      <View
+                        style={{ ...styles.dataCell, ...styles.lastNameCell }}
+                      >
                         <Text style={styles.cellText}>{client.lastName}</Text>
                       </View>
-                      <View style={{...styles.dataCell, ...styles.emailCell}}>
+                      <View style={{ ...styles.dataCell, ...styles.emailCell }}>
                         <Text style={styles.cellText} numberOfLines={1}>
                           {client.email}
                         </Text>
                       </View>
-                      <View style={{...styles.dataCell, ...styles.phoneCell}}>
+                      <View style={{ ...styles.dataCell, ...styles.phoneCell }}>
                         <Text style={styles.cellText}>{client.phone}</Text>
                       </View>
-                      <View style={{...styles.dataCell, ...styles.addressCell}}>
+                      <View
+                        style={{ ...styles.dataCell, ...styles.addressCell }}
+                      >
                         <Text style={styles.cellText} numberOfLines={2}>
                           {client.address}
                         </Text>
                       </View>
-                      <View style={{...styles.dataCell, ...styles.statusCell}}>
+                      <View
+                        style={{ ...styles.dataCell, ...styles.statusCell }}
+                      >
                         <View
                           style={{
                             ...styles.statusBadge,
@@ -295,20 +270,30 @@ export default function ClientsPage() {
                           <Text style={styles.statusText}>{client.status}</Text>
                         </View>
                       </View>
-                      <View style={{...styles.dataCell, ...styles.actionsCell}}>
-                        <Link href={`/edit-client/${client.id}`} asChild>
-                          <TouchableOpacity
-                            style={{...styles.actionButton, ...styles.editButton}}
-                          >
-                            <MaterialIcons
-                              name="edit"
-                              size={18}
-                              color="white"
-                            />
-                          </TouchableOpacity>
-                        </Link>
+                      <View
+                        style={{ ...styles.dataCell, ...styles.actionsCell }}
+                      >
+                        {/* <Link href={`/client/${client.id}`} asChild> */}
                         <TouchableOpacity
-                          style={{...styles.actionButton, ...styles.deleteButton}}
+                          style={{
+                            ...styles.actionButton,
+                            ...styles.editButton,
+                          }}
+                          onPress={() =>
+                            router.push({
+                              pathname: "/admin/client",
+                              params: { id: client.id },
+                            })
+                          }
+                        >
+                          <MaterialIcons name="edit" size={18} color="white" />
+                        </TouchableOpacity>
+                        {/* </Link> */}
+                        <TouchableOpacity
+                          style={{
+                            ...styles.actionButton,
+                            ...styles.deleteButton,
+                          }}
                           onPress={() => handleDelete(client.id)}
                         >
                           <MaterialIcons
@@ -465,7 +450,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   // Column width definitions
-  firstNameCell: {
+  nameCell: {
     width: 120,
   },
   lastNameCell: {
