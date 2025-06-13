@@ -19,6 +19,7 @@ import { Modal, Pressable } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import { useRouter } from "expo-router";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {
   MAIL_CONTACT,
   PHONE_CONTACT,
@@ -191,7 +192,7 @@ function Header({
       >
         <View className="flex flex-row justify-between items-center mx-auto px-4 py-2 w-full max-w-7xl h-12">
           {/* Left: Logo - Reemplazado por texto dW+ */}
-          <View className="flex-1 flex-row flex-shrink-0 items-center px-1 ">
+          <View className="flex-row flex-shrink-0 flex-1 items-center px-1">
             <TouchableOpacity onPress={() => scrollToSection("home")}>
               <Text
                 className="font-bold text-2xl"
@@ -229,7 +230,7 @@ function Header({
           </View>
 
           {/* Right: Contact Button */}
-          <View className="hidden md:flex flex-row flex-1 items-center justify-end">
+          <View className="hidden md:flex flex-row flex-1 justify-end items-center">
             {/* Iconos de redes sociales */}
             <TouchableOpacity
               onPress={() =>
@@ -682,7 +683,7 @@ function ServicesSection({
                   {service.description}
                 </Text>
                 <Text
-                  className="mt-4 pr-2 transition-colors duration-300 font-bold text-end"
+                  className="mt-4 pr-2 font-bold text-end transition-colors duration-300"
                   style={{ color: COLORS.whiteSoft }}
                 >
                   READ MORE →
@@ -705,36 +706,37 @@ function ServicesSection({
           style={{ backgroundColor: COLORS.blackOverlay }}
         >
           <View
-            className="relative lg:flex-row flex-col-reverse justify-center gap-5"
+            className="relative lg:flex-row flex-col-reverse justify-center lg:items-center gap-5 m-5"
             style={{
               backgroundColor: COLORS.white,
               marginHorizontal: 8,
               padding: 20,
               borderRadius: 16,
-              maxWidth: 900,
+              maxWidth: isDesktop ? SCREEN_WIDTH * .7 : SCREEN_WIDTH * .95,
+              height: isDesktop ? "auto" : isTablet ? SCREEN_WIDTH * 1.2 : "auto",
             }}
           >
             <TouchableOpacity
               onPress={handleCloseModal}
-              className="top-4 right-4 z-10 absolute justify-center items-center p-2 rounded-full"
+              className="top-4 right-4 z-10 absolute justify-center items-center -m-3 p-4 rounded-full"
             >
               <Ionicons name="close" size={28} color={COLORS.blueDark} />
             </TouchableOpacity>
 
-            <View className="flex-col flex-1 justify-center gap-2 mb-0 pr-0 lg:pr-6 pb-3 min-w-0 max-w-full ">
+            <View className="flex-col flex-1 justify-center gap-2 mb-0 pr-0 lg:pr-6 pb-3 min-w-0 max-w-full">
               <Text
-                className="hidden lg:block font-bold text-2xl"
+                className="hidden lg:block lg:py-3 font-bold text-2xl lg:text-4xl"
                 style={{ color: COLORS.blueDark }}
               >
                 {selectedService?.title}
               </Text>
               <Text
-                className="my-0 pt-8 lg:pt-0 lg:text-md text-xs flex-1"
+                className="flex-1 my-0 pt-8 lg:pt-0 text-[15px] md:text-2xl"
                 style={{ color: COLORS.blueDark }}
               >
                 {selectedService?.cont}
               </Text>
-              <View className="flex flex-row flex-wrap justify-end items-end gap-2 pt-2 w-full flex-1">
+              <View className="flex flex-row flex-wrap flex-1 justify-end items-end gap-2 my-5 w-full">
                 <TouchableOpacity
                   onPress={() => {
                     setModalVisible(false);
@@ -742,13 +744,13 @@ function ServicesSection({
                   }}
                   style={{
                     borderColor: COLORS.border,
-                    borderWidth: 1,
+                    // borderWidth: 1,
                     paddingHorizontal: 10,
                     paddingVertical: 5,
-                    borderRadius: 6,
+                    // borderRadius: 6,
                   }}
                 >
-                  <Text style={{ color: COLORS.blueDark, fontWeight: "500" }}>
+                  <Text style={{ color: COLORS.blueDark, fontWeight:  "500" }} className="lg:p-1 lg:text-2xl">
                     Make a Question
                   </Text>
                 </TouchableOpacity>
@@ -763,7 +765,7 @@ function ServicesSection({
                     borderRadius: 6,
                   }}
                 >
-                  <Text style={{ color: COLORS.whiteSoft, fontWeight: "500" }}>
+                  <Text style={{ color: COLORS.whiteSoft, fontWeight: "500" }} className="lg:p-1 lg:text-2xl">
                     Get Started
                   </Text>
                 </TouchableOpacity>
@@ -789,23 +791,24 @@ function ServicesSection({
                 })}
               </View>
               {/* Carousel */}
-              <View className="justify-center items-center w-full h-full">
+              <View className="justify-center items-center p-4 w-full h-full">
                 <Image
                   source={selectedService?.images[currentImageIndex]}
                   style={{
-                    width: isDesktop ? 300 : isTablet ? 420 : 280,
-                    height: isDesktop ? 260 : isTablet ? 220 : 160,
-                    marginTop: isTablet ? 15 : 0,
+                    width: isDesktop ? SCREEN_WIDTH * .3 : isTablet ? SCREEN_WIDTH * .8 : SCREEN_WIDTH * .75,
+                    height: isDesktop ? SCREEN_WIDTH * .2 : isTablet ? SCREEN_WIDTH * .4 : SCREEN_HEIGHT * .2,
+                    marginVertical: isTablet ? 20 : 0,
                     borderRadius: 16,
+
                   }}
                   resizeMode="cover"
-                  className="shadow-lg mt-10 lg:mt-0 mb-2"
+                  className="m-10 lg:mt-0 mb-2"
                 />
 
                 {/* Navigation Arrows */}
                 <TouchableOpacity
                   onPress={handlePrevImage}
-                  className="top-1/2 left-0 absolute p-1 rounded-full -translate-y-1/2"
+                  className="top-1/2 left-0 absolute -mx-3 p-1 rounded-full -translate-y-1/2"
                 >
                   <Ionicons
                     name="chevron-back"
@@ -815,7 +818,7 @@ function ServicesSection({
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleNextImage}
-                  className="top-1/2 right-0 absolute p-1 rounded-full -translate-y-1/2"
+                  className="top-1/2 right-0 absolute -mx-3 p-1 rounded-full -translate-y-1/2"
                 >
                   <Ionicons
                     name="chevron-forward"
@@ -825,7 +828,8 @@ function ServicesSection({
                 </TouchableOpacity>
 
                 {/* Indicators */}
-                <View className="flex-row justify-center mt-2">
+                <View className="flex-row justify-center mt-4"
+                >
                   {selectedService?.images.map((_, index) => (
                     <TouchableOpacity
                       key={index}
@@ -848,7 +852,7 @@ function ServicesSection({
                 </View>
 
                 {/* Image Counter */}
-                <View
+                {/* <View
                   style={{
                     position: "absolute",
                     right: 8,
@@ -861,7 +865,7 @@ function ServicesSection({
                   <Text style={{ color: COLORS.white, fontSize: 12 }}>
                     {currentImageIndex + 1}/{selectedService?.images.length}
                   </Text>
-                </View>
+                </View> */}
               </View>
             </View>
           </View>
@@ -1576,8 +1580,8 @@ function ContactSection() {
                     paddingVertical: 8,
                   }}
                 >
-                  <Ionicons name="call" color={COLORS.blueDark} size={28} />
-                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>
+                  <Ionicons name="call" color={COLORS.whiteSoft} size={28} />
+                  <Text style={{ color: COLORS.whiteSoft, fontSize: 18 }}>
                     Phone
                   </Text>
                 </TouchableOpacity>
@@ -1593,8 +1597,8 @@ function ContactSection() {
                     paddingVertical: 8,
                   }}
                 >
-                  <MaterialIcons name="sms" color={COLORS.blueDark} size={28} />
-                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>
+                  <MaterialIcons name="sms" color={COLORS.whiteSoft} size={28} />
+                  <Text style={{ color: COLORS.whiteSoft, fontSize: 18 }}>
                     Message
                   </Text>
                 </TouchableOpacity>
@@ -1612,10 +1616,10 @@ function ContactSection() {
                 >
                   <Ionicons
                     name="logo-whatsapp"
-                    color={COLORS.blueDark}
+                    color={COLORS.whiteSoft}
                     size={28}
                   />
-                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>
+                  <Text style={{ color: COLORS.whiteSoft, fontSize: 18 }}>
                     Whatsapp
                   </Text>
                 </TouchableOpacity>
@@ -1670,7 +1674,7 @@ function ContactSection() {
             style={{
               color: COLORS.white,
               fontSize: 18,
-              textAlign: isDesktop ? "left" : "center",
+              textAlign: "left",
               marginBottom: isDesktop ? 0 : 12,
             }}
           >
@@ -1706,7 +1710,34 @@ function ContactSection() {
                   {PHONE_CONTACT}
                 </Text>
               </Text>
+              <View style={{ flexDirection: "row", alignItems: "center", marginTop: 24, gap: 20 }}>
+                <TouchableOpacity
+                  onPress={() => Linking.openURL("https://www.facebook.com/tu-negocio")}
+                  accessibilityLabel="Facebook"
+                >
+                  <Ionicons name="logo-facebook" size={32} color={COLORS.whiteSoft} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => Linking.openURL("https://www.instagram.com/tu-negocio")}
+                  accessibilityLabel="Instagram"
+                >
+                  <Ionicons name="logo-instagram" size={32} color={COLORS.whiteSoft} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => Linking.openURL("https://m.me/tu-negocio")}
+                  accessibilityLabel="Messenger"
+                >
+                  <MaterialCommunityIcons name="facebook-messenger" size={32} color={COLORS.whiteSoft} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => Linking.openURL("https://wa.me/1234567890")}
+                  accessibilityLabel="Whatsapp"
+                >
+                  <Ionicons name="logo-whatsapp" size={32} color={COLORS.whiteSoft} />
+                </TouchableOpacity>
+              </View>
             </View>
+            
           )}
 
           {/* Contactos visibles solo en escritorio */}
@@ -1714,10 +1745,11 @@ function ContactSection() {
             <>
               <View
                 style={{
-                  flexDirection: "row",
-                  marginTop: 32,
+                  flexDirection: "column",
+                  marginTop: 122,
                   paddingBottom: 20,
                 }}
+                className="items-center h-1/3"
               >
                 <View style={{ flex: 1 }}>
                   <TouchableOpacity
@@ -1742,7 +1774,7 @@ function ContactSection() {
                       >
                         {PHONE_CONTACT}
                       </Text>
-                      <Text style={{ color: COLORS.white }}>
+                      <Text style={{ color: COLORS.white }} className="text-xl">
                         Call now for a free consultation
                       </Text>
                     </View>
@@ -1765,10 +1797,37 @@ function ContactSection() {
                       >
                         {MAIL_CONTACT}
                       </Text>
-                      <Text style={{ color: COLORS.white }}>
+                      <Text style={{ color: COLORS.white }} className="text-xl">
                         Email us to discuss your project
                       </Text>
                     </View>
+                  </TouchableOpacity>
+                  
+                </View>
+                <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10, gap: 20 }}>
+                  <TouchableOpacity
+                    onPress={() => Linking.openURL("https://www.facebook.com/tu-negocio")}
+                    accessibilityLabel="Facebook"
+                  >
+                    <Ionicons name="logo-facebook" size={32} color={COLORS.whiteSoft} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => Linking.openURL("https://www.instagram.com/tu-negocio")}
+                    accessibilityLabel="Instagram"
+                  >
+                    <Ionicons name="logo-instagram" size={32} color={COLORS.whiteSoft} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => Linking.openURL("https://m.me/tu-negocio")}
+                    accessibilityLabel="Messenger"
+                  >
+                    <MaterialCommunityIcons name="facebook-messenger" size={32} color={COLORS.whiteSoft} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => Linking.openURL("https://wa.me/1234567890")}
+                    accessibilityLabel="Whatsapp"
+                  >
+                    <Ionicons name="logo-whatsapp" size={32} color={COLORS.whiteSoft} />
                   </TouchableOpacity>
                 </View>
               </View>
