@@ -48,6 +48,28 @@ export async function postProspect(prospectData: any) {
     console.error("Error fetching prospect URL:", error);
   }
 }
+export async function postQuestion(prospectData: any) {
+  try {
+    const { data } = await axios.post(
+      `${SERVER_URL}/prospect/question`,
+      prospectData
+    );
+    return data;
+  } catch (error) {
+    console.error("Error fetching prospect URL:", error);
+  }
+}
+export async function postAnswer(answerData: any) {
+  try {
+    const { data } = await axios.put(
+      `${SERVER_URL}/prospect/answer`,
+      answerData
+    );
+    return data;
+  } catch (error) {
+    console.error("Error fetching prospect URL:", error);
+  }
+}
 export async function updateProspect(id: string, prospectData: any) {
   try {
     const { data } = await axios.put(

@@ -24,7 +24,7 @@ interface Client {
   email: string;
   phone: string;
   address: string;
-  status: "Active" | "Inactive" | "Pending";
+  status: string[];
 }
 
 export default function ClientsPage() {
@@ -139,26 +139,26 @@ export default function ClientsPage() {
               <Text style={styles.statusText}>{client.status}</Text>
             </View>
           </View>
-          
+
           <View style={styles.mobileCardRow}>
             <MaterialIcons name="email" size={16} color="#64748B" />
             <Text style={styles.mobileCardText} numberOfLines={1}>
               {client.email}
             </Text>
           </View>
-          
+
           <View style={styles.mobileCardRow}>
             <MaterialIcons name="phone" size={16} color="#64748B" />
             <Text style={styles.mobileCardText}>{client.phone}</Text>
           </View>
-          
+
           <View style={styles.mobileCardRow}>
             <MaterialIcons name="location-on" size={16} color="#64748B" />
             <Text style={styles.mobileCardText} numberOfLines={2}>
               {client.address}
             </Text>
           </View>
-          
+
           <View style={styles.mobileCardActions}>
             <TouchableOpacity
               style={[styles.actionButton, styles.editButton]}
@@ -172,7 +172,7 @@ export default function ClientsPage() {
               <MaterialIcons name="edit" size={18} color="white" />
               <Text style={styles.mobileActionText}>Edit</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity
               style={[styles.actionButton, styles.deleteButton]}
               onPress={() => handleDelete(client.id)}
@@ -213,7 +213,7 @@ export default function ClientsPage() {
               backgroundColor: getStatusColor(client.status),
             }}
           >
-            <Text style={styles.statusText}>{client.status}</Text>
+            <Text style={styles.statusText}>{client.status.join(", ")}</Text>
           </View>
         </View>
         <View style={{ ...styles.dataCell, ...styles.actionsCell }}>
@@ -250,7 +250,7 @@ export default function ClientsPage() {
       {/* Header Section */}
       <View style={styles.header}>
         <Text style={styles.title}>Clients Management</Text>
-        <Link href="/new-client" asChild>
+        <Link href="/admin/client" asChild>
           <TouchableOpacity style={styles.newClientButton}>
             <MaterialIcons name="add" size={20} color="white" />
             <Text style={styles.newClientButtonText}>New Client</Text>
@@ -338,11 +338,7 @@ export default function ClientsPage() {
                 filteredClients.map(renderClientRow)
               ) : (
                 <View style={styles.noResults}>
-                  <MaterialIcons
-                    name="search-off"
-                    size={40}
-                    color="#94A3B8"
-                  />
+                  <MaterialIcons name="search-off" size={40} color="#94A3B8" />
                   <Text style={styles.noResultsText}>
                     {clients.length === 0
                       ? "No clients available"

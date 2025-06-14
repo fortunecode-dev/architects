@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { postAnswer } from "@/services/prospect.service";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -13,10 +14,11 @@ const AnswerForm = () => {
 
   const handleSubmit = () => {
     // Here you would typically send the data to your backend
-    console.log({ email, answer });
-    alert("Answer submitted successfully!");
-    setEmail("");
-    setAnswer("");
+    postAnswer({ email, answer }).then(() => {
+      alert("Answer submitted successfully!");
+      setEmail("");
+      setAnswer("");
+    });
   };
 
   return (

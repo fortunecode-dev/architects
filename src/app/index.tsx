@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import {
   Animated,
   ViewProps,
@@ -22,7 +22,7 @@ import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useWindowDimensions } from "react-native";
 import useScrolled from "@/hooks/useScroll";
-import { postProspect } from "@/services/prospect.service";
+import { postProspect, postQuestion } from "@/services/prospect.service";
 import { COLORS } from "./colors";
 import { InputField } from "@/components/InputField";
 import { TextAreaField } from "@/components/TextAreaField";
@@ -123,7 +123,6 @@ export default function Page() {
     </View>
   );
 }
-
 export function FadeInView({
   children,
   style,
@@ -145,7 +144,6 @@ export function FadeInView({
     </Animated.View>
   );
 }
-
 function Header({
   sections,
   scrollToSection,
@@ -481,8 +479,7 @@ function LandingSection({
                   <TouchableOpacity
                     onPress={() => scrollToSection("contact")}
                     style={{
-                      backgroundImage:
-                        "linear-gradient(90deg, rgb(49, 80, 114) 0%, rgb(108, 155, 201) 100%)",
+                      backgroundColor: COLORS.blueDark,
                       borderRadius: 6,
                       paddingHorizontal: 16,
                       paddingVertical: 8,
@@ -562,7 +559,6 @@ function ServicesSection({
     ...service,
     images: serviceImages[service.id], // Asignamos las imágenes basadas en un ID único
   }));
-  console.log(services);
   const handleGetStarted = () => {
     setModalVisible(false);
     setTimeout(() => {
@@ -1016,15 +1012,19 @@ function FAQSection({
     setShowContactModal(true);
   };
 
-  const handleContactSubmit = () => {
+  const handleContactSubmit = useCallback(() => {
     if (!isContactValid) return;
-    setShowContactModal(false);
-    setSubmitted(true);
-    setQuestion("");
-    setContactInfo("");
-    setContactType(null);
-    setTimeout(() => setSubmitted(false), 4000);
-  };
+    postQuestion({ [contactType]: contactInfo, metadata: { question } }).then(
+      () => {
+        setSubmitted(false);
+        setShowContactModal(false);
+        setSubmitted(true);
+        setQuestion("");
+        setContactInfo("");
+        setContactType(null);
+      }
+    );
+  }, [contactInfo, contactType, question]);
 
   // Divide las preguntas en 2 columnas
   const colLength = Math.ceil((faqs as Array<any>).length / 2);
@@ -1974,7 +1974,6 @@ function ContactSection() {
     </View>
   );
 }
-
 function Footer({ scrollToSection }: any) {
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
