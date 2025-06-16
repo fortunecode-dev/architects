@@ -22,7 +22,7 @@ import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useWindowDimensions } from "react-native";
 import useScrolled from "@/hooks/useScroll";
-import { postProspect, postQuestion } from "@/services/prospect.service";
+import { postProspectContact, postQuestion } from "@/services/prospect.service";
 import { COLORS } from "./colors";
 import { InputField } from "@/components/InputField";
 import { TextAreaField } from "@/components/TextAreaField";
@@ -1442,7 +1442,7 @@ function ContactSection() {
         },
       };
 
-      postProspect(prospectData)
+      postProspectContact(prospectData)
         .then(() => {
           Alert.alert("Success", "Your message has been sent successfully!");
         })

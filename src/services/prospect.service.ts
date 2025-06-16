@@ -37,6 +37,17 @@ export async function getProspect(id: string) {
     return {};
   }
 }
+export async function postProspectContact(prospectData: any) {
+  try {
+    const { data } = await axios.post(
+      `${SERVER_URL}/prospect/contact`,
+      prospectData
+    );
+    return data;
+  } catch (error) {
+    console.error("Error fetching prospect URL:", error);
+  }
+}
 export async function postProspect(prospectData: any) {
   try {
     const { data } = await axios.post(
