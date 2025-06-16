@@ -273,8 +273,24 @@ function Header({
             </TouchableOpacity>
           </View>
 
-          {/* Mobile Menu Button */}
-          <View className="md:hidden flex-shrink-0">
+          {/* Mobile Menu Button and Language Toggle */}
+          
+          <View className="md:hidden flex-row flex-shrink-0 items-center">
+            {/* Botón de cambio de idioma */}
+            <TouchableOpacity
+              onPress={toggleLanguage}
+              className="mr-5 p-1"
+              accessibilityLabel="Change language"
+            >
+              <Text
+                className="font-bold text-sm"
+                style={{ color: COLORS.blueDark }}
+              >
+                {i18n.language === "en" ? "EN" : "ES"}
+              </Text>
+            </TouchableOpacity>
+            
+            {/* Botón de menú */}
             <TouchableOpacity
               onPress={() => setMenuOpen(!menuOpen)}
               className="-mr-2 p-2"
