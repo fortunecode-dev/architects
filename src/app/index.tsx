@@ -531,12 +531,14 @@ function ServicesSection({
   const [questionModalVisible, setQuestionModalVisible] = useState(false);
   const [questionText, setQuestionText] = useState("");
   const [questionSent, setQuestionSent] = useState(false);
+  const [fullScreenImageVisible, setFullScreenImageVisible] = useState(false);
   const { width } = useWindowDimensions();
   const isDesktop = width >= 1024;
   const isTablet = width >= 768 && width < 1024;
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { t } = useTranslation();
+
   const serviceImages = {
     adu: [
       require("../images/ADU/6.webp"),
@@ -569,12 +571,14 @@ function ServicesSection({
       require("../images/FINANCING/3.webp"),
     ],
   };
+
   const services = (
     t("services.servicesList", { returnObjects: true }) as Array<any>
   ).map((service: any) => ({
     ...service,
-    images: serviceImages[service.id], // Asignamos las imágenes basadas en un ID único
+    images: serviceImages[service.id],
   }));
+
   const handleGetStarted = () => {
     setModalVisible(false);
     setTimeout(() => {
@@ -618,6 +622,14 @@ function ServicesSection({
     setSelectedService(service);
     setCurrentImageIndex(0);
     setModalVisible(true);
+  };
+
+  const openFullScreenImage = () => {
+    setFullScreenImageVisible(true);
+  };
+
+  const closeFullScreenImage = () => {
+    setFullScreenImageVisible(false);
   };
 
   return (
@@ -744,10 +756,8 @@ function ServicesSection({
                   }}
                   style={{
                     borderColor: COLORS.border,
-                    // borderWidth: 1,
                     paddingHorizontal: 10,
                     paddingVertical: 5,
-                    // borderRadius: 6,
                   }}
                 >
                   <Text
@@ -796,27 +806,33 @@ function ServicesSection({
                   return null;
                 })}
               </View>
+              
               {/* Carousel */}
               <View className="justify-center items-center p-4 w-full h-full">
-                <Image
-                  source={services[selectedService]?.images[currentImageIndex]}
-                  style={{
-                    width: isDesktop
-                      ? SCREEN_WIDTH * 0.3
-                      : isTablet
-                      ? SCREEN_WIDTH * 0.8
-                      : SCREEN_WIDTH * 0.75,
-                    height: isDesktop
-                      ? SCREEN_WIDTH * 0.2
-                      : isTablet
-                      ? SCREEN_WIDTH * 0.4
-                      : SCREEN_HEIGHT * 0.2,
-                    marginVertical: isTablet ? 20 : 0,
-                    borderRadius: 16,
-                  }}
-                  resizeMode="cover"
-                  className="m-10 lg:mt-0 mb-2"
-                />
+                <TouchableOpacity 
+                  onPress={openFullScreenImage}
+                  activeOpacity={0.9}
+                >
+                  <Image
+                    source={services[selectedService]?.images[currentImageIndex]}
+                    style={{
+                      width: isDesktop
+                        ? SCREEN_WIDTH * 0.3
+                        : isTablet
+                        ? SCREEN_WIDTH * 0.8
+                        : SCREEN_WIDTH * 0.75,
+                      height: isDesktop
+                        ? SCREEN_WIDTH * 0.2
+                        : isTablet
+                        ? SCREEN_WIDTH * 0.4
+                        : SCREEN_HEIGHT * 0.2,
+                      marginVertical: isTablet ? 20 : 0,
+                      borderRadius: 16,
+                    }}
+                    resizeMode="cover"
+                    className="m-10 lg:mt-0 mb-2"
+                  />
+                </TouchableOpacity>
 
                 {/* Navigation Arrows */}
                 <TouchableOpacity
@@ -862,24 +878,84 @@ function ServicesSection({
                     </TouchableOpacity>
                   ))}
                 </View>
-
-                {/* Image Counter */}
-                {/* <View
-                  style={{
-                    position: "absolute",
-                    right: 8,
-                    bottom: 8,
-                    backgroundColor: COLORS.blackOverlay,
-                    paddingHorizontal: 8,
-                    borderRadius: 6,
-                  }}
-                >
-                  <Text style={{ color: COLORS.white, fontSize: 12 }}>
-                    {currentImageIndex + 1}/{selectedService?.images.length}
-                  </Text>
-                </View> */}
               </View>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Full Screen Image Modal */}
+      <Modal
+        visible={fullScreenImageVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={closeFullScreenImage}
+      >
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: 'rgba(0,0,0,0.9)' }}
+        >
+          <TouchableOpacity 
+            onPress={closeFullScreenImage}
+            style={{ position: 'absolute', top: 40, right: 20, zIndex: 10 }}
+          >
+            <Ionicons name="close" size={32} color={COLORS.whiteSoft} />
+          </TouchableOpacity>
+
+          <View style={{ width: '100%', height: '80%', justifyContent: 'center' }}>
+            <Image
+              source={services[selectedService]?.images[currentImageIndex]}
+              style={{
+                width: '100%',
+                height: '100%',
+                resizeMode: 'contain',
+              }}
+            />
+          </View>
+
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
+            {services[selectedService]?.images.map((_, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => setCurrentImageIndex(index)}
+              >
+                <View
+                  style={{
+                    width: 10,
+                    height: 10,
+                    marginHorizontal: 5,
+                    borderRadius: 5,
+                    backgroundColor:
+                      index === currentImageIndex
+                        ? COLORS.whiteSoft
+                        : COLORS.gray,
+                  }}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 20 }}>
+            <TouchableOpacity
+              onPress={handlePrevImage}
+              style={{ padding: 20 }}
+            >
+              <Ionicons
+                name="chevron-back"
+                size={32}
+                color={COLORS.whiteSoft}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleNextImage}
+              style={{ padding: 20 }}
+            >
+              <Ionicons
+                name="chevron-forward"
+                size={32}
+                color={COLORS.whiteSoft}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
