@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Modal, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { MAIL_CONTACT, PHONE_CONTACT, WHATSAPP_CONTACT } from "@env";
+import { MAIL_CONTACT, PHONE_CONTACT, WHATSAPP_CONTACT, FACEBOOK_URL, INSTAGRAM_URL, WHATSAPP_URL, MESSENGER_URL } from "@env";
 import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useWindowDimensions } from "react-native";
@@ -29,6 +29,7 @@ import { TextAreaField } from "@/components/TextAreaField";
 import { SubmitButton } from "@/components/SubmitButton";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
+
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const { height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
@@ -233,31 +234,12 @@ function Header({
                 {i18n.language === "en" ? "EN" : "ES"}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                Linking.openURL("https://www.facebook.com/tu-negocio")
-              }
-              accessibilityLabel="Facebook"
-            >
-              <Ionicons
-                name="logo-facebook"
-                size={26}
-                color={COLORS.blueDark}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                Linking.openURL("https://www.instagram.com/tu-negocio")
-              }
-              className="ml-3"
-              accessibilityLabel="Instagram"
-            >
-              <Ionicons
-                name="logo-instagram"
-                size={26}
-                color={COLORS.blueDark}
-              />
-            </TouchableOpacity>
+            <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="pr-3 hover:scale-105">
+                  <Ionicons name="logo-facebook" size={34} color="#315072" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="pr-3 hover:scale-105">
+                  <Ionicons name="logo-instagram" size={34} color="#315072" />
+                </TouchableOpacity>
 
             <TouchableOpacity
               className={`px-3 py-1.5 rounded-md transition-all duration-300`}
@@ -373,29 +355,11 @@ function Header({
                   </Text>
                 </TouchableOpacity>
                 <View className="flex flex-row justify-center gap-4 mt-4">
-                  <TouchableOpacity
-                    onPress={() =>
-                      Linking.openURL("https://www.facebook.com/tu-negocio")
-                    }
-                    accessibilityLabel="Facebook"
-                  >
-                    <Ionicons
-                      name="logo-facebook"
-                      size={28}
-                      color={COLORS.blueDark}
-                    />
+                  <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="hover:scale-105">
+                    <Ionicons name="logo-facebook" size={42}  color="#315072"  />
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      Linking.openURL("https://www.instagram.com/tu-negocio")
-                    }
-                    accessibilityLabel="Instagram"
-                  >
-                    <Ionicons
-                      name="logo-instagram"
-                      size={28}
-                      color={COLORS.blueDark}
-                    />
+                  <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="hover:scale-105">
+                    <Ionicons name="logo-instagram" size={42}  color="#315072"  />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -1564,7 +1528,7 @@ function ContactSection() {
               >
                 {t("contact.title")}
               </Text>
-              <View style={{ gap: 16 }}>
+              <View style={{ gap: 22 }}>
                 <TouchableOpacity
                   onPress={() => {
                     Linking.openURL(`tel:${PHONE_CONTACT}`);
@@ -1577,9 +1541,9 @@ function ContactSection() {
                     paddingVertical: 8,
                   }}
                 >
-                  <Ionicons name="call" color={COLORS.whiteSoft} size={28} />
-                  <Text style={{ color: COLORS.whiteSoft, fontSize: 18 }}>
-                    {t("methods.phone")}
+                  <Ionicons name="call" color={COLORS.blueDark} size={28} />
+                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>
+                    {t("Phone")}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -1596,10 +1560,10 @@ function ContactSection() {
                 >
                   <MaterialIcons
                     name="sms"
-                    color={COLORS.whiteSoft}
+                    color={COLORS.blueDark}
                     size={28}
                   />
-                  <Text style={{ color: COLORS.whiteSoft, fontSize: 18 }}>
+                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>
                     Message
                   </Text>
                 </TouchableOpacity>
@@ -1617,10 +1581,10 @@ function ContactSection() {
                 >
                   <Ionicons
                     name="logo-whatsapp"
-                    color={COLORS.whiteSoft}
+                    color={COLORS.blueDark}
                     size={28}
                   />
-                  <Text style={{ color: COLORS.whiteSoft, fontSize: 18 }}>
+                  <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>
                     Whatsapp
                   </Text>
                 </TouchableOpacity>
@@ -1654,7 +1618,7 @@ function ContactSection() {
           style={{
             backgroundImage:
               "linear-gradient(131deg, rgb(49, 80, 114) 0%, rgb(108 155 201) 100%)",
-            paddingHorizontal: 40,
+            paddingHorizontal: isDesktop ? 40 : 15,
             paddingTop: 28,
             borderRadius: 16,
             width: "100%",
@@ -1666,8 +1630,8 @@ function ContactSection() {
               marginBottom: isDesktop ? 24 : 8,
               fontWeight: "bold",
               color: COLORS.white,
-              fontSize: 28,
-              textAlign: "left",
+              fontSize: isDesktop ? 32 : 24,
+              textAlign: isDesktop ? "left" : "center",
             }}
           >
             {t("contact.title")}
@@ -1675,8 +1639,9 @@ function ContactSection() {
           <Text
             style={{
               color: COLORS.white,
-              fontSize: 18,
-              textAlign: "left",
+              fontWeight: "600",
+              fontSize: isDesktop ? 20 : 16,
+              textAlign: isDesktop ? "left" : "center",
               marginBottom: isDesktop ? 0 : 12,
             }}
           >
@@ -1684,21 +1649,22 @@ function ContactSection() {
           </Text>
           {/* Mensaje SOLO en móvil */}
           {!isDesktop && (
-            <View style={{ marginTop: 8, marginBottom: 16 }}>
-              <Text style={{ color: COLORS.whiteSoft }}>
+            <View style={{ marginTop: 8, marginBottom: 16, justifyContent: 'center', width: "100%", alignItems: "center" }}>
+              <Text style={{ color: COLORS.whiteSoft, fontSize: 16, fontWeight: "700", textAlign: "center" }}>
                 Email us at{" "}
                 <Text
                   style={{
                     fontWeight: "bold",
                     color: COLORS.whiteSoft,
                     textDecorationLine: "underline",
+                    fontSize: 16 
                   }}
                   onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                 >
                   {MAIL_CONTACT}
                 </Text>{" "}
               </Text>
-              <Text style={{ color: COLORS.whiteSoft }}>
+              <Text style={{ color: COLORS.whiteSoft, fontSize: 16, fontWeight: "700"  }}>
                 Or use this number{" "}
                 <Text
                   style={{
@@ -1711,57 +1677,18 @@ function ContactSection() {
                   {PHONE_CONTACT}
                 </Text>
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 24,
-                  gap: 20,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() =>
-                    Linking.openURL("https://www.facebook.com/tu-negocio")
-                  }
-                  accessibilityLabel="Facebook"
-                >
-                  <Ionicons
-                    name="logo-facebook"
-                    size={32}
-                    color={COLORS.whiteSoft}
-                  />
+              <View style={{ flexDirection: "row", gap: 16, marginTop: 36, width: "100%", alignItems: "center", justifyContent: "center"  }}>
+                <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="hover:scale-105">
+                  <Ionicons name="logo-facebook" size={34} color="#fff" />
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() =>
-                    Linking.openURL("https://www.instagram.com/tu-negocio")
-                  }
-                  accessibilityLabel="Instagram"
-                >
-                  <Ionicons
-                    name="logo-instagram"
-                    size={32}
-                    color={COLORS.whiteSoft}
-                  />
+                <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="hover:scale-105">
+                  <Ionicons name="logo-instagram" size={34} color="#fff" />
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => Linking.openURL("https://m.me/tu-negocio")}
-                  accessibilityLabel="Messenger"
-                >
-                  <MaterialCommunityIcons
-                    name="facebook-messenger"
-                    size={32}
-                    color={COLORS.whiteSoft}
-                  />
+                <TouchableOpacity onPress={() => Linking.openURL(WHATSAPP_URL)} className="hover:scale-105">
+                  <Ionicons name="logo-whatsapp" size={34} color="#fff" />
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => Linking.openURL("https://wa.me/1234567890")}
-                  accessibilityLabel="Whatsapp"
-                >
-                  <Ionicons
-                    name="logo-whatsapp"
-                    size={32}
-                    color={COLORS.whiteSoft}
-                  />
+                <TouchableOpacity onPress={() => Linking.openURL(MESSENGER_URL)} className="hover:scale-105">
+                  <MaterialCommunityIcons name="facebook-messenger" size={34} color="#fff" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -1775,6 +1702,7 @@ function ContactSection() {
                   flexDirection: "column",
                   marginTop: 122,
                   paddingBottom: 20,
+                  height: SCREEN_WIDTH * .17
                 }}
                 className="items-center h-1/3"
               >
@@ -1786,17 +1714,16 @@ function ContactSection() {
                       alignItems: "center",
                       borderBottomWidth: 2,
                       borderBottomColor: COLORS.white + "63",
-                      paddingBottom: 12,
-                      marginBottom: 12,
+                      paddingBottom: 25,
                     }}
                   >
-                    <Ionicons name="call" color={COLORS.white} size={30} />
-                    <View style={{ marginLeft: 12 }}>
+                    <Ionicons name="call" color={COLORS.white} size={34} />
+                    <View style={{ marginLeft: 12,  }}>
                       <Text
                         style={{
                           fontWeight: "bold",
                           color: COLORS.white,
-                          fontSize: 18,
+                          fontSize: 20,
                         }}
                       >
                         {PHONE_CONTACT}
@@ -1811,15 +1738,16 @@ function ContactSection() {
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
+                      paddingTop: 25,
                     }}
                   >
-                    <Ionicons name="mail" color={COLORS.white} size={30} />
-                    <View style={{ marginLeft: 12 }}>
+                    <Ionicons name="mail" color={COLORS.white} size={34} />
+                    <View style={{ marginLeft: 12,  }}>
                       <Text
                         style={{
                           fontWeight: "bold",
                           color: COLORS.white,
-                          fontSize: 18,
+                          fontSize: 20,
                         }}
                       >
                         {MAIL_CONTACT}
@@ -1830,57 +1758,18 @@ function ContactSection() {
                     </View>
                   </TouchableOpacity>
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginTop: 10,
-                    gap: 20,
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() =>
-                      Linking.openURL("https://www.facebook.com/tu-negocio")
-                    }
-                    accessibilityLabel="Facebook"
-                  >
-                    <Ionicons
-                      name="logo-facebook"
-                      size={32}
-                      color={COLORS.whiteSoft}
-                    />
+                <View style={{ flexDirection: "row", gap: 16, bottom: 0  }}>
+                  <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="hover:scale-105">
+                    <Ionicons name="logo-facebook" size={42}  color="#fff"  />
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      Linking.openURL("https://www.instagram.com/tu-negocio")
-                    }
-                    accessibilityLabel="Instagram"
-                  >
-                    <Ionicons
-                      name="logo-instagram"
-                      size={32}
-                      color={COLORS.whiteSoft}
-                    />
+                  <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="hover:scale-105">
+                    <Ionicons name="logo-instagram" size={42}  color="#fff"  />
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => Linking.openURL("https://m.me/tu-negocio")}
-                    accessibilityLabel="Messenger"
-                  >
-                    <MaterialCommunityIcons
-                      name="facebook-messenger"
-                      size={32}
-                      color={COLORS.whiteSoft}
-                    />
+                  <TouchableOpacity onPress={() => Linking.openURL(WHATSAPP_URL)} className="hover:scale-105">
+                    <Ionicons name="logo-whatsapp" size={42}  color="#fff"  />
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => Linking.openURL("https://wa.me/1234567890")}
-                    accessibilityLabel="Whatsapp"
-                  >
-                    <Ionicons
-                      name="logo-whatsapp"
-                      size={32}
-                      color={COLORS.whiteSoft}
-                    />
+                  <TouchableOpacity onPress={() => Linking.openURL(MESSENGER_URL)} className="hover:scale-105">
+                    <MaterialCommunityIcons name="facebook-messenger" size={42}  color="#fff"  />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -2154,29 +2043,11 @@ function Footer({ scrollToSection }: any) {
             </View>
           </View>
           <View className="flex flex-row justify-center gap-4 mt-4">
-            <TouchableOpacity
-              onPress={() =>
-                Linking.openURL("https://www.facebook.com/tu-negocio")
-              }
-              accessibilityLabel="Facebook"
-            >
-              <Ionicons
-                name="logo-facebook"
-                size={28}
-                color={COLORS.whiteSoft}
-              />
+            <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="hover:scale-105">
+              <Ionicons name="logo-facebook" size={42}  color="#fff"  />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                Linking.openURL("https://www.instagram.com/tu-negocio")
-              }
-              accessibilityLabel="Instagram"
-            >
-              <Ionicons
-                name="logo-instagram"
-                size={28}
-                color={COLORS.whiteSoft}
-              />
+            <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="hover:scale-105">
+              <Ionicons name="logo-instagram" size={42}  color="#fff"  />
             </TouchableOpacity>
           </View>
         </View>
