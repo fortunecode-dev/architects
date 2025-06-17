@@ -1529,7 +1529,7 @@ function ContactSection() {
 
   return (
     <View
-      className="flex justify-center items-center mb-20 px-6 w-full h-screen"
+      className="flex justify-center items-center mb-20 lg:mb-0 px-6 w-full h-screen"
       style={{ backgroundColor: COLORS.whiteSoft }}
     >
       {/* Modal SOLO en móvil */}
