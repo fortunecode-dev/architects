@@ -493,7 +493,6 @@ function ServicesSection({
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedService, setSelectedService] = useState<any>(null);
   const [questionModalVisible, setQuestionModalVisible] = useState(false);
-  const [questionText, setQuestionText] = useState("");
   const [questionSent, setQuestionSent] = useState(false);
   const [fullScreenImageVisible, setFullScreenImageVisible] = useState(false);
   const { width } = useWindowDimensions();
@@ -502,6 +501,7 @@ function ServicesSection({
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { t } = useTranslation();
+
   const serviceImages = {
     adu: [
       require("../images/ADU/6.webp"),
@@ -554,16 +554,6 @@ function ServicesSection({
     }, 400);
   };
 
-  const handleSendQuestion = () => {
-    if (questionText.trim().length < 5) return;
-    setQuestionSent(true);
-    setTimeout(() => {
-      setQuestionModalVisible(false);
-      setQuestionText("");
-      setQuestionSent(false);
-    }, 1500);
-  };
-
   const handleCloseModal = () => {
     setModalVisible(false);
     setCurrentImageIndex(0);
@@ -603,6 +593,7 @@ function ServicesSection({
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         showsVerticalScrollIndicator={false}
+        ref={scrollViewRef}
       >
         <View className="mx-auto w-full max-w-6xl">
           <Text
@@ -753,21 +744,12 @@ function ServicesSection({
 
             <View className="relative flex-1 pt-3">
               <View className="lg:hidden top-0 right-0 left-0 z-10 my-2 rounded-t-xl">
-                {services.map((service, index) => {
-                  if (service.title === services[selectedService]?.title) {
-                    return (
-                      <View key={index} className="w-full h-full">
-                        <Text
-                          className="font-bold text-2xl"
-                          style={{ color: COLORS.blueDark }}
-                        >
-                          {service.title}
-                        </Text>
-                      </View>
-                    );
-                  }
-                  return null;
-                })}
+                <Text
+                  className="font-bold text-2xl"
+                  style={{ color: COLORS.blueDark }}
+                >
+                  {services[selectedService]?.title}
+                </Text>
               </View>
               
               {/* Carousel */}
@@ -924,10 +906,46 @@ function ServicesSection({
       </Modal>
 
       {/* Question Modal */}
-      <MakeAQuestionServicesModal
+      <Modal
         visible={questionModalVisible}
-        onClose={() => setQuestionModalVisible(false)}
-      />
+        transparent
+        animationType="fade"
+        onRequestClose={() => setQuestionModalVisible(false)}
+      >
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: COLORS.blackOverlay }}
+        >
+          <View
+            className="p-6 rounded-xl w-11/12 max-w-md"
+            style={{ backgroundColor: COLORS.white }}
+          >
+            <TouchableOpacity
+              onPress={() => setQuestionModalVisible(false)}
+              className="top-3 right-3 z-10 absolute"
+            >
+              <Ionicons name="close" size={28} color={COLORS.blueDark} />
+            </TouchableOpacity>
+            <Text
+              className="mb-4 font-bold text-lg text-center"
+              style={{ color: COLORS.blueDark }}
+            >
+              Make a Question
+            </Text>
+            <QuestionForm 
+              onClose={() => setQuestionModalVisible(false)}
+              onSubmitSuccess={() => {
+                setQuestionSent(true);
+                setTimeout(() => {
+                  setQuestionModalVisible(false);
+                  setQuestionSent(false);
+                }, 1500);
+              }}
+            />
+            
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -941,45 +959,11 @@ function FAQSection({
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [showAnswerModal, setShowAnswerModal] = useState(false);
-  const [question, setQuestion] = useState("");
-  const [showContactModal, setShowContactModal] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
   const isTablet = width >= 768 && width < 1024;
-
-  // Validación de campos
-  const isEmailValid = email.trim() === "" || /\S+@\S+\.\S+/.test(email);
-  const isPhoneValid = phone.trim() === "" || /^[0-9+\-\s()]{7,}$/.test(phone);
-
-  // Al menos un campo debe estar completo y válido
-  const canSend = 
-    (email.trim() !== "" && isEmailValid) || 
-    (phone.trim() !== "" && isPhoneValid);
-
-  const handleSendQuestion = () => {
-    if (question.trim().length < 5) return;
-    setShowContactModal(true);
-  };
-
-  const handleContactSubmit = useCallback(() => {
-    if (!canSend) return;
-    
-    const contactData: any = { metadata: { question } };
-    if (email.trim() !== "") contactData.email = email;
-    if (phone.trim() !== "") contactData.phone = phone;
-
-    postQuestion(contactData).then(() => {
-      setSubmitted(true);
-      setShowContactModal(false);
-      setQuestion("");
-      setEmail("");
-      setPhone("");
-    });
-  }, [email, phone, question]);
 
   // Divide las preguntas en 2 columnas
   const colLength = Math.ceil((faqs as Array<any>).length / 2);
@@ -1092,51 +1076,13 @@ function FAQSection({
               {faqs[selectedIndex].answer}
             </Text>
             <View className="mt-10 pb-6 rounded-xl w-full">
-              <Text
-                className="mb-2 font-bold text-lg text-center"
-                style={{ color: COLORS.blueDark }}
-              >
-                Make a Question
+              <Text className="py-2 font-bold text-2xl text-center" style={{color: COLORS.blueDark}}>
+                {t("faq.makeQuestion")}
               </Text>
-              <TextInput
-                value={question}
-                onChangeText={setQuestion}
-                placeholder="Write your question here . . . "
-                multiline
-                numberOfLines={3}
-                className="mb-3 p-3 rounded-md"
-                style={{
-                  backgroundColor: COLORS.white,
-                  borderColor: COLORS.accent,
-                  borderWidth: 1,
-                  color: COLORS.blueDark,
-                }}
-                textAlignVertical="top"
-                placeholderTextColor={COLORS.gray}
+              <QuestionForm 
+                onSubmitSuccess={() => setSubmitted(true)}
               />
-              <TouchableOpacity
-                onPress={handleSendQuestion}
-                disabled={question.trim().length < 5}
-                className="px-4 py-2 rounded-md w-full"
-                style={{
-                  backgroundColor:
-                    question.trim().length < 5
-                      ? COLORS.accentSoft
-                      : COLORS.accent,
-                }}
-              >
-                <Text
-                  className="font-bold text-center"
-                  style={{ color: COLORS.blueDark }}
-                >
-                  Send
-                </Text>
-              </TouchableOpacity>
-              {submitted && (
-                <Text className="mt-4 text-center" style={{ color: "green" }}>
-                  Thank you! We will respond to you shortly.
-                </Text>
-              )}
+              
             </View>
           </View>
         )}
@@ -1145,47 +1091,13 @@ function FAQSection({
       {/* Sección "Make a Question" para móviles */}
       {isMobile && (
         <View className="px-4 w-full">
+          <Text className="py-4 font-bold text-2xl text-center" style={{color: COLORS.blueDark}}>
+            {t("faq.makeQuestion")}
+          </Text>
           <View className="mb-20 p-4 border rounded-xl" style={{ backgroundColor: COLORS.whiteSoft }}>
-            <Text
-              className="mb-2 font-bold text-lg text-center"
-              style={{ color: COLORS.blueDark }}
-            >
-              Make a Question
-            </Text>
-            <TextInput
-              value={question}
-              onChangeText={setQuestion}
-              placeholder="Write your question here . . . "
-              multiline
-              numberOfLines={3}
-              className="mb-3 p-3 rounded-md"
-              style={{
-                backgroundColor: COLORS.white,
-                borderColor: COLORS.accent,
-                borderWidth: 1,
-                color: COLORS.blueDark,
-              }}
-              textAlignVertical="top"
-              placeholderTextColor={COLORS.gray}
+            <QuestionForm 
+              onSubmitSuccess={() => setSubmitted(true)}
             />
-            <TouchableOpacity
-              onPress={handleSendQuestion}
-              disabled={question.trim().length < 5}
-              className="px-4 py-2 rounded-md w-full"
-              style={{
-                backgroundColor:
-                  question.trim().length < 5
-                    ? COLORS.accentSoft
-                    : COLORS.accent,
-              }}
-            >
-              <Text
-                className="font-bold text-center"
-                style={{ color: COLORS.blueDark }}
-              >
-                Send
-              </Text>
-            </TouchableOpacity>
             {submitted && (
               <Text className="mt-4 text-center" style={{ color: "green" }}>
                 Thank you! We will respond to you shortly.
@@ -1228,113 +1140,6 @@ function FAQSection({
             >
               {faqs[selectedIndex].answer}
             </Text>
-          </View>
-        </View>
-      </Modal>
-      
-      {/* Modal para pedir contacto */}
-      <Modal
-        visible={showContactModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowContactModal(false)}
-      >
-        <View
-          className="flex-1 justify-center items-center"
-          style={{ backgroundColor: COLORS.blackOverlay }}
-        >
-          <View
-            className="p-6 rounded-xl w-11/12 max-w-xs"
-            style={{ backgroundColor: COLORS.white }}
-          >
-            <Text
-              className="mb-4 font-bold text-lg text-center"
-              style={{ color: COLORS.blueDark }}
-            >
-              Give us a way to contact you
-            </Text>
-            {/* Correo */}
-            <Text className="mb-1" style={{ color: COLORS.blueDark }}>
-              Mail
-            </Text>
-            <TextInput
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Your email address"
-              keyboardType="email-address"
-              className="mb-2 p-3 rounded-md"
-              style={{
-                backgroundColor: COLORS.white,
-                borderColor: isEmailValid ? COLORS.accent : COLORS.error,
-                borderWidth: 1,
-                color: COLORS.blueDark,
-              }}
-              autoCapitalize="none"
-              placeholderTextColor={COLORS.gray}
-            />
-            {!isEmailValid && (
-              <Text style={{ color: COLORS.error, fontSize: 12 }}>
-                Please enter a valid email address
-              </Text>
-            )}
-            
-            {/* Teléfono */}
-            <Text className="mb-1" style={{ color: COLORS.blueDark }}>
-              Phone
-            </Text>
-            <TextInput
-              value={phone}
-              onChangeText={setPhone}
-              placeholder="Your phone number"
-              keyboardType="phone-pad"
-              className="mb-4 p-3 rounded-md"
-              style={{
-                backgroundColor: COLORS.white,
-                borderColor: isPhoneValid ? COLORS.accent : COLORS.error,
-                borderWidth: 1,
-                color: COLORS.blueDark,
-              }}
-              placeholderTextColor={COLORS.gray}
-            />
-            {!isPhoneValid && (
-              <Text style={{ color: COLORS.error, fontSize: 12 }}>
-                Please enter a valid phone number
-              </Text>
-            )}
-            
-            {/* Botones */}
-            <View className="flex flex-row justify-between mt-2">
-              <TouchableOpacity
-                onPress={() => setShowContactModal(false)}
-                style={{
-                  backgroundColor: COLORS.accentSoft,
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
-                  borderRadius: 6,
-                }}
-              >
-                <Text style={{ color: COLORS.blueDark, textAlign: "center" }}>
-                  Close
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleContactSubmit}
-                disabled={!canSend}
-                style={{
-                  backgroundColor: canSend ? COLORS.accent : COLORS.gray,
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
-                  borderRadius: 6,
-                }}
-              >
-                <Text
-                  className="font-bold text-center"
-                  style={{ color: COLORS.blueDark }}
-                >
-                  Send
-                </Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
       </Modal>
@@ -1543,7 +1348,7 @@ function ContactSection() {
                 >
                   <Ionicons name="call" color={COLORS.blueDark} size={28} />
                   <Text style={{ color: COLORS.blueDark, fontSize: 18 }}>
-                    {t("Phone")}
+                    {t("contact.methods.phone")}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -2109,227 +1914,244 @@ function Footer({ scrollToSection }: any) {
     </View>
   );
 }
-function MakeAQuestionServicesModal({
-  visible,
+interface QuestionFormProps {
+  onSubmitSuccess?: () => void;
+  onClose?: () => void;
+  initialQuestion?: string;
+}
+
+const QuestionForm: React.FC<QuestionFormProps> = ({ 
+  onSubmitSuccess, 
   onClose,
-}: {
-  visible: boolean;
-  onClose: () => void;
-}) {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [question, setQuestion] = useState("");
+  initialQuestion = "" 
+}) => {
+  const [question, setQuestion] = useState(initialQuestion);
+  const [showContactModal, setShowContactModal] = useState(false);
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
-  const isEmailValid = (email: string) =>
-    !email || /\S+@\S+\.\S+/.test(email);
+  // Validación de campos
+  const isEmailValid = email.trim() === "" || /\S+@\S+\.\S+/.test(email);
+  const isPhoneValid = phone.trim() === "" || /^[0-9+\-\s()]{7,}$/.test(phone);
 
-  const isPhoneValid = (phone: string) =>
-    !phone || /^[0-9+\-\s()]{7,}$/.test(phone);
+  // Al menos un campo debe estar completo y válido
+  const canSend = 
+    (email.trim() !== "" && isEmailValid) || 
+    (phone.trim() !== "" && isPhoneValid);
 
-  const canSendStep1 = question.trim().length > 5;
-  const canSendStep2 =
-    (phone.trim() && isPhoneValid(phone)) ||
-    (email.trim() && isEmailValid(email));
-
-  const handleSendStep1 = () => {
-    if (canSendStep1) setStep(2);
+  const handleSendQuestion = () => {
+    if (question.trim().length < 5) return;
+    setShowContactModal(true);
   };
 
-  const handleSendStep2 = () => {
-    if (canSendStep2) setStep(3);
-  };
+  const handleContactSubmit = () => {
+    if (!canSend) return;
+    
+    const contactData: any = { metadata: { question } };
+    if (email.trim() !== "") contactData.email = email;
+    if (phone.trim() !== "") contactData.phone = phone;
 
-  const handleClose = () => {
-    setStep(1);
-    setQuestion("");
-    setPhone("");
-    setEmail("");
-    onClose();
+    postQuestion(contactData).then(() => {
+      setSubmitted(true);
+      setShowContactModal(false);
+      setQuestion("");
+      setEmail("");
+      setPhone("");
+      onSubmitSuccess?.();
+    }).catch(() => {
+      Alert.alert("Error", "There was a problem sending your question. Please try again later.");
+    });
   };
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={handleClose}
-    >
-      <View className="flex-1 justify-center items-center"
-        style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-        <View style={{
-          backgroundColor: "#fff",
-          padding: 24,
-          borderRadius: 16,
-          width: "90%",
-          maxWidth: 400,
-        }}>
-          {step === 1 && (
-            <>
-              <Text style={{
-                marginBottom: 16,
-                fontWeight: "bold",
-                color: "#315072",
-                fontSize: 18,
-                textAlign: "center",
-              }}>
-                Make a Question
-              </Text>
-              <TextInput
-                value={question}
-                onChangeText={setQuestion}
-                placeholder="Write your question here..."
-                multiline
-                numberOfLines={4}
-                style={{
-                  backgroundColor: "#fff",
-                  marginBottom: 12,
-                  padding: 12,
-                  borderColor: "#badcff",
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  color: "#315072",
-                  textAlignVertical: "top",
-                }}
-                placeholderTextColor="#a0aec0"
-              />
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <TouchableOpacity
-                  onPress={handleClose}
-                  style={{
-                    backgroundColor: "#badcff",
-                    paddingHorizontal: 16,
-                    paddingVertical: 8,
-                    borderRadius: 6,
-                  }}
-                >
-                  <Text style={{ color: "#315072", textAlign: "center" }}>Close</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleSendStep1}
-                  disabled={!canSendStep1}
-                  style={{
-                    backgroundColor: canSendStep1 ? "#badcff" : "#e2e8f0",
-                    paddingHorizontal: 16,
-                    paddingVertical: 8,
-                    borderRadius: 6,
-                  }}
-                >
-                  <Text style={{ fontWeight: "bold", color: "#315072", textAlign: "center" }}>
-                    Send
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
-          {step === 2 && (
-            <>
-              <Text style={{
-                marginBottom: 16,
-                fontWeight: "bold",
-                color: "#315072",
-                fontSize: 18,
-                textAlign: "center",
-              }}>
-                Give us a way to contact you
-              </Text>
-              <Text className="mb-1" style={{color:COLORS.blueDark}}>
-                Phone
-              </Text>
-              <TextInput
-                value={phone}
-                onChangeText={setPhone}
-                placeholder="Your phone"
-                keyboardType="phone-pad"
-                style={{
-                  backgroundColor: "#fff",
-                  marginBottom: 8,
-                  padding: 12,
-                  borderColor: "#badcff",
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  color: "#315072",
-                }}
-                placeholderTextColor="#a0aec0"
-              />
-              <Text className="mb-1" style={{color:COLORS.blueDark}}>
-                Email
-              </Text>
-              <TextInput
-                value={email}
-                onChangeText={setEmail}
-                placeholder="Your email"
-                keyboardType="email-address"
-                style={{
-                  backgroundColor: "#fff",
-                  marginBottom: 8,
-                  padding: 12,
-                  borderColor: "#badcff",
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  color: "#315072",
-                }}
-                placeholderTextColor="#a0aec0"
-                autoCapitalize="none"
-              />
-              <Text style={{ marginBottom: 8, color: "#a0aec0", fontSize: 12, textAlign: "center" }}>
-               Give us a way to contact you
-              </Text>
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <TouchableOpacity
-                  onPress={handleClose}
-                  style={{
-                    backgroundColor: "#badcff",
-                    paddingHorizontal: 16,
-                    paddingVertical: 8,
-                    borderRadius: 6,
-                  }}
-                >
-                  <Text style={{ color: "#315072", textAlign: "center" }}>Close</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleSendStep2}
-                  disabled={!canSendStep2}
-                  style={{
-                    backgroundColor: canSendStep2 ? "#badcff" : "#e2e8f0",
-                    paddingHorizontal: 16,
-                    paddingVertical: 8,
-                    borderRadius: 6,
-                  }}
-                >
-                  <Text style={{ fontWeight: "bold", color: "#315072", textAlign: "center" }}>
-                    Send
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
-          {step === 3 && (
-            <View style={{ alignItems: "center" }}>
-              <Text style={{
-                marginVertical: 24,
-                color: "#315072",
-                fontWeight: "bold",
-                fontSize: 18,
-                textAlign: "center",
-              }}>
-                Thank you! We will respond to you shortly.
-              </Text>
+    <View style={{ width: '100%' }}>
+      <TextInput
+        value={question}
+        onChangeText={setQuestion}
+        placeholder="Write your question here..."
+        multiline
+        numberOfLines={3}
+        style={{
+          backgroundColor: COLORS.white,
+          borderColor: COLORS.accent,
+          borderWidth: 1,
+          color: COLORS.blueDark,
+          padding: 12,
+          borderRadius: 8,
+          marginBottom: 12,
+          minHeight: 100,
+          textAlignVertical: 'top',
+        }}
+        placeholderTextColor={COLORS.gray}
+      />
+      
+      <TouchableOpacity
+        onPress={handleSendQuestion}
+        disabled={question.trim().length < 5}
+        style={{
+          backgroundColor: question.trim().length < 5
+            ? COLORS.accentSoft
+            : COLORS.accent,
+          padding: 12,
+          borderRadius: 8,
+          alignItems: 'center',
+        }}
+      >
+        <Text style={{ color: COLORS.blueDark, fontWeight: 'bold' }}>
+          Send Question
+        </Text>
+      </TouchableOpacity>
+
+      {submitted && (
+        <Text style={{ marginTop: 12, color: 'green', textAlign: 'center' }}>
+          Thank you! We will respond to you shortly.
+        </Text>
+      )}
+
+      {/* Modal para pedir contacto */}
+      <Modal
+        visible={showContactModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowContactModal(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: COLORS.blackOverlay,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: COLORS.white,
+              padding: 20,
+              borderRadius: 16,
+              width: '90%',
+              maxWidth: 400,
+            }}
+          >
+            {onClose && (
               <TouchableOpacity
-                onPress={handleClose}
+                onPress={() => {
+                  setShowContactModal(false);
+                  onClose();
+                }}
                 style={{
-                  backgroundColor: "#badcff",
-                  paddingHorizontal: 24,
-                  paddingVertical: 10,
-                  borderRadius: 8,
+                  position: 'absolute',
+                  top: 12,
+                  right: 12,
+                  zIndex: 10,
                 }}
               >
-                <Text style={{ color: "#315072", fontWeight: "bold" }}>Cerrar</Text>
+                <Ionicons name="close" size={24} color={COLORS.blueDark} />
+              </TouchableOpacity>
+            )}
+            
+            <Text
+              style={{
+                marginBottom: 16,
+                fontWeight: 'bold',
+                color: COLORS.blueDark,
+                fontSize: 18,
+                textAlign: 'center',
+              }}
+            >
+              Give us a way to contact you
+            </Text>
+            
+            {/* Correo */}
+            <Text style={{ marginBottom: 4, color: COLORS.blueDark }}>
+              Mail
+            </Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Your email address"
+              keyboardType="email-address"
+              style={{
+                backgroundColor: COLORS.white,
+                borderColor: isEmailValid ? COLORS.accent : COLORS.error,
+                borderWidth: 1,
+                color: COLORS.blueDark,
+                padding: 12,
+                borderRadius: 8,
+                marginBottom: 12,
+              }}
+              autoCapitalize="none"
+              placeholderTextColor={COLORS.gray}
+            />
+            {!isEmailValid && (
+              <Text style={{ color: COLORS.error, fontSize: 12, marginBottom: 8 }}>
+                Please enter a valid email address
+              </Text>
+            )}
+            
+            {/* Teléfono */}
+            <Text style={{ marginBottom: 4, color: COLORS.blueDark }}>
+              Phone
+            </Text>
+            <TextInput
+              value={phone}
+              onChangeText={setPhone}
+              placeholder="Your phone number"
+              keyboardType="phone-pad"
+              style={{
+                backgroundColor: COLORS.white,
+                borderColor: isPhoneValid ? COLORS.accent : COLORS.error,
+                borderWidth: 1,
+                color: COLORS.blueDark,
+                padding: 12,
+                borderRadius: 8,
+                marginBottom: 16,
+              }}
+              placeholderTextColor={COLORS.gray}
+            />
+            {!isPhoneValid && (
+              <Text style={{ color: COLORS.error, fontSize: 12, marginBottom: 8 }}>
+                Please enter a valid phone number
+              </Text>
+            )}
+            
+            {/* Botones */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <TouchableOpacity
+                onPress={() => setShowContactModal(false)}
+                style={{
+                  backgroundColor: COLORS.accentSoft,
+                  paddingHorizontal: 16,
+                  paddingVertical: 12,
+                  borderRadius: 8,
+                  flex: 1,
+                  marginRight: 8,
+                }}
+              >
+                <Text style={{ color: COLORS.blueDark, textAlign: 'center' }}>
+                  Close
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleContactSubmit}
+                disabled={!canSend}
+                style={{
+                  backgroundColor: canSend ? COLORS.accent : COLORS.gray,
+                  paddingHorizontal: 16,
+                  paddingVertical: 12,
+                  borderRadius: 8,
+                  flex: 1,
+                  marginLeft: 8,
+                }}
+              >
+                <Text style={{ color: COLORS.blueDark, fontWeight: 'bold', textAlign: 'center' }}>
+                  Send
+                </Text>
               </TouchableOpacity>
             </View>
-          )}
+          </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
-}
+};
