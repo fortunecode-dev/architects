@@ -457,7 +457,7 @@ function LandingSection({
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => scrollToSection("contact")}
+                    onPress={() => scrollToSection("contact", true)}
                     style={{
                       backgroundColor: COLORS.blueDark,
                       borderRadius: 6,
