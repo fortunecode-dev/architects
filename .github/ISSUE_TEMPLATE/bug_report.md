@@ -1,3 +1,12 @@
+---
+name: 🐛 Reportar un Bug
+about: Describe un comportamiento inesperado del sistema
+title: "[Bug] Error en..."
+labels: bug
+assignees: ''
+
+---
+
 ## 🐞 Descripción del error
 
 <!-- Qué está pasando, qué debería pasar -->

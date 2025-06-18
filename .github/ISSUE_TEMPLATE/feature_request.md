@@ -1,3 +1,12 @@
+---
+name: 🚀 Feature Request
+about: Sugiere una nueva funcionalidad o mejora
+title: "[Feature] Título claro y conciso"
+labels: enhancement
+assignees: ''
+
+---
+
 ## 📝 Descripción
 
 <!-- Explica brevemente qué se quiere implementar y por qué es necesario -->
