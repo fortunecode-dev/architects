@@ -188,7 +188,7 @@ function Header({
                 className="font-bold text-2xl"
                 style={{ color: COLORS.blueDark }}
               >
-                dW+
+                test+
               </Text>
             </TouchableOpacity>
           </View>
