@@ -436,6 +436,9 @@ function LandingSection({
                 >
                   {t(`landing.title`)}
                 </Text>
+                <Text className="text-xl">
+                  (Prueba Osmel)
+                </Text>
                 <View className="flex flex-row justify-center items-center gap-4 w-full">
                   <TouchableOpacity
                     onPress={() => scrollToSection("services", true)}
