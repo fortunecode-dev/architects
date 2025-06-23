@@ -154,15 +154,15 @@ function Header({
   scrollToSection: (section: string, force?: boolean) => void;
   isScrolled: boolean;
 }) {
-  const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
   const { width } = useWindowDimensions();
-
+  const { t } = useTranslation();
   const toggleLanguage = () => {
     const newLang = i18n.language === "en" ? "es" : "en";
     i18n.changeLanguage(newLang);
   };
+  // const { t } = useTranslation();
 
   const isDesktop = width >= 1024;
 
@@ -431,7 +431,7 @@ function LandingSection({
                   className="justify-center items-center lg:mt-5 mb-1 lg:p-0 md:py-4 font-semibold text-center"
                   style={{
                     color: COLORS.blueDark,
-                    fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.038,
+                    fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.045,
                   }}
                 >
                   {t(`landing.title`)}
@@ -600,13 +600,13 @@ function ServicesSection({
             className="mb-3 font-bold text-3xl md:text-4xl text-center"
             style={{ color: COLORS.blueDark }}
           >
-            Our Services
+            {t("services.title")}
           </Text>
           <Text
-            className="mb-10 px-4 font-extralight text-lg md:text-xl text-center"
+            className="mb-5 px-4 font-medium text-xl md:text-2xl text-center"
             style={{ color: COLORS.blueDark, fontFamily: "Arial" }}
           >
-            We offer a wide range of services to meet your needs.
+            {t("services.subtitle")}
           </Text>
           <View className="gap-4 lg:gap-5 grid grid-cols-1 md:grid-cols-3 px-5">
             {services.map((service, index) => (
@@ -640,7 +640,7 @@ function ServicesSection({
                 </Text>
                 <Text
                   className="mb-1 lg:mb-2 font-semibold text-md"
-                  style={{ color: COLORS.blueDarker }}
+                  style={{ color: COLORS.blueDark }}
                 >
                   {service.description}
                 </Text>
@@ -930,7 +930,7 @@ function ServicesSection({
               className="mb-4 font-bold text-lg text-center"
               style={{ color: COLORS.blueDark }}
             >
-              Make a Question
+              {t("faq.makeQuestion")}
             </Text>
             <QuestionForm 
               onClose={() => setQuestionModalVisible(false)}
@@ -1037,6 +1037,7 @@ function FAQSection({
                           : "font-semibold"
                       }
                       style={{
+                        fontSize: selectedIndex === realIdx && !isMobile ? 19 : 17,
                         color:
                           selectedIndex === realIdx && !isMobile
                             ? "white"
@@ -1064,13 +1065,13 @@ function FAQSection({
             }}
           >
             <Text
-              className="mb-2 font-bold text-lg"
+              className="mb-2 font-bold text-xl"
               style={{ color: COLORS.blueDark }}
             >
               {faqs[selectedIndex].question}
             </Text>
             <Text
-              className="text-base whitespace-pre-line"
+              className="text-lg whitespace-pre-line"
               style={{ color: COLORS.blueDark }}
             >
               {faqs[selectedIndex].answer}
@@ -1726,6 +1727,7 @@ function Footer({ scrollToSection }: any) {
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState<null | string>(null);
+  const { t } = useTranslation();
   const about = {
     dwelling: {
       title: "Dwelling",
@@ -1736,7 +1738,6 @@ function Footer({ scrollToSection }: any) {
       info: "Info desarrollo",
     },
   };
-
   return (
     <View
       style={{
@@ -1803,20 +1804,20 @@ function Footer({ scrollToSection }: any) {
                   fontSize: 14,
                 }}
               >
-                Content
+                {t("footer.content.title")}
               </Text>
               <View className="space-y-1">
                 <Text
                   style={{ color: COLORS.whiteSoft, fontSize: 14 }}
                   onPress={() => scrollToSection?.("services", true)}
                 >
-                  Services
+                  {t("footer.content.services")}
                 </Text>
                 <Text
                   style={{ color: COLORS.whiteSoft, fontSize: 14 }}
                   onPress={() => scrollToSection?.("faq", true)}
                 >
-                  FAQs
+                  {t("footer.content.faq")}
                 </Text>
               </View>
             </View>
@@ -1829,20 +1830,20 @@ function Footer({ scrollToSection }: any) {
                   fontSize: 14,
                 }}
               >
-                Company
+                {t("footer.company.title")}
               </Text>
               <View className="space-y-1">
                 <Text
                   style={{ color: COLORS.whiteSoft, fontSize: 14 }}
                   onPress={() => setModalVisible("dwelling")}
                 >
-                  About
+                  {t("footer.company.about")}
                 </Text>
                 <Text
                   style={{ color: COLORS.whiteSoft, fontSize: 14 }}
                   onPress={() => setModalVisible("fortuneCode")}
                 >
-                  Development
+                  {t("footer.company.development")}
                 </Text>
               </View>
             </View>
@@ -1905,7 +1906,7 @@ function Footer({ scrollToSection }: any) {
               }}
             >
               <Text style={{ color: COLORS.whiteSoft, fontWeight: "500" }}>
-                Close
+                {t("common.close")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -1919,7 +1920,6 @@ interface QuestionFormProps {
   onClose?: () => void;
   initialQuestion?: string;
 }
-
 const QuestionForm: React.FC<QuestionFormProps> = ({ 
   onSubmitSuccess, 
   onClose,
@@ -1930,6 +1930,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const { t } = useTranslation();
 
   // Validación de campos
   const isEmailValid = email.trim() === "" || /\S+@\S+\.\S+/.test(email);
@@ -1960,7 +1961,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       setPhone("");
       onSubmitSuccess?.();
     }).catch(() => {
-      Alert.alert("Error", "There was a problem sending your question. Please try again later.");
+      Alert.alert("Error", t("common.submitError"));
     });
   };
 
@@ -1969,7 +1970,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       <TextInput
         value={question}
         onChangeText={setQuestion}
-        placeholder="Write your question here..."
+        placeholder= {t("faq.questionPlaceholder")}
         multiline
         numberOfLines={3}
         style={{
@@ -1999,13 +2000,13 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
         }}
       >
         <Text style={{ color: COLORS.blueDark, fontWeight: 'bold' }}>
-          Send Question
+          {t("common.sendQuestion")}
         </Text>
       </TouchableOpacity>
 
       {submitted && (
         <Text style={{ marginTop: 12, color: 'green', textAlign: 'center' }}>
-          Thank you! We will respond to you shortly.
+          {t("common.thanks")}
         </Text>
       )}
 
@@ -2059,17 +2060,17 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                 textAlign: 'center',
               }}
             >
-              Give us a way to contact you
+              {t("common.giveAwayToContact")}
             </Text>
             
             {/* Correo */}
             <Text style={{ marginBottom: 4, color: COLORS.blueDark }}>
-              Mail
+              Email
             </Text>
             <TextInput
               value={email}
               onChangeText={setEmail}
-              placeholder="Your email address"
+              placeholder={t("common.emailPlaceholder")}
               keyboardType="email-address"
               style={{
                 backgroundColor: COLORS.white,
@@ -2111,7 +2112,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
             />
             {!isPhoneValid && (
               <Text style={{ color: COLORS.error, fontSize: 12, marginBottom: 8 }}>
-                Please enter a valid phone number
+                {t("common.phoneNumber")}
               </Text>
             )}
             
