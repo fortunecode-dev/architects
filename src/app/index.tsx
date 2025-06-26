@@ -41,6 +41,7 @@ export default function Page() {
   const scrollViewRef = useRef<ScrollView>(null);
   const sectionRefs = {
     home: useRef<View>(null),
+    infoTree: useRef<View>(null),
     services: useRef<View>(null),
     faq: useRef<View>(null),
     contact: useRef<View>(null),
@@ -94,6 +95,11 @@ export default function Page() {
           style={{ height: isLargeScreen ? height : "auto" }}
         >
           <LandingSection scrollToSection={scrollToSection} />
+        </View>
+        <View
+          style={{ height: isLargeScreen ? height : "auto" }}
+        >
+          <InfoTreeSection  />
         </View>
         <View
           ref={sectionRefs.services}
@@ -154,15 +160,15 @@ function Header({
   scrollToSection: (section: string, force?: boolean) => void;
   isScrolled: boolean;
 }) {
-  const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
   const { width } = useWindowDimensions();
-
+  const { t } = useTranslation();
   const toggleLanguage = () => {
     const newLang = i18n.language === "en" ? "es" : "en";
     i18n.changeLanguage(newLang);
   };
+  // const { t } = useTranslation();
 
   const isDesktop = width >= 1024;
 
@@ -235,11 +241,11 @@ function Header({
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="pr-3 hover:scale-105">
-                  <Ionicons name="logo-facebook" size={34} color="#315072" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="pr-3 hover:scale-105">
-                  <Ionicons name="logo-instagram" size={34} color="#315072" />
-                </TouchableOpacity>
+              <Ionicons name="logo-facebook" size={34} color="#315072" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="pr-3 hover:scale-105">
+              <Ionicons name="logo-instagram" size={34} color="#315072" />
+            </TouchableOpacity>
 
             <TouchableOpacity
               className={`px-3 py-1.5 rounded-md transition-all duration-300`}
@@ -431,7 +437,7 @@ function LandingSection({
                   className="justify-center items-center lg:mt-5 mb-1 lg:p-0 md:py-4 font-semibold text-center"
                   style={{
                     color: COLORS.blueDark,
-                    fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.038,
+                    fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.045,
                   }}
                 >
                   {t(`landing.title`)}
@@ -485,6 +491,272 @@ function LandingSection({
     </FadeInView>
   );
 }
+
+function InfoTreeSection() {
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 1024;
+  const isTablet = width >= 768 && width < 1024;
+
+  // Ejemplo de datos
+  const items = [
+    {
+      title: "ADU",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum natus nobis quam quo eius quae quia nemo recusandae laboriosam reprehenderit. Consectetur quidem iste corporis eos quo omnis labore, veniam sit.",
+      image: require("../images/ADU/1.webp"),
+    },
+    {
+      title: "Remodeling",
+      description:
+        "Remodeling description goes here. Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+      image: require("../images/REMODELATION/1.webp"),
+    },
+    {
+      title: "Backyard",
+      description:
+        "Backyard description goes here. Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+      image: require("../images/BACKYARD/1.webp"),
+    },
+  ];
+
+  return (
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+        paddingVertical: isDesktop ? 60 : 30,
+        backgroundColor: "#f8fafc",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingStart: isDesktop ? 0 : 40,
+      }}
+    >
+      <View
+        style={{
+          width: isDesktop ? "70%" : isTablet ? "90%" : "98%",
+          alignSelf: "center",
+          paddingHorizontal: isDesktop ? 80 : 20, }}
+      >
+        <Text
+          style={{
+            fontSize: isDesktop ? 32 : 24,
+            fontWeight: "bold",
+            marginBottom: SCREEN_WIDTH * .01,
+            color: "#315072",
+            textAlign: "left",
+          }}
+        >
+          Info Tree
+        </Text>
+        <Text
+          style={{
+            fontSize: isDesktop ? 20 : 16,
+            color: "#315072",
+            marginBottom: SCREEN_WIDTH * .01,
+            textAlign: "left",
+          }}
+        >
+          Descriptions
+        </Text>
+          
+        {items.map((item, idx) => {
+          // Alternar imagen a la izquierda/derecha en desktop
+          const isEven = idx % 2 === 0;
+          return (
+            <View
+              key={idx}
+              style={{
+                flexDirection:
+                  isDesktop || isTablet
+                    ? isEven
+                      ? "row"
+                      : "row-reverse"
+                    : "column",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 60,
+                gap: isDesktop ? 40 : 20,
+              }}
+              
+            >
+              
+              <Image
+                source={item.image}
+                style={{
+                  width: isDesktop ? 340 : isTablet ? 260 : "100%",
+                  height: isDesktop ? 180 : isTablet ? 140 : 180,
+                  borderRadius: 16,
+                  marginBottom: isDesktop || isTablet ? 0 : 16,
+                  alignSelf: "center",
+                }}
+                resizeMode="cover"
+              />
+              <View className="my-10"
+                style={{
+                  flex: 1,
+                  maxWidth: isDesktop ? 400 : "100%",
+                  marginLeft:
+                    isDesktop || isTablet
+                      ? isEven
+                        ? 32
+                        : 0
+                      : 0,
+                  marginRight:
+                    isDesktop || isTablet
+                      ? isEven
+                        ? 0
+                        : 32
+                      : 0,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: isDesktop ? 22 : 18,
+                    fontWeight: "bold",
+                    color: "#315072",
+                    marginBottom: 8,
+                  }}
+                >
+                  {item.title}
+                </Text>
+                <Text 
+                  style={{
+                    fontSize: isDesktop ? 16 : 15,
+                    color: "#315072",
+                  }}
+                >
+                  {item.description}
+                </Text>
+              </View>
+              <TimelineHorizontal/>
+              
+            </View>
+          );
+        })}
+        <TimelineVertical
+        itemCount={items.length}
+        blockHeight={230} // o el alto real de cada bloque de imagen
+        offset={150}       // ajusta para centrar los círculos en cada imagen
+        />
+      </View>
+    </View>
+  );
+}
+function TimelineHorizontal({}){
+  return(
+    <>
+    <View className="lg:hidden flex flex-col" style={{ position: "absolute", left:"50%", bottom: "-30px" , height:SCREEN_WIDTH *.06, backgroundColor: COLORS.blueDark, width: 4, borderRadius: "20%"}} />
+
+    </>
+  )
+}
+function TimelineVertical({
+  itemCount,
+  blockHeight = 220,
+  offset = 0,
+  lineColor = "#315072",
+  circleColor = "#f8fafc",
+  circleBorder = "#315072",
+  style = {},
+}: {
+  itemCount: number;
+  blockHeight?: number;
+  offset?: number;
+  lineColor?: string;
+  circleColor?: string;
+  circleBorder?: string;
+  style?: any;
+}) {
+  return (
+    <View className="hidden 2xl:flex"
+      pointerEvents="none"
+      style={[
+        {
+          position: "absolute",
+          left: "50%",
+          top: 0,
+          bottom: 0,
+          width: 42,
+          alignItems: "center",
+          zIndex: 10,
+        },
+        style,
+      ]}
+    >
+      {/* Línea vertical */}
+      <View
+        style={{
+          position: "absolute",
+          left: 18,
+          height:"75%" ,
+          top: 100,
+          bottom: 0,
+          width: 4,
+          backgroundColor: lineColor,
+          borderRadius: 2,
+        }}
+      />
+      {/* Círculos e indicadores */}
+      {Array.from({ length: itemCount }).map((_, idx) => {
+        // Determina si es el primero, segundo o último
+        const isFirst = idx === 0;
+        const isSecond = idx === 1;
+        const isLast = idx === itemCount - 1;
+        return (
+          <React.Fragment key={idx}>
+            {/* Círculo */}
+            <View
+              style={{
+                position: "absolute",
+                top: idx * blockHeight + offset,
+                left: 8,
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                backgroundColor: circleColor,
+                backfaceVisibility: "hidden",
+                borderWidth: 4,
+                borderColor: circleBorder,
+                zIndex: 2,
+              }}
+            />
+            {/* Línea horizontal hacia la derecha (primer y último círculo) */}
+            {(isFirst || isLast) && (
+              <View
+                style={{
+                  position: "absolute",
+                  top: idx * blockHeight + offset + 12 - 2, // vertical center of circle
+                  left: 30,
+                  width: SCREEN_WIDTH * .03, // rest of the screen width minus the line width
+                  height: 4,
+                  backgroundColor: lineColor,
+                  borderRadius: 2,
+                  zIndex: 1,
+                }}
+              />
+            )}
+            {/* Línea horizontal hacia la izquierda (segundo círculo) */}
+            {isSecond && (
+              <View
+                style={{
+                  position: "absolute",
+                  top: idx * blockHeight + offset + 12 - 2,
+                  right: 32,
+                  width: SCREEN_WIDTH * .03, // rest of the screen width minus the line width
+                  height: 4,
+                  backgroundColor: lineColor,
+                  borderRadius: 2,
+                  zIndex: 1,
+                }}
+              />
+            )}
+          </React.Fragment>
+        );
+      })}
+    </View>
+  );
+}
+
 function ServicesSection({
   scrollToSection,
 }: {
@@ -600,13 +872,13 @@ function ServicesSection({
             className="mb-3 font-bold text-3xl md:text-4xl text-center"
             style={{ color: COLORS.blueDark }}
           >
-            Our Services
+            {t("services.title")}
           </Text>
           <Text
-            className="mb-10 px-4 font-extralight text-lg md:text-xl text-center"
+            className="mb-5 px-4 font-medium text-xl md:text-2xl text-center"
             style={{ color: COLORS.blueDark, fontFamily: "Arial" }}
           >
-            We offer a wide range of services to meet your needs.
+            {t("services.subtitle")}
           </Text>
           <View className="gap-4 lg:gap-5 grid grid-cols-1 md:grid-cols-3 px-5">
             {services.map((service, index) => (
@@ -640,7 +912,7 @@ function ServicesSection({
                 </Text>
                 <Text
                   className="mb-1 lg:mb-2 font-semibold text-md"
-                  style={{ color: COLORS.blueDarker }}
+                  style={{ color: COLORS.blueDark }}
                 >
                   {service.description}
                 </Text>
@@ -930,7 +1202,7 @@ function ServicesSection({
               className="mb-4 font-bold text-lg text-center"
               style={{ color: COLORS.blueDark }}
             >
-              Make a Question
+              {t("faq.makeQuestion")}
             </Text>
             <QuestionForm 
               onClose={() => setQuestionModalVisible(false)}
@@ -1037,6 +1309,7 @@ function FAQSection({
                           : "font-semibold"
                       }
                       style={{
+                        fontSize: selectedIndex === realIdx && !isMobile ? 19 : 17,
                         color:
                           selectedIndex === realIdx && !isMobile
                             ? "white"
@@ -1064,13 +1337,13 @@ function FAQSection({
             }}
           >
             <Text
-              className="mb-2 font-bold text-lg"
+              className="mb-2 font-bold text-xl"
               style={{ color: COLORS.blueDark }}
             >
               {faqs[selectedIndex].question}
             </Text>
             <Text
-              className="text-base whitespace-pre-line"
+              className="text-lg whitespace-pre-line"
               style={{ color: COLORS.blueDark }}
             >
               {faqs[selectedIndex].answer}
@@ -1726,6 +1999,7 @@ function Footer({ scrollToSection }: any) {
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState<null | string>(null);
+  const { t } = useTranslation();
   const about = {
     dwelling: {
       title: "Dwelling",
@@ -1736,7 +2010,6 @@ function Footer({ scrollToSection }: any) {
       info: "Info desarrollo",
     },
   };
-
   return (
     <View
       style={{
@@ -1803,20 +2076,20 @@ function Footer({ scrollToSection }: any) {
                   fontSize: 14,
                 }}
               >
-                Content
+                {t("footer.content.title")}
               </Text>
               <View className="space-y-1">
                 <Text
                   style={{ color: COLORS.whiteSoft, fontSize: 14 }}
                   onPress={() => scrollToSection?.("services", true)}
                 >
-                  Services
+                  {t("footer.content.services")}
                 </Text>
                 <Text
                   style={{ color: COLORS.whiteSoft, fontSize: 14 }}
                   onPress={() => scrollToSection?.("faq", true)}
                 >
-                  FAQs
+                  {t("footer.content.faq")}
                 </Text>
               </View>
             </View>
@@ -1829,20 +2102,20 @@ function Footer({ scrollToSection }: any) {
                   fontSize: 14,
                 }}
               >
-                Company
+                {t("footer.company.title")}
               </Text>
               <View className="space-y-1">
                 <Text
                   style={{ color: COLORS.whiteSoft, fontSize: 14 }}
                   onPress={() => setModalVisible("dwelling")}
                 >
-                  About
+                  {t("footer.company.about")}
                 </Text>
                 <Text
                   style={{ color: COLORS.whiteSoft, fontSize: 14 }}
                   onPress={() => setModalVisible("fortuneCode")}
                 >
-                  Development
+                  {t("footer.company.development")}
                 </Text>
               </View>
             </View>
@@ -1905,7 +2178,7 @@ function Footer({ scrollToSection }: any) {
               }}
             >
               <Text style={{ color: COLORS.whiteSoft, fontWeight: "500" }}>
-                Close
+                {t("common.close")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -1919,7 +2192,6 @@ interface QuestionFormProps {
   onClose?: () => void;
   initialQuestion?: string;
 }
-
 const QuestionForm: React.FC<QuestionFormProps> = ({ 
   onSubmitSuccess, 
   onClose,
@@ -1930,6 +2202,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const { t } = useTranslation();
 
   // Validación de campos
   const isEmailValid = email.trim() === "" || /\S+@\S+\.\S+/.test(email);
@@ -1960,7 +2233,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       setPhone("");
       onSubmitSuccess?.();
     }).catch(() => {
-      Alert.alert("Error", "There was a problem sending your question. Please try again later.");
+      Alert.alert("Error", t("common.submitError"));
     });
   };
 
@@ -1969,7 +2242,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       <TextInput
         value={question}
         onChangeText={setQuestion}
-        placeholder="Write your question here..."
+        placeholder= {t("faq.questionPlaceholder")}
         multiline
         numberOfLines={3}
         style={{
@@ -1999,13 +2272,13 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
         }}
       >
         <Text style={{ color: COLORS.blueDark, fontWeight: 'bold' }}>
-          Send Question
+          {t("common.sendQuestion")}
         </Text>
       </TouchableOpacity>
 
       {submitted && (
         <Text style={{ marginTop: 12, color: 'green', textAlign: 'center' }}>
-          Thank you! We will respond to you shortly.
+          {t("common.thanks")}
         </Text>
       )}
 
@@ -2059,17 +2332,17 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                 textAlign: 'center',
               }}
             >
-              Give us a way to contact you
+              {t("common.giveAwayToContact")}
             </Text>
             
             {/* Correo */}
             <Text style={{ marginBottom: 4, color: COLORS.blueDark }}>
-              Mail
+              Email
             </Text>
             <TextInput
               value={email}
               onChangeText={setEmail}
-              placeholder="Your email address"
+              placeholder={t("common.emailPlaceholder")}
               keyboardType="email-address"
               style={{
                 backgroundColor: COLORS.white,
@@ -2111,7 +2384,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
             />
             {!isPhoneValid && (
               <Text style={{ color: COLORS.error, fontSize: 12, marginBottom: 8 }}>
-                Please enter a valid phone number
+                {t("common.phoneNumber")}
               </Text>
             )}
             

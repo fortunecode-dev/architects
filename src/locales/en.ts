@@ -24,6 +24,7 @@ export default {
   header: {
     sections: {
       home: "Home",
+      info: "Info",
       services: "Services",
       faq: "FAQ",
     },
