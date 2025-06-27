@@ -437,7 +437,7 @@ function LandingSection({
                   className="justify-center items-center lg:mt-5 mb-1 lg:p-0 md:py-4 font-semibold text-center"
                   style={{
                     color: COLORS.blueDark,
-                    fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.045,
+                    fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.035,
                   }}
                 >
                   {t(`landing.title`)}
@@ -524,18 +524,20 @@ function InfoTreeSection() {
       style={{
         width: "100%",
         height: "100%",
-        paddingVertical: isDesktop ? 60 : 30,
         backgroundColor: "#f8fafc",
         alignItems: "center",
         justifyContent: "center",
-        paddingStart: isDesktop ? 0 : 40,
+        paddingStart: isDesktop ? 10  : 0,
+
       }}
     >
       <View
         style={{
           width: isDesktop ? "70%" : isTablet ? "90%" : "98%",
+          height: "100%",
+          paddingVertical: isDesktop ? 80 : isTablet ? 90 : 68,
           alignSelf: "center",
-          paddingHorizontal: isDesktop ? 80 : 20, }}
+          paddingHorizontal: isDesktop ? 40 : 20, }}
       >
         <Text
           style={{
@@ -598,7 +600,7 @@ function InfoTreeSection() {
                   marginLeft:
                     isDesktop || isTablet
                       ? isEven
-                        ? 32
+                        ? 42
                         : 0
                       : 0,
                   marginRight:
@@ -635,8 +637,8 @@ function InfoTreeSection() {
         })}
         <TimelineVertical
         itemCount={items.length}
-        blockHeight={230} // o el alto real de cada bloque de imagen
-        offset={150}       // ajusta para centrar los círculos en cada imagen
+        blockHeight={260} // o el alto real de cada bloque de imagen
+        offset={230}       // ajusta para centrar los círculos en cada imagen
         />
       </View>
     </View>
@@ -645,7 +647,7 @@ function InfoTreeSection() {
 function TimelineHorizontal({}){
   return(
     <>
-    <View className="lg:hidden flex flex-col" style={{ position: "absolute", left:"50%", bottom: "-30px" , height:SCREEN_WIDTH *.06, backgroundColor: COLORS.blueDark, width: 4, borderRadius: "20%"}} />
+    <View className="lg:hidden flex flex-col my-5" style={{ position: "absolute", left:"50%", bottom: "-60px" , height:SCREEN_WIDTH *.06, backgroundImage:"linear-gradient(334deg, rgb(233, 238, 245) 0%, rgb(49, 80, 114) 20%)", width: 4, borderRadius: "20%"}} />
 
     </>
   )
@@ -688,11 +690,12 @@ function TimelineVertical({
         style={{
           position: "absolute",
           left: 18,
-          height:"75%" ,
-          top: 100,
+          height:"80%" ,
+          top: 120,
           bottom: 0,
           width: 4,
-          backgroundColor: lineColor,
+          backgroundImage:
+                    "linear-gradient(334deg, rgb(233, 238, 245) 0%, rgb(49, 80, 114) 30%)",
           borderRadius: 2,
         }}
       />
@@ -713,7 +716,8 @@ function TimelineVertical({
                 width: 24,
                 height: 24,
                 borderRadius: 12,
-                backgroundColor: circleColor,
+                 backgroundImage:
+                    "linear-gradient(334deg, rgb(233, 238, 245) 0%, rgb(49, 80, 114) 100%)",
                 backfaceVisibility: "hidden",
                 borderWidth: 4,
                 borderColor: circleBorder,
