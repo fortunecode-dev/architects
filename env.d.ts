@@ -1,5 +1,7 @@
 declare module "@env" {
   export const SERVER_URL: string;
+  export const BASE_URL: string;
+  export const CLIENT_ID: string;
   export const GOOGLE_KEY: string;
   export const PHONE_CONTACT: string;
   export const MAIL_CONTACT: string;
