@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,9 @@ import {
   deleteProspect,
   getActiveProspects,
 } from "@/services/prospect.service";
+import { useSearchParams } from "expo-router/build/hooks";
+import { SERVER_URL } from "@env";
+import axios from "axios";
 
 interface Client {
   id: string;
@@ -24,7 +27,7 @@ interface Client {
   email: string;
   phone: string;
   address: string;
-  status: string[];
+  status: string;
 }
 
 export default function ClientsPage() {
@@ -41,6 +44,12 @@ export default function ClientsPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState<Client[]>([]);
+  const code = useSearchParams().get('code');
+  useEffect(() => {
+    if (code) {
+      axios.post(`${SERVER_URL}/user/google?code=${code}`)
+    }
+  }, [code]);
 
   useFocusEffect(
     useCallback(() => {
@@ -225,11 +234,24 @@ export default function ClientsPage() {
             onPress={() =>
               router.push({
                 pathname: "/admin/client",
-                params: { id: client.id,mode:"view" ,}
-              },{})
+                params: { id: client.id, mode: "edit", }
+              }, {})
             }
           >
             <MaterialIcons name="edit" size={18} color="white" />
+          </TouchableOpacity><TouchableOpacity
+            style={{
+              ...styles.actionButton,
+              ...styles.editButton,
+            }}
+            onPress={() =>
+              router.push({
+                pathname: "/admin/client",
+                params: { id: client.id, mode: "view", }
+              }, {})
+            }
+          >
+            <MaterialIcons name="info" size={18} color="white" />
           </TouchableOpacity>
           <TouchableOpacity
             style={{

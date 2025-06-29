@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Modal, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { MAIL_CONTACT, PHONE_CONTACT, WHATSAPP_CONTACT, FACEBOOK_URL, INSTAGRAM_URL, WHATSAPP_URL, MESSENGER_URL } from "@env";
+import { MAIL_CONTACT, PHONE_CONTACT, WHATSAPP_CONTACT, FACEBOOK_URL, INSTAGRAM_URL, WHATSAPP_URL, MESSENGER_URL, BASE_URL, CLIENT_ID } from "@env";
 import axios from "axios";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useWindowDimensions } from "react-native";
@@ -235,11 +235,11 @@ function Header({
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="pr-3 hover:scale-105">
-                  <Ionicons name="logo-facebook" size={34} color="#315072" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="pr-3 hover:scale-105">
-                  <Ionicons name="logo-instagram" size={34} color="#315072" />
-                </TouchableOpacity>
+              <Ionicons name="logo-facebook" size={34} color="#315072" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="pr-3 hover:scale-105">
+              <Ionicons name="logo-instagram" size={34} color="#315072" />
+            </TouchableOpacity>
 
             <TouchableOpacity
               className={`px-3 py-1.5 rounded-md transition-all duration-300`}
@@ -256,7 +256,7 @@ function Header({
           </View>
 
           {/* Mobile Menu Button and Language Toggle */}
-          
+
           <View className="md:hidden flex-row flex-shrink-0 items-center">
             {/* Botón de cambio de idioma */}
             <TouchableOpacity
@@ -271,7 +271,7 @@ function Header({
                 {i18n.language === "en" ? "EN" : "ES"}
               </Text>
             </TouchableOpacity>
-            
+
             {/* Botón de menú */}
             <TouchableOpacity
               onPress={() => setMenuOpen(!menuOpen)}
@@ -356,10 +356,10 @@ function Header({
                 </TouchableOpacity>
                 <View className="flex flex-row justify-center gap-4 mt-4">
                   <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="hover:scale-105">
-                    <Ionicons name="logo-facebook" size={42}  color="#315072"  />
+                    <Ionicons name="logo-facebook" size={42} color="#315072" />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="hover:scale-105">
-                    <Ionicons name="logo-instagram" size={42}  color="#315072"  />
+                    <Ionicons name="logo-instagram" size={42} color="#315072" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -407,8 +407,8 @@ function LandingSection({
                 paddingTop: isDesktop
                   ? 0
                   : isTablet
-                  ? SCREEN_WIDTH * 0.25
-                  : SCREEN_WIDTH * 0.3,
+                    ? SCREEN_WIDTH * 0.25
+                    : SCREEN_WIDTH * 0.3,
               }}
             >
               <View className="flex justify-center items-center w-full">
@@ -419,8 +419,8 @@ function LandingSection({
                     height: isDesktop
                       ? SCREEN_WIDTH * 0.15
                       : isTablet
-                      ? SCREEN_WIDTH * 0.25
-                      : SCREEN_WIDTH * 0.42,
+                        ? SCREEN_WIDTH * 0.25
+                        : SCREEN_WIDTH * 0.42,
                     resizeMode: "contain",
                   }}
                   resizeMode="contain"
@@ -678,8 +678,8 @@ function ServicesSection({
               height: isDesktop
                 ? "auto"
                 : isTablet
-                ? SCREEN_WIDTH * 1.2
-                : "auto",
+                  ? SCREEN_WIDTH * 1.2
+                  : "auto",
             }}
           >
             <TouchableOpacity
@@ -751,10 +751,10 @@ function ServicesSection({
                   {services[selectedService]?.title}
                 </Text>
               </View>
-              
+
               {/* Carousel */}
               <View className="justify-center items-center p-4 w-full h-full">
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={openFullScreenImage}
                   activeOpacity={0.9}
                 >
@@ -764,13 +764,13 @@ function ServicesSection({
                       width: isDesktop
                         ? SCREEN_WIDTH * 0.3
                         : isTablet
-                        ? SCREEN_WIDTH * 0.8
-                        : SCREEN_WIDTH * 0.75,
+                          ? SCREEN_WIDTH * 0.8
+                          : SCREEN_WIDTH * 0.75,
                       height: isDesktop
                         ? SCREEN_WIDTH * 0.2
                         : isTablet
-                        ? SCREEN_WIDTH * 0.4
-                        : SCREEN_HEIGHT * 0.2,
+                          ? SCREEN_WIDTH * 0.4
+                          : SCREEN_HEIGHT * 0.2,
                       marginVertical: isTablet ? 20 : 0,
                       borderRadius: 16,
                     }}
@@ -840,7 +840,7 @@ function ServicesSection({
           className="flex-1 justify-center items-center"
           style={{ backgroundColor: 'rgba(0,0,0,0.9)' }}
         >
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={closeFullScreenImage}
             style={{ position: 'absolute', top: 40, right: 20, zIndex: 10 }}
           >
@@ -932,7 +932,7 @@ function ServicesSection({
             >
               {t("faq.makeQuestion")}
             </Text>
-            <QuestionForm 
+            <QuestionForm
               onClose={() => setQuestionModalVisible(false)}
               onSubmitSuccess={() => {
                 setQuestionSent(true);
@@ -942,7 +942,7 @@ function ServicesSection({
                 }, 1500);
               }}
             />
-            
+
           </View>
         </View>
       </Modal>
@@ -984,15 +984,14 @@ function FAQSection({
       >
         {t("faq.title")}
       </Text>
-      
+
       {/* Preguntas y respuesta */}
       <View
         className={`
           flex flex-row justify-center items-start mb-10 w-full px-4
-          ${
-            isMobile
-              ? "gap-4 max-w-xl"
-              : isTablet
+          ${isMobile
+            ? "gap-4 max-w-xl"
+            : isTablet
               ? "gap-6 max-w-4xl"
               : "gap-8 max-w-6xl"
           }
@@ -1000,9 +999,8 @@ function FAQSection({
       >
         {/* Columna de preguntas */}
         <View
-          className={`lg:flex-col flex-row flex-1 ${
-            isMobile ? "gap-2" : "gap-4"
-          }`}
+          className={`lg:flex-col flex-row flex-1 ${isMobile ? "gap-2" : "gap-4"
+            }`}
         >
           {columns.map((faqsCol, colIdx) => (
             <View key={colIdx} className="flex-1">
@@ -1052,13 +1050,12 @@ function FAQSection({
             </View>
           ))}
         </View>
-        
+
         {/* Respuesta solo en tablet/desktop */}
         {!isMobile && (
           <View
-            className={`flex-1 shadow-sm p-4 lg:p-6 border rounded-xl max-w-xl min-h-[220px] ${
-              isTablet ? "ml-4" : "ml-8"
-            }`}
+            className={`flex-1 shadow-sm p-4 lg:p-6 border rounded-xl max-w-xl min-h-[220px] ${isTablet ? "ml-4" : "ml-8"
+              }`}
             style={{
               backgroundColor: COLORS.whiteSoft,
               borderColor: COLORS.accentSoft,
@@ -1077,13 +1074,13 @@ function FAQSection({
               {faqs[selectedIndex].answer}
             </Text>
             <View className="mt-10 pb-6 rounded-xl w-full">
-              <Text className="py-2 font-bold text-2xl text-center" style={{color: COLORS.blueDark}}>
+              <Text className="py-2 font-bold text-2xl text-center" style={{ color: COLORS.blueDark }}>
                 {t("questionForm.title")}
               </Text>
-              <QuestionForm 
+              <QuestionForm
                 onSubmitSuccess={() => setSubmitted(true)}
               />
-              
+
             </View>
           </View>
         )}
@@ -1092,11 +1089,11 @@ function FAQSection({
       {/* Sección "Make a Question" para móviles */}
       {isMobile && (
         <View className="px-4 w-full">
-          <Text className="py-4 font-bold text-2xl text-center" style={{color: COLORS.blueDark}}>
+          <Text className="py-4 font-bold text-2xl text-center" style={{ color: COLORS.blueDark }}>
             {t("question.title")}
           </Text>
           <View className="mb-20 p-4 border rounded-xl" style={{ backgroundColor: COLORS.whiteSoft }}>
-            <QuestionForm 
+            <QuestionForm
               onSubmitSuccess={() => setSubmitted(true)}
             />
             {submitted && (
@@ -1159,7 +1156,7 @@ function ContactSection() {
     city: "",
     postal: "",
   });
-  const [errors, setErrors] = useState({ name: false, email: false, lastName: false  });
+  const [errors, setErrors] = useState({ name: false, email: false, lastName: false });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -1238,16 +1235,16 @@ function ContactSection() {
 
   const handleSubmit = async () => {
     const newErrors = {
-    name: !formData.name.trim(),
-    lastName: !formData.lastName.trim(),
-    email: !formData.email.trim(),
-  };
-  setErrors(newErrors);
+      name: !formData.name.trim(),
+      lastName: !formData.lastName.trim(),
+      email: !formData.email.trim(),
+    };
+    setErrors(newErrors);
 
-  if (newErrors.name || newErrors.lastName || newErrors.email) {
-    Alert.alert("Error", t("requiredField"));
-    return;
-  }
+    if (newErrors.name || newErrors.lastName || newErrors.email) {
+      Alert.alert("Error", t("requiredField"));
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -1464,14 +1461,14 @@ function ContactSection() {
                     fontWeight: "bold",
                     color: COLORS.whiteSoft,
                     textDecorationLine: "underline",
-                    fontSize: 16 
+                    fontSize: 16
                   }}
                   onPress={() => Linking.openURL(`mailto:${MAIL_CONTACT}`)}
                 >
                   {MAIL_CONTACT}
                 </Text>{" "}
               </Text>
-              <Text style={{ color: COLORS.whiteSoft, fontSize: 16, fontWeight: "700"  }}>
+              <Text style={{ color: COLORS.whiteSoft, fontSize: 16, fontWeight: "700" }}>
                 Or use this number{" "}
                 <Text
                   style={{
@@ -1484,7 +1481,7 @@ function ContactSection() {
                   {PHONE_CONTACT}
                 </Text>
               </Text>
-              <View style={{ flexDirection: "row", gap: 16, marginTop: 36, width: "100%", alignItems: "center", justifyContent: "center"  }}>
+              <View style={{ flexDirection: "row", gap: 16, marginTop: 36, width: "100%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="hover:scale-105">
                   <Ionicons name="logo-facebook" size={34} color="#fff" />
                 </TouchableOpacity>
@@ -1525,7 +1522,7 @@ function ContactSection() {
                     }}
                   >
                     <Ionicons name="call" color={COLORS.white} size={34} />
-                    <View style={{ marginLeft: 12,  }}>
+                    <View style={{ marginLeft: 12, }}>
                       <Text
                         style={{
                           fontWeight: "bold",
@@ -1549,7 +1546,7 @@ function ContactSection() {
                     }}
                   >
                     <Ionicons name="mail" color={COLORS.white} size={34} />
-                    <View style={{ marginLeft: 12,  }}>
+                    <View style={{ marginLeft: 12, }}>
                       <Text
                         style={{
                           fontWeight: "bold",
@@ -1565,18 +1562,18 @@ function ContactSection() {
                     </View>
                   </TouchableOpacity>
                 </View>
-                <View style={{ flexDirection: "row", gap: 16, bottom: 0  }}>
+                <View style={{ flexDirection: "row", gap: 16, bottom: 0 }}>
                   <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="hover:scale-105">
-                    <Ionicons name="logo-facebook" size={42}  color="#fff"  />
+                    <Ionicons name="logo-facebook" size={42} color="#fff" />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="hover:scale-105">
-                    <Ionicons name="logo-instagram" size={42}  color="#fff"  />
+                    <Ionicons name="logo-instagram" size={42} color="#fff" />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => Linking.openURL(WHATSAPP_URL)} className="hover:scale-105">
-                    <Ionicons name="logo-whatsapp" size={42}  color="#fff"  />
+                    <Ionicons name="logo-whatsapp" size={42} color="#fff" />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => Linking.openURL(MESSENGER_URL)} className="hover:scale-105">
-                    <MaterialCommunityIcons name="facebook-messenger" size={42}  color="#fff"  />
+                    <MaterialCommunityIcons name="facebook-messenger" size={42} color="#fff" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -1729,9 +1726,15 @@ function ContactSection() {
 }
 function Footer({ scrollToSection }: any) {
   const { bottom } = useSafeAreaInsets();
-  const router = useRouter();
+
   const [modalVisible, setModalVisible] = useState<null | string>(null);
   const { t } = useTranslation();
+  const redirectUri = `${BASE_URL}/admin`; // Cambia a tu dominio
+  const loginWithGoogle = () => {
+    const scope = encodeURIComponent('openid email profile');
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&prompt=select_account`;
+    window.location.href = url;
+  };
   const about = {
     dwelling: {
       title: "Dwelling",
@@ -1793,7 +1796,7 @@ function Footer({ scrollToSection }: any) {
                 textDecorationLine: "underline",
                 marginTop: 2,
               }}
-              onPress={() => router.navigate("/admin")}
+              onPress={() => loginWithGoogle()}
             >
               Admin Panel
             </Text>
@@ -1854,10 +1857,10 @@ function Footer({ scrollToSection }: any) {
           </View>
           <View className="flex flex-row justify-center gap-4 mt-4">
             <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="hover:scale-105">
-              <Ionicons name="logo-facebook" size={42}  color="#fff"  />
+              <Ionicons name="logo-facebook" size={42} color="#fff" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM_URL)} className="hover:scale-105">
-              <Ionicons name="logo-instagram" size={42}  color="#fff"  />
+              <Ionicons name="logo-instagram" size={42} color="#fff" />
             </TouchableOpacity>
           </View>
         </View>
@@ -1924,10 +1927,10 @@ interface QuestionFormProps {
   onClose?: () => void;
   initialQuestion?: string;
 }
-const QuestionForm: React.FC<QuestionFormProps> = ({ 
-  onSubmitSuccess, 
+const QuestionForm: React.FC<QuestionFormProps> = ({
+  onSubmitSuccess,
   onClose,
-  initialQuestion = "" 
+  initialQuestion = ""
 }) => {
   const [question, setQuestion] = useState(initialQuestion);
   const [showContactModal, setShowContactModal] = useState(false);
@@ -1941,8 +1944,8 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   const isPhoneValid = phone.trim() === "" || /^[0-9+\-\s()]{7,}$/.test(phone);
 
   // Al menos un campo debe estar completo y válido
-  const canSend = 
-    (email.trim() !== "" && isEmailValid) || 
+  const canSend =
+    (email.trim() !== "" && isEmailValid) ||
     (phone.trim() !== "" && isPhoneValid);
 
   const handleSendQuestion = () => {
@@ -1952,7 +1955,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
 
   const handleContactSubmit = () => {
     if (!canSend) return;
-    
+
     const contactData: any = { metadata: { question } };
     if (email.trim() !== "") contactData.email = email;
     if (phone.trim() !== "") contactData.phone = phone;
@@ -1966,7 +1969,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       onSubmitSuccess?.();
     }).catch(() => {
 
-      Alert.alert("Error",(t("questionForm.error")));
+      Alert.alert("Error", (t("questionForm.error")));
     });
   };
 
@@ -1991,7 +1994,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
         }}
         placeholderTextColor={COLORS.gray}
       />
-      
+
       <TouchableOpacity
         onPress={handleSendQuestion}
         disabled={question.trim().length < 5}
@@ -2055,7 +2058,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                 <Ionicons name="close" size={24} color={COLORS.blueDark} />
               </TouchableOpacity>
             )}
-            
+
             <Text
               style={{
                 marginBottom: 16,
@@ -2067,7 +2070,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
             >
               {t("questionForm.title2")}
             </Text>
-            
+
             {/* Correo */}
             <Text style={{ marginBottom: 4, color: COLORS.blueDark }}>
               Email
@@ -2095,7 +2098,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                 {t("questionForm.errorEmail")}
               </Text>
             )}
-            
+
             {/* Teléfono */}
             <Text style={{ marginBottom: 4, color: COLORS.blueDark }}>
               Phone
@@ -2103,7 +2106,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
             <TextInput
               value={phone}
               onChangeText={setPhone}
-              placeholder={t("questionForm.phonePlaceholder"  )}
+              placeholder={t("questionForm.phonePlaceholder")}
               keyboardType="phone-pad"
               style={{
                 backgroundColor: COLORS.white,
@@ -2123,11 +2126,11 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
               </Text>
             )}
             {phone.trim() === "" && email.trim() === "" && (
-                <Text style={{ color: "#ff0015", fontSize: 13, marginVertical: 14, textAlign: "left" }}>
-                  {t("questionForm.atLeastOneField")}
-                </Text>
-              )}
-            
+              <Text style={{ color: "#ff0015", fontSize: 13, marginVertical: 14, textAlign: "left" }}>
+                {t("questionForm.atLeastOneField")}
+              </Text>
+            )}
+
             {/* Botones */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <TouchableOpacity
@@ -2161,7 +2164,6 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                   {t("questionForm.sendButton2")}
                 </Text>
               </TouchableOpacity>
-              
             </View>
           </View>
         </View>
