@@ -225,8 +225,8 @@ export default function ClientsPage() {
             onPress={() =>
               router.push({
                 pathname: "/admin/client",
-                params: { id: client.id },
-              })
+                params: { id: client.id,mode:"view" ,}
+              },{})
             }
           >
             <MaterialIcons name="edit" size={18} color="white" />

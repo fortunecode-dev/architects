@@ -1,8 +1,6 @@
 import { SERVER_URL } from "@env";
 import axios from "axios";
 
-("/prospect/manage");
-
 export async function getActiveProspects() {
   try {
     const { data } = await axios.get(`${SERVER_URL}/prospect/manage`);
