@@ -1,6 +1,6 @@
 import { COLORS } from "@/app/colors";
 import { Text, View, TextInput, TextInputProps } from "react-native";
-
+import { useTranslation } from "react-i18next";
 export function InputField({
   label,
   value,
@@ -8,20 +8,24 @@ export function InputField({
   placeholder,
   keyboardType = "default",
   error = false,
+  required = false,
   onFocus = () => {},
   onBlur = () => {},
   editable = true,
   autoCapitalize = "sentences",
   autoComplete,
 }: InputFieldProps) {
+  const { t } = useTranslation();
   return (
     <View className="mb-1 lg:mb-3">
       <Text
         className="mb-1 font-medium text-sm lg:text-xl"
-        style={{ color: COLORS.blueDark }}
+        style={{ color: COLORS.blueDark, flexDirection: "row", alignItems: "center" }}
       >
         {label}
-        {error && <Text style={{ color: COLORS.error }}> *</Text>}
+        {required && !value && (
+          <Text style={{ color: "#ff0000" }}> *</Text>
+        )}
       </Text>
       <TextInput
         value={value}
@@ -49,7 +53,7 @@ export function InputField({
       />
       {error && (
         <Text style={{ color: COLORS.error, fontSize: 12 }}>
-          This field is required
+          {t("common.requiredField")}
         </Text>
       )}
     </View>
@@ -63,6 +67,7 @@ type InputFieldProps = {
   placeholder: string;
   keyboardType?: TextInputProps["keyboardType"];
   error?: boolean;
+  required?: boolean;
   onFocus?: () => void;
   onBlur?: () => void;
   editable?: boolean;

@@ -600,13 +600,13 @@ function ServicesSection({
             className="mb-3 font-bold text-3xl md:text-4xl text-center"
             style={{ color: COLORS.blueDark }}
           >
-            Our Services
+            {t("services.title")}
           </Text>
           <Text
             className="mb-10 px-4 font-extralight text-lg md:text-xl text-center"
             style={{ color: COLORS.blueDark, fontFamily: "Arial" }}
           >
-            We offer a wide range of services to meet your needs.
+            {t("services.subtitle")}
           </Text>
           <View className="gap-4 lg:gap-5 grid grid-cols-1 md:grid-cols-3 px-5">
             {services.map((service, index) => (
@@ -930,7 +930,7 @@ function ServicesSection({
               className="mb-4 font-bold text-lg text-center"
               style={{ color: COLORS.blueDark }}
             >
-              Make a Question
+              {t("questionForm.title")}
             </Text>
             <QuestionForm 
               onClose={() => setQuestionModalVisible(false)}
@@ -974,7 +974,7 @@ function FAQSection({
 
   return (
     <View
-      className="flex flex-col justify-center items-center gap-2 px-2 py-20 lg:py-0 w-full lg:h-screen"
+      className="flex flex-col justify-center items-center gap-2 px-2 py-20 lg:py-0 w-full md:h-screen"
       style={{ backgroundColor: COLORS.whiteSoft, paddingTop: 26 }}
     >
       {/* Título centrado */}
@@ -1077,7 +1077,7 @@ function FAQSection({
             </Text>
             <View className="mt-10 pb-6 rounded-xl w-full">
               <Text className="py-2 font-bold text-2xl text-center" style={{color: COLORS.blueDark}}>
-                {t("faq.makeQuestion")}
+                {t("questionForm.title")}
               </Text>
               <QuestionForm 
                 onSubmitSuccess={() => setSubmitted(true)}
@@ -1092,7 +1092,7 @@ function FAQSection({
       {isMobile && (
         <View className="px-4 w-full">
           <Text className="py-4 font-bold text-2xl text-center" style={{color: COLORS.blueDark}}>
-            {t("faq.makeQuestion")}
+            {t("question.title")}
           </Text>
           <View className="mb-20 p-4 border rounded-xl" style={{ backgroundColor: COLORS.whiteSoft }}>
             <QuestionForm 
@@ -1100,7 +1100,7 @@ function FAQSection({
             />
             {submitted && (
               <Text className="mt-4 text-center" style={{ color: "green" }}>
-                Thank you! We will respond to you shortly.
+                {t("question.success")}
               </Text>
             )}
           </View>
@@ -1158,7 +1158,7 @@ function ContactSection() {
     city: "",
     postal: "",
   });
-  const [errors, setErrors] = useState({ name: false, email: false });
+  const [errors, setErrors] = useState({ name: false, email: false, lastName: false  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -1237,15 +1237,16 @@ function ContactSection() {
 
   const handleSubmit = async () => {
     const newErrors = {
-      name: !formData.name.trim(),
-      email: !formData.email.trim(),
-    };
-    setErrors(newErrors);
+    name: !formData.name.trim(),
+    lastName: !formData.lastName.trim(),
+    email: !formData.email.trim(),
+  };
+  setErrors(newErrors);
 
-    if (newErrors.name || newErrors.email) {
-      Alert.alert("Error", "Please complete all required fields.");
-      return;
-    }
+  if (newErrors.name || newErrors.lastName || newErrors.email) {
+    Alert.alert("Error", t("requiredField"));
+    return;
+  }
 
     setIsSubmitting(true);
 
@@ -1534,7 +1535,7 @@ function ContactSection() {
                         {PHONE_CONTACT}
                       </Text>
                       <Text style={{ color: COLORS.white }} className="text-xl">
-                        Call now for a free consultation
+                        {t("contact.callToAction")}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -1558,7 +1559,7 @@ function ContactSection() {
                         {MAIL_CONTACT}
                       </Text>
                       <Text style={{ color: COLORS.white }} className="text-xl">
-                        Email us to discuss your project
+                        {t("contact.emailPrompt")}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -1592,15 +1593,17 @@ function ContactSection() {
                 onChangeText={(text) => handleChange("name", text)}
                 placeholder={t("contact.form.firstName")}
                 error={errors.name}
+                required={true}
               />
             </View>
             <View style={{ flex: 1, marginLeft: 8 }}>
               <InputField
                 label={t("contact.form.lastName")}
-                autoComplete="family-name"
                 value={formData.lastName}
                 onChangeText={(text) => handleChange("lastName", text)}
                 placeholder={t("contact.form.lastName")}
+                error={errors.lastName}
+                required={true}
               />
             </View>
           </View>
@@ -1615,6 +1618,7 @@ function ContactSection() {
                 placeholder={t("contact.form.email")}
                 keyboardType="email-address"
                 error={errors.email}
+                required={true}
               />
             </View>
             <View style={{ flex: 1, marginLeft: 8 }}>
@@ -1714,7 +1718,7 @@ function ContactSection() {
 
           <SubmitButton
             onPress={handleSubmit}
-            label={isSubmitting ? "Sending..." : "Send Message"}
+            label={isSubmitting ? t("contact.form.submitting") : t("contact.form.submit")}
             disabled={isSubmitting}
           />
         </View>
@@ -1930,7 +1934,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-
+  const { t } = useTranslation();
   // Validación de campos
   const isEmailValid = email.trim() === "" || /\S+@\S+\.\S+/.test(email);
   const isPhoneValid = phone.trim() === "" || /^[0-9+\-\s()]{7,}$/.test(phone);
@@ -1960,7 +1964,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       setPhone("");
       onSubmitSuccess?.();
     }).catch(() => {
-      Alert.alert("Error", "There was a problem sending your question. Please try again later.");
+      Alert.alert("Error",(t("questionForm.error")));
     });
   };
 
@@ -1969,7 +1973,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       <TextInput
         value={question}
         onChangeText={setQuestion}
-        placeholder="Write your question here..."
+        placeholder={t("questionForm.questionPlaceholder")}
         multiline
         numberOfLines={3}
         style={{
@@ -1999,13 +2003,13 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
         }}
       >
         <Text style={{ color: COLORS.blueDark, fontWeight: 'bold' }}>
-          Send Question
+          {t("questionForm.sendButton")}
         </Text>
       </TouchableOpacity>
 
       {submitted && (
         <Text style={{ marginTop: 12, color: 'green', textAlign: 'center' }}>
-          Thank you! We will respond to you shortly.
+          {t("questionForm.success")}
         </Text>
       )}
 
@@ -2059,7 +2063,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                 textAlign: 'center',
               }}
             >
-              Give us a way to contact you
+              {t("questionForm.title2")}
             </Text>
             
             {/* Correo */}
@@ -2069,7 +2073,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
             <TextInput
               value={email}
               onChangeText={setEmail}
-              placeholder="Your email address"
+              placeholder={t("questionForm.emailPlaceholder")}
               keyboardType="email-address"
               style={{
                 backgroundColor: COLORS.white,
@@ -2081,11 +2085,12 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                 marginBottom: 12,
               }}
               autoCapitalize="none"
+              autoComplete="email"
               placeholderTextColor={COLORS.gray}
             />
             {!isEmailValid && (
               <Text style={{ color: COLORS.error, fontSize: 12, marginBottom: 8 }}>
-                Please enter a valid email address
+                {t("questionForm.errorEmail")}
               </Text>
             )}
             
@@ -2096,7 +2101,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
             <TextInput
               value={phone}
               onChangeText={setPhone}
-              placeholder="Your phone number"
+              placeholder={t("questionForm.phonePlaceholder"  )}
               keyboardType="phone-pad"
               style={{
                 backgroundColor: COLORS.white,
@@ -2105,15 +2110,21 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                 color: COLORS.blueDark,
                 padding: 12,
                 borderRadius: 8,
-                marginBottom: 16,
+                marginBottom: 8,
               }}
               placeholderTextColor={COLORS.gray}
+              autoComplete="tel"
             />
             {!isPhoneValid && (
               <Text style={{ color: COLORS.error, fontSize: 12, marginBottom: 8 }}>
-                Please enter a valid phone number
+                {t("questionForm.errorPhone")}
               </Text>
             )}
+            {phone.trim() === "" && email.trim() === "" && (
+                <Text style={{ color: "#ff0015", fontSize: 13, marginVertical: 14, textAlign: "left" }}>
+                  {t("questionForm.atLeastOneField")}
+                </Text>
+              )}
             
             {/* Botones */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -2129,7 +2140,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                 }}
               >
                 <Text style={{ color: COLORS.blueDark, textAlign: 'center' }}>
-                  Close
+                  {t("questionForm.sendButtonn2")}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -2145,9 +2156,10 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                 }}
               >
                 <Text style={{ color: COLORS.blueDark, fontWeight: 'bold', textAlign: 'center' }}>
-                  Send
+                  {t("questionForm.sendButton2")}
                 </Text>
               </TouchableOpacity>
+              
             </View>
           </View>
         </View>
