@@ -208,4 +208,20 @@ export default {
       },
     },
   },
+  questionForm: {
+    title: "Make a Question",
+    title2: "Give us a way to contact you",
+    questionPlaceholder: "Write your question here...",
+    emailPlaceholder: "Your email address",
+    phonePlaceholder: "Your phone number",
+    sendButton: "Send Question",
+    sendButton2: "Send",
+    sendButtonn2: "Close",
+    bottom: "Send Question",
+    atLeastOneField: "Please fill at least one field.",
+    success: "Your question has been sent successfully!",
+    error: "There was a problem sending your question. Please try again later.",
+    errorPhone: "Please enter a valid phone number.",
+    errorEmail: "Please enter a valid email address."
+  }
 };

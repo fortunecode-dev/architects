@@ -200,4 +200,20 @@ export default {
       },
     },
   },
+  questionForm: {
+    title: "Haz una pregunta",
+    title2: "Danos una forma para contactarte",
+    questionPlaceholder: "Escribe tu pregunta aquí...",
+    emailPlaceholder: "Tu dirección de correo",
+    phonePlaceholder: "Tu número telefónico",
+    sendButton: "Enviar Pregunta",
+    sendButton2: "Enviar",
+    sendButtonn2: "Cerrar",
+    bottom: "Enviar Pregunta",
+    atLeastOneField: "Por favor, rellene al menos una casilla.",
+    success: "¡Tu pregunta ha sido enviada con éxito!",
+    error: "Hubo un problema al enviar tu pregunta. Por favor, inténtalo de nuevo más tarde.",
+    errorPhone: "Por favor, ingresa un número de teléfono válido.",
+    errorEmail: "Por favor, ingresa un correo electrónico válido.", 
+  }
 };
