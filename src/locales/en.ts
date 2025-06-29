@@ -19,6 +19,11 @@ export default {
     mapData: "Map data © OpenStreetMap contributors",
     photoCredit: "Mobile Homes Stock photos by Vecteezy",
     adminPanel: "Admin Panel",
+    sendQuestion: "Send Question",
+    makeQuestion: "Make a Question",
+    giveAwayToContact: "Give us a way to contact you",
+    emailPlaceholder: "Your email address",
+    phoneNumber: "Please enter a valid phone number"
   },
 
   header: {
