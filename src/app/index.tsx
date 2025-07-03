@@ -492,274 +492,139 @@ function LandingSection({
   );
 }
 
-function InfoTreeSection() {
-  const { width } = useWindowDimensions();
-  const isDesktop = width >= 1024;
-  const isTablet = width >= 768 && width < 1024;
+const InfoTreeSection = () => {
+  const { width: SCREEN_WIDTH } = useWindowDimensions();
+  const isTablet = SCREEN_WIDTH >= 768;
+  const isDesktop = SCREEN_WIDTH >= 1024;
 
-  // Ejemplo de datos
   const items = [
     {
-      title: "ADU",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum natus nobis quam quo eius quae quia nemo recusandae laboriosam reprehenderit. Consectetur quidem iste corporis eos quo omnis labore, veniam sit.",
-      image: require("../images/ADU/1.webp"),
+      title: 'ADU',
+      description: 'lorem ipsum dolor sit amet, consectetur adipiscing elit.  ',
+      image: require('../images/ADU/1.webp'),
     },
     {
-      title: "Remodeling",
-      description:
-        "Remodeling description goes here. Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-      image: require("../images/REMODELATION/1.webp"),
+      title: 'Remodeling',
+      description: 'lorem ipsum dolor sit amet, consectetur adipiscing elit.  ',
+      image: require('../images/REMODELATION/1.webp'),
     },
     {
-      title: "Backyard",
-      description:
-        "Backyard description goes here. Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-      image: require("../images/BACKYARD/1.webp"),
+      title: 'Backyard',
+      description: 'lorem ipsum dolor sit amet, consectetur adipiscing elit.  ',
+      image: require('../images/BACKYARD/1.webp'),
     },
   ];
 
   return (
-    <View
-      style={{
-        width: "100%",
-        height: "100%",
-        backgroundColor: "#f8fafc",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingStart: isDesktop ? 10  : 0,
+    <View style={{ flex: 1, backgroundColor: '#fff', padding: 20, paddingHorizontal: isDesktop ? 20 : isTablet ? 20 : 3, }} className="flex-1 justify-center items-center w-full h-screen">
+      {/* Título */}
+      <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#000' }}>Info Tree</Text>
+      <Text style={{ fontSize: 16, marginBottom: 20 }}>Description</Text>
 
-      }}
-    >
-      <View
-        style={{
-          width: isDesktop ? "70%" : isTablet ? "90%" : "98%",
-          height: "100%",
-          paddingVertical: isDesktop ? 80 : isTablet ? 90 : 68,
-          alignSelf: "center",
-          paddingHorizontal: isDesktop ? 40 : 20, }}
-      >
-        <Text
+      {/* Contenedor principal */}
+      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        {/* Columna izquierda */}
+        <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: isDesktop ? 40 : 20, paddingTop: isDesktop ? 80 : 20 }}>
+          {items.map((item, index) =>
+            index % 2 === 0 ? (
+              <Card key={index} item={item} align="left" />
+            ) : (
+              <View key={index} style={{ height: 140 }} />
+            )
+          )}
+        </View>
+
+        {/* Columna central con línea vertical y círculos */}
+        <View
           style={{
-            fontSize: isDesktop ? 32 : 24,
-            fontWeight: "bold",
-            marginBottom: SCREEN_WIDTH * .01,
-            color: "#315072",
-            textAlign: "left",
+            width: 30,
+            alignItems: 'center',
+            position: 'relative',
           }}
         >
-          Info Tree
-        </Text>
-        <Text
-          style={{
-            fontSize: isDesktop ? 20 : 16,
-            color: "#315072",
-            marginBottom: SCREEN_WIDTH * .01,
-            textAlign: "left",
-          }}
-        >
-          Descriptions
-        </Text>
-          
-        {items.map((item, idx) => {
-          // Alternar imagen a la izquierda/derecha en desktop
-          const isEven = idx % 2 === 0;
-          return (
+          {/* Línea vertical */}
+          <View
+            style={{
+              position: 'absolute',
+              top: 18,
+              bottom: 18,
+              width: 4,
+              backgroundColor: '#000',
+            }}
+          />
+          {/* Nodos circulares */}
+          {items.map((_, index) => (
             <View
-              key={idx}
+              key={index}
               style={{
-                flexDirection:
-                  isDesktop || isTablet
-                    ? isEven
-                      ? "row"
-                      : "row-reverse"
-                    : "column",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 60,
-                gap: isDesktop ? 40 : 20,
+                width: 30,
+                height: '30%',
+                justifyContent: 'space-around',
+                alignItems: 'center',
               }}
-              
             >
-              
-              <Image
-                source={item.image}
+              <View
                 style={{
-                  width: isDesktop ? 340 : isTablet ? 260 : "100%",
-                  height: isDesktop ? 180 : isTablet ? 140 : 180,
+                  width: 32,
+                  height: 32,
                   borderRadius: 16,
-                  marginBottom: isDesktop || isTablet ? 0 : 16,
-                  alignSelf: "center",
-                }}
-                resizeMode="cover"
-              />
-              <View className="my-10"
-                style={{
-                  flex: 1,
-                  maxWidth: isDesktop ? 400 : "100%",
-                  marginLeft:
-                    isDesktop || isTablet
-                      ? isEven
-                        ? 42
-                        : 0
-                      : 0,
-                  marginRight:
-                    isDesktop || isTablet
-                      ? isEven
-                        ? 0
-                        : 32
-                      : 0,
+                  borderWidth: 2,
+                  borderColor: '#000',
+                  backgroundColor: '#fff',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  zIndex: 10,
                 }}
               >
-                <Text
-                  style={{
-                    fontSize: isDesktop ? 22 : 18,
-                    fontWeight: "bold",
-                    color: "#315072",
-                    marginBottom: 8,
-                  }}
-                >
-                  {item.title}
-                </Text>
-                <Text 
-                  style={{
-                    fontSize: isDesktop ? 16 : 15,
-                    color: "#315072",
-                  }}
-                >
-                  {item.description}
-                </Text>
+                <Text style={{ fontWeight: 'bold' }}>{index + 1}</Text>
               </View>
-              <TimelineHorizontal/>
-              
             </View>
-          );
-        })}
-        <TimelineVertical
-        itemCount={items.length}
-        blockHeight={260} // o el alto real de cada bloque de imagen
-        offset={230}       // ajusta para centrar los círculos en cada imagen
-        />
+          ))}
+        </View>
+
+        {/* Columna derecha */}
+        <View style={{ flex: 1, alignItems: 'flex-start', paddingLeft: isDesktop ? 40 : 20, paddingTop: isTablet ? 120 : 20 }}>
+          {items.map((item, index) =>
+            index % 2 !== 0 ? (
+              <Card key={index} item={item} align="left" />
+            ) : (
+              <View key={index} style={{ height: 140 }} />
+            )
+          )}
+        </View>
       </View>
     </View>
   );
-}
-function TimelineHorizontal({}){
-  return(
-    <>
-    <View className="lg:hidden flex flex-col my-5" style={{ position: "absolute", left:"50%", bottom: "-60px" , height:SCREEN_WIDTH *.06, backgroundImage:"linear-gradient(334deg, rgb(233, 238, 245) 0%, rgb(49, 80, 114) 20%)", width: 4, borderRadius: "20%"}} />
+};
 
-    </>
-  )
-}
-function TimelineVertical({
-  itemCount,
-  blockHeight = 220,
-  offset = 0,
-  lineColor = "#315072",
-  circleColor = "#f8fafc",
-  circleBorder = "#315072",
-  style = {},
-}: {
-  itemCount: number;
-  blockHeight?: number;
-  offset?: number;
-  lineColor?: string;
-  circleColor?: string;
-  circleBorder?: string;
-  style?: any;
-}) {
+// Componente reutilizable de tarjeta
+const Card = ({ item, align }: { item: any; align: 'left' | 'right' }) => {
+  const isDesktop = useWindowDimensions().width >= 1024;
+  const isTablet = useWindowDimensions().width >= 768 && useWindowDimensions().width < 1024;
   return (
-    <View className="hidden 2xl:flex"
-      pointerEvents="none"
-      style={[
-        {
-          position: "absolute",
-          left: "50%",
-          top: 0,
-          bottom: 0,
-          width: 42,
-          alignItems: "center",
-          zIndex: 10,
-        },
-        style,
-      ]}
+    <View
+      style={{
+        width: isDesktop ? 320 : isTablet ? 320 : SCREEN_WIDTH * .35,
+        marginBottom: 0,
+        alignItems: align === 'right' ? 'flex-end' : 'flex-start',
+        
+      }}
     >
-      {/* Línea vertical */}
-      <View
+      <Image
+        source={item.image}
         style={{
-          position: "absolute",
-          left: 18,
-          height:"80%" ,
-          top: 120,
-          bottom: 0,
-          width: 4,
-          backgroundImage:
-                    "linear-gradient(334deg, rgb(233, 238, 245) 0%, rgb(49, 80, 114) 30%)",
-          borderRadius: 2,
+          width: isDesktop ? 320 : isTablet ? 320 : SCREEN_WIDTH * .35,
+          height: isDesktop ? 150 : SCREEN_WIDTH * 0.2,
+          borderRadius: 12,
+          marginBottom: 6,
         }}
+        resizeMode="cover"
       />
-      {/* Círculos e indicadores */}
-      {Array.from({ length: itemCount }).map((_, idx) => {
-        // Determina si es el primero, segundo o último
-        const isFirst = idx === 0;
-        const isSecond = idx === 1;
-        const isLast = idx === itemCount - 1;
-        return (
-          <React.Fragment key={idx}>
-            {/* Círculo */}
-            <View
-              style={{
-                position: "absolute",
-                top: idx * blockHeight + offset,
-                left: 8,
-                width: 24,
-                height: 24,
-                borderRadius: 12,
-                 backgroundImage:
-                    "linear-gradient(334deg, rgb(233, 238, 245) 0%, rgb(49, 80, 114) 100%)",
-                backfaceVisibility: "hidden",
-                borderWidth: 4,
-                borderColor: circleBorder,
-                zIndex: 2,
-              }}
-            />
-            {/* Línea horizontal hacia la derecha (primer y último círculo) */}
-            {(isFirst || isLast) && (
-              <View
-                style={{
-                  position: "absolute",
-                  top: idx * blockHeight + offset + 12 - 2, // vertical center of circle
-                  left: 30,
-                  width: SCREEN_WIDTH * .03, // rest of the screen width minus the line width
-                  height: 4,
-                  backgroundColor: lineColor,
-                  borderRadius: 2,
-                  zIndex: 1,
-                }}
-              />
-            )}
-            {/* Línea horizontal hacia la izquierda (segundo círculo) */}
-            {isSecond && (
-              <View
-                style={{
-                  position: "absolute",
-                  top: idx * blockHeight + offset + 12 - 2,
-                  right: 32,
-                  width: SCREEN_WIDTH * .03, // rest of the screen width minus the line width
-                  height: 4,
-                  backgroundColor: lineColor,
-                  borderRadius: 2,
-                  zIndex: 1,
-                }}
-              />
-            )}
-          </React.Fragment>
-        );
-      })}
+      <Text style={{ fontWeight: 'bold', fontSize: isDesktop ? 20 : 14 }}>{item.title}</Text>
+      <Text style={{ fontSize: isDesktop ? 18 : 12 }}>{item.description}</Text>
     </View>
   );
-}
+};
 
 function ServicesSection({
   scrollToSection,
