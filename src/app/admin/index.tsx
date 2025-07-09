@@ -27,7 +27,7 @@ interface Client {
   email: string;
   phone: string;
   address: string;
-  status: string;
+  status: string[];
 }
 
 export default function ClientsPage() {
@@ -94,8 +94,7 @@ export default function ClientsPage() {
       client.lastName?.toLowerCase().includes(filter.toLowerCase()) ||
       client.email?.toLowerCase().includes(filter.toLowerCase()) ||
       client.phone?.toLowerCase().includes(filter.toLowerCase()) ||
-      client.address?.toLowerCase().includes(filter.toLowerCase()) ||
-      client.status?.toLowerCase().includes(filter.toLowerCase())
+      client.address?.toLowerCase().includes(filter.toLowerCase()) 
   );
 
   const onRefresh = async () => {
@@ -142,7 +141,6 @@ export default function ClientsPage() {
             <View
               style={[
                 styles.statusBadge,
-                { backgroundColor: getStatusColor(client.status) },
               ]}
             >
               <Text style={styles.statusText}>{client.status}</Text>
@@ -219,10 +217,9 @@ export default function ClientsPage() {
           <View
             style={{
               ...styles.statusBadge,
-              backgroundColor: getStatusColor(client.status),
             }}
           >
-            <Text style={styles.statusText}>{client.status.join(", ")}</Text>
+            <Text style={styles.statusText}>{client.status?.join(", ")}</Text>
           </View>
         </View>
         <View style={{ ...styles.dataCell, ...styles.actionsCell }}>
