@@ -223,5 +223,5 @@ export default {
     error: "There was a problem sending your question. Please try again later.",
     errorPhone: "Please enter a valid phone number.",
     errorEmail: "Please enter a valid email address."
-  }
+  },
 };
