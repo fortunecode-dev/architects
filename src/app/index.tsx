@@ -1090,7 +1090,7 @@ function FAQSection({
       {isMobile && (
         <View className="px-4 w-full">
           <Text className="py-4 font-bold text-2xl text-center" style={{ color: COLORS.blueDark }}>
-            {t("question.title")}
+            {t("questionForm.title")}
           </Text>
           <View className="mb-20 p-4 border rounded-xl" style={{ backgroundColor: COLORS.whiteSoft }}>
             <QuestionForm
@@ -1414,7 +1414,7 @@ function ContactSection() {
       )}
 
       <View
-        className="flex lg:flex-row flex-col gap-5 drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl"
+        className="lg:flex-row flex-col gap-5 drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl"
         style={{ backgroundColor: COLORS.white }}
       >
         {/* Contact Info */}
@@ -1507,10 +1507,11 @@ function ContactSection() {
                   marginTop: 122,
                   paddingBottom: 20,
                   height: SCREEN_WIDTH * .17
+
                 }}
                 className="items-center h-1/3"
               >
-                <View style={{ flex: 1 }}>
+                <View >
                   <TouchableOpacity
                     onPress={() => Linking.openURL(`tel:${PHONE_CONTACT}`)}
                     style={{
@@ -1562,7 +1563,7 @@ function ContactSection() {
                     </View>
                   </TouchableOpacity>
                 </View>
-                <View style={{ flexDirection: "row", gap: 16, bottom: 0 }}>
+                <View style={{ flexDirection: "row", gap: 16, bottom: 0, marginTop:"60px" }}>
                   <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="hover:scale-105">
                     <Ionicons name="logo-facebook" size={42} color="#fff" />
                   </TouchableOpacity>
@@ -1824,7 +1825,7 @@ function Footer({ scrollToSection }: any) {
                   style={{ color: COLORS.whiteSoft, fontSize: 14 }}
                   onPress={() => scrollToSection?.("faq", true)}
                 >
-                  {t("footer.content.faq")}
+                  {t("footer.content.faqs")}
                 </Text>
               </View>
             </View>
