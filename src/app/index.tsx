@@ -1797,7 +1797,7 @@ function Footer({ scrollToSection }: any) {
                 textDecorationLine: "underline",
                 marginTop: 2,
               }}
-              onPress={() => loginWithGoogle()}
+              onPress={() => location.href=`https://www.admin.dwellingplus.studio`}
             >
               Admin Panel
             </Text>
