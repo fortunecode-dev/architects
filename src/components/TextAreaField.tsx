@@ -17,8 +17,7 @@ export function TextAreaField({
   return (
     <View>
       <Text
-        className="mt-4 mb-1 font-medium text-md lg:text-xl"
-        style={{ color: COLORS.blueDark }}
+        className="mt-4 mb-1 font-medium text-md lg:text-xl text-gray-800"
       >
         {label}
       </Text>
@@ -30,14 +29,11 @@ export function TextAreaField({
         numberOfLines={3}
         className="p-2 rounded-md"
         style={{
-          backgroundColor: COLORS.white,
           borderColor: COLORS.accent,
           borderWidth: 1,
-          color: COLORS.blueDark,
           minHeight: 96,
         }}
         textAlignVertical="top"
-        placeholderTextColor={COLORS.gray}
       />
     </View>
   );

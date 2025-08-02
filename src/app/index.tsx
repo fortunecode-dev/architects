@@ -11,6 +11,7 @@ import {
   Linking,
   Alert,
   TextInput,
+  ImageBackground,
 } from "react-native";
 import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -175,7 +176,7 @@ function Header({
     >
       <BlurView
         intensity={400}
-        tint={null}
+        tint={"extraLight"}
         style={{
           width: "100%",
         }}
@@ -389,18 +390,18 @@ function LandingSection({
           style={{ backgroundColor: COLORS.whiteSoft, zIndex: 0 }}
         />
 
-        {/* Imagen */}
-        <Image
-          source={"landing.jpg"}
-          className="hidden lg:block z-10 absolute w-full h-screen cover"
-        />
-        <Image
-          source={"landingCell.jpg"}
-          className="lg:hidden block z-10 absolute w-full h-screen cover"
-        />
+        <ImageBackground
+          source={"main/landing.jpg"}
+          style={{ width: "100%", height: "100%", position: "absolute" }}
+          resizeMode="cover"
+        >
+          <BlurView intensity={40} style={{ flex: 1 }} />
+        </ImageBackground>
+
         {/* Contenido */}
         <View className="z-20 flex flex-1 justify-center items-center w-full h-screen">
-          <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen">
+          <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen"
+          >
             <View
               className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full"
               style={{
@@ -411,73 +412,75 @@ function LandingSection({
                     : SCREEN_WIDTH * 0.3,
               }}
             >
-              <View className="flex justify-center items-center w-full">
-                <Image
-                  source={"logo-navy.png"}
-                  style={{
-                    width: SCREEN_WIDTH * 0.9,
-                    height: isDesktop
-                      ? SCREEN_WIDTH * 0.15
-                      : isTablet
-                        ? SCREEN_WIDTH * 0.25
-                        : SCREEN_WIDTH * 0.42,
-                    resizeMode: "contain",
-                  }}
-                  resizeMode="contain"
-                />
-              </View>
-              <View className="flex flex-col justify-center items-center gap-2">
-                <Text
-                  className="justify-center items-center lg:mt-5 mb-1 lg:p-0 md:py-4 font-semibold text-center"
-                  style={{
-                    color: COLORS.blueDark,
-                    fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.045,
-                  }}
-                >
-                  {t(`landing.title`)}
-                </Text>
-                <View className="flex flex-row justify-center items-center gap-4 w-full">
-                  <TouchableOpacity
-                    onPress={() => scrollToSection("services", true)}
+              <View style={{ backgroundColor: "rgba(255, 255, 255, 0.70)", width: "100vw", padding: 20 }}>
+                <View className="flex justify-center items-center w-full" >
+                  <Image
+                    source={"logo.png"}
                     style={{
-                      borderRadius: 6,
-                      paddingHorizontal: 16,
-                      paddingVertical: 8,
+                      width: SCREEN_WIDTH * 0.9,
+                      height: isDesktop
+                        ? SCREEN_WIDTH * 0.15
+                        : isTablet
+                          ? SCREEN_WIDTH * 0.25
+                          : SCREEN_WIDTH * 0.42,
+                      resizeMode: "contain",
+                    }}
+                    resizeMode="contain"
+                  />
+                </View>
+                <View className="flex flex-col justify-center items-center gap-2">
+                  <Text
+                    className="justify-center items-center lg:mt-5 mb-1 lg:p-0 md:py-4 font-semibold text-center text-gray-800"
+                    style={{
+                      fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.045,
                     }}
                   >
-                    <Text
+                    {t(`landing.title`)}
+                  </Text>
+                  <View className="flex flex-row justify-center items-center gap-4 w-full text-gray-800">
+                    <TouchableOpacity
+                      onPress={() => scrollToSection("services", true)}
                       style={{
-                        color: COLORS.blueDarker,
-                        fontWeight: "600",
-                        fontSize: 16,
-                        textAlign: "center",
+                        borderRadius: 6,
+                        paddingHorizontal: 16,
+                        paddingVertical: 8,
                       }}
                     >
-                      {t(`common.moreInfo`)}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => scrollToSection("contact", true)}
-                    style={{
-                      backgroundColor: COLORS.blueDark,
-                      borderRadius: 6,
-                      paddingHorizontal: 16,
-                      paddingVertical: 8,
-                    }}
-                  >
-                    <Text
+                      <Text
+                        style={{
+
+                          fontWeight: "600",
+                          fontSize: 16,
+                          textAlign: "center",
+                        }}
+                      >
+                        {t(`common.moreInfo`)}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => scrollToSection("contact", true)}
                       style={{
-                        color: COLORS.white,
-                        fontWeight: "600",
-                        fontSize: 16,
-                        textAlign: "center",
+                        backgroundColor: COLORS.blueDark,
+                        borderRadius: 6,
+                        paddingHorizontal: 16,
+                        paddingVertical: 8,
                       }}
                     >
-                      {t(`common.getStarted`)}
-                    </Text>
-                  </TouchableOpacity>
+                      <Text
+                        style={{
+                          color: COLORS.white,
+                          fontWeight: "600",
+                          fontSize: 16,
+                          textAlign: "center",
+                        }}
+                      >
+                        {t(`common.getStarted`)}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
+
             </View>
           </View>
         </View>
@@ -504,7 +507,7 @@ function ServicesSection({
 
   const serviceImages = {
     adu: [
-      require("../images/ADU/6.webp"),
+      require("../images/ADU/6.jpg"),
       require("../images/ADU/1.webp"),
       require("../images/ADU/2.webp"),
       require("../images/ADU/3.webp"),
@@ -587,39 +590,53 @@ function ServicesSection({
 
   return (
     <View
-      className="flex flex-col justify-center items-center py-5 pt-12 md:w-full md:h-screen"
+      className="flex flex-col justify-center items-center pt-12 md:w-full md:h-screen"
       style={{ backgroundColor: COLORS.white }}
     >
+      <ImageBackground
+        source={"main/services.jpeg"}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
+        resizeMode="cover"
+      >
+        <BlurView intensity={60} style={{ flex: 1 }} />
+      </ImageBackground>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
       >
-        <View className="mx-auto w-full max-w-6xl">
+        <View style={{ backgroundColor: "rgba(255, 255, 255, 0.50)", width: "100vw", margin: 25 }}>
           <Text
-            className="mb-3 font-bold text-3xl md:text-4xl text-center"
-            style={{ color: COLORS.blueDark }}
+            className=" font-bold text-3xl md:text-4xl text-center text-gray-700"
           >
             {t("services.title")}
           </Text>
           <Text
-            className="mb-5 px-4 font-medium text-xl md:text-2xl text-center"
-            style={{ color: COLORS.blueDark, fontFamily: "Arial" }}
+            className=" px-4 font-medium text-xl md:text-2xl text-center text-gray-600"
+            style={{ fontFamily: "Arial" }}
           >
             {t("services.subtitle")}
           </Text>
+        </View>
+        <View className="mx-auto w-full max-w-6xl">
+
+
           <View className="gap-4 lg:gap-5 grid grid-cols-1 md:grid-cols-3 px-5">
             {services.map((service, index) => (
               <Pressable
-                onPress={() => openModalWithService(index)}
                 key={index}
-                className="flex flex-col justify-between mb-2 p-3 border rounded-xl transition-shadow duration-300"
+                onPress={() => openModalWithService(index)}
                 style={{
-                  backgroundColor: COLORS.blueDark,
-                  borderColor: COLORS.border,
-                  backgroundImage:
-                    "linear-gradient(334deg, rgb(233, 238, 245) 0%, rgb(205, 220, 239) 100%)",
-                  border: "none",
+                  backgroundColor: "rgba(255, 255, 255, 0.60)",
+                  borderRadius: 10,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 8,
+                  elevation: 4,
+                  transform: [{ scale: 1 }],
+                  marginBottom: 1,
+                  overflow: "hidden",
                 }}
               >
                 <Image
@@ -627,29 +644,42 @@ function ServicesSection({
                   style={{
                     width: "100%",
                     height: 160,
-                    borderRadius: 12,
-                    marginBottom: 12,
+                    resizeMode: "cover",
                   }}
-                  resizeMode="cover"
                 />
-                <Text
-                  className="mb-1 lg:mb-2 font-bold text-xl"
-                  style={{ color: COLORS.blueDarker }}
-                >
-                  {service.title}
-                </Text>
-                <Text
-                  className="mb-1 lg:mb-2 font-semibold text-md"
-                  style={{ color: COLORS.blueDark }}
-                >
-                  {service.description}
-                </Text>
-                <Text
-                  className="mt-4 pr-2 font-bold text-end transition-colors duration-300"
-                  style={{ color: COLORS.blueDark }}
-                >
-                  {t("common.readMore")}
-                </Text>
+                <View style={{ padding: 16, gap: 4 }}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "bold",
+                    }}
+                    className="text-gray-900"
+                  >
+                    {service.title}
+                  </Text>
+                  <Text
+                    className="text-gray-800"
+
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 14,
+                      opacity: 0.8,
+                    }}
+                    numberOfLines={3}
+                  >
+                    {service.description}
+                  </Text>
+                  <Text
+                    style={{
+                      marginTop: 12,
+                      fontSize: 14,
+                      fontWeight: "600",
+                      textAlign: "right",
+                    }}
+                  >
+                    {t("common.readMore")}
+                  </Text>
+                </View>
               </Pressable>
             ))}
           </View>
@@ -977,133 +1007,135 @@ function FAQSection({
       className="flex flex-col justify-center items-center gap-2 px-2 py-20 lg:py-0 w-full md:h-screen"
       style={{ backgroundColor: COLORS.whiteSoft, paddingTop: 26 }}
     >
-      {/* Título centrado */}
-      <Text
-        className="pb-5 font-bold text-2xl lg:text-3xl text-center"
-        style={{ color: COLORS.blueDark }}
+      <ImageBackground
+        source={"main/faqs.jpg"}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
+        resizeMode="cover"
       >
-        {t("faq.title")}
-      </Text>
-
-      {/* Preguntas y respuesta */}
-      <View
-        className={`
+        <BlurView intensity={60} style={{ flex: 1 }} />
+      </ImageBackground>
+      {/* Título centrado */}
+      <View style={{ backgroundColor: "rgba(255, 255, 255, 0.70)", margin: 10, borderRadius: 15 }} >
+        <Text
+          className="py-3 font-bold text-2xl lg:text-3xl text-center text-gray-800"
+        >
+          {t("faq.title")}
+        </Text>
+        {/* Preguntas y respuesta */}
+        <View
+          className={`
           flex flex-row justify-center items-start mb-10 w-full px-4
           ${isMobile
-            ? "gap-4 max-w-xl"
-            : isTablet
-              ? "gap-6 max-w-4xl"
-              : "gap-8 max-w-6xl"
-          }
+              ? "gap-4 max-w-xl"
+              : isTablet
+                ? "gap-6 max-w-4xl"
+                : "gap-8 max-w-6xl"
+            }
         `}
-      >
-        {/* Columna de preguntas */}
-        <View
-          className={`lg:flex-col flex-row flex-1 ${isMobile ? "gap-2" : "gap-4"
-            }`}
         >
-          {columns.map((faqsCol, colIdx) => (
-            <View key={colIdx} className="flex-1">
-              {faqsCol.map((faq, idx) => {
-                const realIdx = colIdx * colLength + idx;
-                return (
-                  <TouchableOpacity
-                    key={realIdx}
-                    onPress={() => {
-                      setSelectedIndex(realIdx);
-                      if (isMobile) setShowAnswerModal(true);
-                    }}
-                    className="mb-2 px-3 py-3 border rounded-xl transition-all"
-                    style={{
-                      borderColor:
-                        selectedIndex === realIdx && !isMobile
-                          ? COLORS.accent
-                          : COLORS.accentSoft,
-                      backgroundColor:
-                        selectedIndex === realIdx && !isMobile
-                          ? COLORS.blueDark
-                          : COLORS.whiteSoft,
-                      shadowColor: COLORS.gray,
-                      shadowOpacity: 0.1,
-                      shadowRadius: 2,
-                    }}
-                  >
-                    <Text
-                      className={
-                        selectedIndex === realIdx && !isMobile
-                          ? "font-bold"
-                          : "font-semibold"
-                      }
+          {/* Columna de preguntas */}
+          <View
+            className={`lg:flex-col flex-row flex-1 ${isMobile ? "gap-2" : "gap-4"
+              }`}
+          >
+            {columns.map((faqsCol, colIdx) => (
+              <View key={colIdx} className="flex-1">
+                {faqsCol.map((faq, idx) => {
+                  const realIdx = colIdx * colLength + idx;
+                  return (
+                    <TouchableOpacity
+                      key={realIdx}
+                      onPress={() => {
+                        setSelectedIndex(realIdx);
+                        if (isMobile) setShowAnswerModal(true);
+                      }}
+                      className="mb-2 px-3 py-3 border rounded-xl transition-all"
                       style={{
-                        fontSize: selectedIndex === realIdx && !isMobile ? 19 : 17,
-                        color:
+
+                        backgroundColor:
                           selectedIndex === realIdx && !isMobile
-                            ? "white"
-                            : COLORS.blueDark,
+                            ? "rgb(31 ,41 ,55)"
+                            : "none",
+                        shadowColor: COLORS.gray,
+                        shadowOpacity: 0.1,
+                        shadowRadius: 2,
                       }}
                     >
-                      {faq.question}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
+                      <Text
+                        className={"font-bold"
+                        }
+                        style={{
+                          fontSize: selectedIndex === realIdx && !isMobile ? 19 : 17,
+                          color:
+                            selectedIndex === realIdx && !isMobile
+                              ? "white"
+                              : "rgb(31 ,41 ,55)",
+                        }}
+                      >
+                        {faq.question}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            ))}
+          </View>
+
+          {/* Respuesta solo en tablet/desktop */}
+          {!isMobile && (
+            <View
+              className={`flex-1 shadow-sm p-4 lg:p-6 border rounded-xl max-w-xl min-h-[220px] ${isTablet ? "ml-4" : "ml-8"
+                }`}
+              style={{
+                borderColor: COLORS.accentSoft,
+              }}
+            >
+              <Text
+                className="mb-2 font-bold text-xl text-gray-800"
+              >
+                {faqs[selectedIndex].question}
+              </Text>
+              <Text
+                className="text-lg whitespace-pre-line text-gray-700"
+              >
+                {faqs[selectedIndex].answer}
+              </Text>
+              <View className="mt-10 pb-6 rounded-xl w-full">
+                <Text className="py-2 font-bold text-2xl text-center text-gray-800" >
+                  {t("questionForm.title")}
+                </Text>
+                <QuestionForm
+                  onSubmitSuccess={() => setSubmitted(true)}
+                />
+
+              </View>
             </View>
-          ))}
+          )}
         </View>
 
-        {/* Respuesta solo en tablet/desktop */}
-        {!isMobile && (
-          <View
-            className={`flex-1 shadow-sm p-4 lg:p-6 border rounded-xl max-w-xl min-h-[220px] ${isTablet ? "ml-4" : "ml-8"
-              }`}
-            style={{
-              backgroundColor: COLORS.whiteSoft,
-              borderColor: COLORS.accentSoft,
-            }}
-          >
-            <Text
-              className="mb-2 font-bold text-xl"
-              style={{ color: COLORS.blueDark }}
-            >
-              {faqs[selectedIndex].question}
+        {/* Sección "Make a Question" para móviles */}
+        {isMobile && (
+          <View className="px-4 w-full">
+            <Text className="py-4 font-bold text-2xl text-center" style={{ color: COLORS.blueDark }}>
+              {t("questionForm.title")}
             </Text>
-            <Text
-              className="text-lg whitespace-pre-line"
-              style={{ color: COLORS.blueDark }}
-            >
-              {faqs[selectedIndex].answer}
-            </Text>
-            <View className="mt-10 pb-6 rounded-xl w-full">
-              <Text className="py-2 font-bold text-2xl text-center" style={{ color: COLORS.blueDark }}>
-                {t("questionForm.title")}
-              </Text>
+            <View className="mb-20 p-4 border rounded-xl" style={{ backgroundColor: COLORS.whiteSoft }}>
               <QuestionForm
                 onSubmitSuccess={() => setSubmitted(true)}
               />
-
+              {submitted && (
+                <Text className="mt-4 text-center" style={{ color: "green" }}>
+                  {t("question.success")}
+                </Text>
+              )}
             </View>
           </View>
         )}
+
       </View>
 
-      {/* Sección "Make a Question" para móviles */}
-      {isMobile && (
-        <View className="px-4 w-full">
-          <Text className="py-4 font-bold text-2xl text-center" style={{ color: COLORS.blueDark }}>
-            {t("questionForm.title")}
-          </Text>
-          <View className="mb-20 p-4 border rounded-xl" style={{ backgroundColor: COLORS.whiteSoft }}>
-            <QuestionForm
-              onSubmitSuccess={() => setSubmitted(true)}
-            />
-            {submitted && (
-              <Text className="mt-4 text-center" style={{ color: "green" }}>
-                {t("question.success")}
-              </Text>
-            )}
-          </View>
-        </View>
-      )}
+
+
 
       {/* Modal de respuesta en móvil */}
       <Modal
@@ -1300,6 +1332,12 @@ function ContactSection() {
       className="flex justify-center items-center mb-20 lg:mb-0 px-6 w-full h-screen"
       style={{ backgroundColor: COLORS.whiteSoft }}
     >
+      <ImageBackground
+        source={"main/contact.jpg"}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
+        resizeMode="cover"
+      >
+        <BlurView intensity={60} style={{ flex: 1 }} /></ImageBackground>
       {/* Modal SOLO en móvil */}
       {!isDesktop && (
         <Modal
@@ -1414,15 +1452,16 @@ function ContactSection() {
       )}
 
       <View
-        className="lg:flex-row flex-col gap-5 drop-shadow-xl mx-auto my-20 rounded-xl w-full max-w-6xl"
-        style={{ backgroundColor: COLORS.white }}
+        className="lg:flex-row flex-col gap-5 drop-shadow-xl mx-auto my-20  w-full max-w-6xl"
+        style={{ backgroundColor: "rgba(255, 255, 255, 0.70)", borderRadius: 16 }}
       >
         {/* Contact Info */}
         <View
           style={{
             backgroundImage:
-              "linear-gradient(131deg, rgb(49, 80, 114) 0%, rgb(108 155 201) 100%)",
+              "linear-gradient(131deg, rgb(14, 37, 63) 0%, rgb(50 99 147) 100%)",
             paddingHorizontal: isDesktop ? 40 : 15,
+            opacity: "0.8",
             paddingTop: 28,
             borderRadius: 16,
             width: "100%",
@@ -1563,7 +1602,7 @@ function ContactSection() {
                     </View>
                   </TouchableOpacity>
                 </View>
-                <View style={{ flexDirection: "row", gap: 16, bottom: 0, marginTop:"60px" }}>
+                <View style={{ flexDirection: "row", gap: 16, bottom: 0, marginTop: "60px" }}>
                   <TouchableOpacity onPress={() => Linking.openURL(FACEBOOK_URL)} className="hover:scale-105">
                     <Ionicons name="logo-facebook" size={42} color="#fff" />
                   </TouchableOpacity>
@@ -1584,7 +1623,7 @@ function ContactSection() {
 
         {/* Formulario */}
         <View className="flex-1 space-y-1 m-2 px-5 pr-4 lg:pr-4 pb-3 min-w-0">
-          <View className="flex flex-row justify-between gap-1 lg:pt-5 w-full overflow-hidden">
+          <View className="flex flex-row justify-between gap-1 lg:pt-5 w-full overflow-hidden" >
             <View style={{ flex: 1 }}>
               <InputField
                 label={t("contact.form.firstName")}
@@ -1797,7 +1836,7 @@ function Footer({ scrollToSection }: any) {
                 textDecorationLine: "underline",
                 marginTop: 2,
               }}
-              onPress={() => location.href=`https://www.admin.dwellingplus.studio`}
+              onPress={() => location.href = `https://www.admin.dwellingplus.studio`}
             >
               Admin Panel
             </Text>
@@ -1983,7 +2022,6 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
         multiline
         numberOfLines={3}
         style={{
-          backgroundColor: COLORS.white,
           borderColor: COLORS.accent,
           borderWidth: 1,
           color: COLORS.blueDark,
@@ -1993,7 +2031,6 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           minHeight: 100,
           textAlignVertical: 'top',
         }}
-        placeholderTextColor={COLORS.gray}
       />
 
       <TouchableOpacity

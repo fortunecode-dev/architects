@@ -463,10 +463,8 @@ const ClientForm = () => {
 
               {activeTab === "ATTACHMENTS" && (
                 <MediaUploader
-                  endpoint="https://your-api.com/upload"
-                  onUploaded={(url) => {
-                    console.log("Uploaded file URL:", url);
-                  }}
+                  endpoints={{rename:"",share:"",tree:"files/tree",upload:"files/upload-base64",zip:""}}
+                  prospectId={id as string}
                 />
               )}
             </View>
