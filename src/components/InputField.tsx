@@ -19,8 +19,8 @@ export function InputField({
   return (
     <View className="mb-1 lg:mb-3">
       <Text
-        className="mb-1 font-medium text-sm lg:text-xl"
-        style={{ color: COLORS.blueDark, flexDirection: "row", alignItems: "center" }}
+        className="mb-1 font-medium text-sm lg:text-xl text-gray-800" 
+        style={{ flexDirection: "row", alignItems: "center" }}
       >
         {label}
         {required && !value && (
@@ -31,7 +31,6 @@ export function InputField({
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor={COLORS.gray}
         keyboardType={keyboardType}
         onFocus={onFocus}
         onBlur={onBlur}
@@ -40,14 +39,12 @@ export function InputField({
         autoComplete={autoComplete}
         className="px-3 rounded-md h-10"
         style={{
-          backgroundColor: editable ? COLORS.white : COLORS.whiteSoft,
           borderColor: error
             ? COLORS.error
             : editable
             ? COLORS.accent
             : COLORS.gray,
           borderWidth: 1,
-          color: COLORS.blueDark,
         }}
         selectionColor={COLORS.accent}
       />
