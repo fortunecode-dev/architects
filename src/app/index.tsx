@@ -31,6 +31,33 @@ import { SubmitButton } from "@/components/SubmitButton";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 
+function useOnScreen(ref: React.RefObject<View>, rootMargin = '0px') {
+  const [isIntersecting, setIntersecting] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIntersecting(entry.isIntersecting);
+      },
+      {
+        rootMargin,
+        threshold: 0.1
+      }
+    );
+    
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [ref, rootMargin]);
+
+  return isIntersecting;
+}
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const { height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
@@ -48,8 +75,8 @@ export default function Page() {
     contact2: useRef<View>(null),
   };
   const { width, height } = useWindowDimensions();
-  const isDesktop = width >= 1024;
-  const isTablet = width >= 768 && width < 1024;
+  const isDesktop = width > 1024;
+  const isTablet = width >= 768 && width <= 1024;
   const isLargeScreen = isDesktop || isTablet;
   const { isScrolled, onScroll } = useScrolled();
 
@@ -92,7 +119,6 @@ export default function Page() {
       >
         <View
           ref={sectionRefs.home}
-          style={{ height: isLargeScreen ? height : "auto" }}
         >
           <LandingSection scrollToSection={scrollToSection} />
         </View>
@@ -125,27 +151,27 @@ export default function Page() {
     </View>
   );
 }
-export function FadeInView({
-  children,
-  style,
-  ...props
-}: ViewProps & { children: React.ReactNode }) {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+// export function FadeInView({
+//   children,
+//   style,
+//   ...props
+// }: ViewProps & { children: React.ReactNode }) {
+//   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 700,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
+//   useEffect(() => {
+//     Animated.timing(fadeAnim, {
+//       toValue: 1,
+//       duration: 700,
+//       useNativeDriver: true,
+//     }).start();
+//   }, [fadeAnim]);
 
-  return (
-    <Animated.View style={[{ opacity: fadeAnim }, style]} {...props}>
-      {children}
-    </Animated.View>
-  );
-}
+//   return (
+//     <Animated.View style={[{ opacity: fadeAnim }, style]} {...props}>
+//       {children}
+//     </Animated.View>
+//   );
+// }
 function Header({
   sections,
   scrollToSection,
@@ -315,7 +341,7 @@ function Header({
         {/* Mobile Menu */}
         {menuOpen && (
           <View
-            className={`md:hidden h-screen justify-center items-center  px-6 py-4 border-t w-full`}
+            className={`md:hidden h-full justify-center items-center  px-6 py-4 border-t w-full`}
             style={{
               borderColor: isScrolled ? COLORS.accentSoft : COLORS.white + "33",
             }}
@@ -395,15 +421,14 @@ function LandingSection({
           style={{ width: "100%", height: "100%", position: "absolute" }}
           resizeMode="cover"
         >
-          <BlurView intensity={40} style={{ flex: 1 }} />
+          <BlurView intensity={15} style={{ flex: 1 }} />
         </ImageBackground>
 
         {/* Contenido */}
-        <View className="z-20 flex flex-1 justify-center items-center w-full h-screen">
-          <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-screen"
-          >
+        <View className="z-20 flex flex-1 justify-center items-center w-full h-full">
+          <View className="flex lg:flex-row flex-col justify-between lg:items-center px-10 lg:px-32 max-w-full h-full">
             <View
-              className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-full"
+              className="flex flex-col justify-start lg:justify-center items-center lg:pb-24 w-full h-screen"
               style={{
                 paddingTop: isDesktop
                   ? 0
@@ -412,75 +437,84 @@ function LandingSection({
                     : SCREEN_WIDTH * 0.3,
               }}
             >
-              <View style={{ backgroundColor: "rgba(255, 255, 255, 0.70)", width: "100vw", padding: 20 }}>
-                <View className="flex justify-center items-center w-full" >
-                  <Image
-                    source={"logo.png"}
-                    style={{
-                      width: SCREEN_WIDTH * 0.9,
-                      height: isDesktop
-                        ? SCREEN_WIDTH * 0.15
-                        : isTablet
-                          ? SCREEN_WIDTH * 0.25
-                          : SCREEN_WIDTH * 0.42,
-                      resizeMode: "contain",
-                    }}
-                    resizeMode="contain"
-                  />
-                </View>
-                <View className="flex flex-col justify-center items-center gap-2">
-                  <Text
-                    className="justify-center items-center lg:mt-5 mb-1 lg:p-0 md:py-4 font-semibold text-center text-gray-800"
-                    style={{
-                      fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.045,
-                    }}
-                  >
-                    {t(`landing.title`)}
-                  </Text>
-                  <View className="flex flex-row justify-center items-center gap-4 w-full text-gray-800">
-                    <TouchableOpacity
-                      onPress={() => scrollToSection("services", true)}
+              <View style={{ width: "100vw", padding: 20, marginTop: "auto", marginBottom: "auto" }}>
+                {/* Logo con efecto de entrada */}
+                <FadeInView delay={1000} duration={800}>
+                  <View className="flex justify-center items-center w-full">
+                    <Image
+                      source={"logo.png"}
                       style={{
-                        borderRadius: 6,
-                        paddingHorizontal: 16,
-                        paddingVertical: 8,
+                        width: SCREEN_WIDTH * 0.9,
+                        height: isDesktop
+                          ? SCREEN_WIDTH * 0.15
+                          : isTablet
+                            ? SCREEN_WIDTH * 0.25
+                            : SCREEN_WIDTH * 0.42,
+                        resizeMode: "contain",
                       }}
-                    >
-                      <Text
-                        style={{
-
-                          fontWeight: "600",
-                          fontSize: 16,
-                          textAlign: "center",
-                        }}
-                      >
-                        {t(`common.moreInfo`)}
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => scrollToSection("contact", true)}
-                      style={{
-                        backgroundColor: COLORS.blueDark,
-                        borderRadius: 6,
-                        paddingHorizontal: 16,
-                        paddingVertical: 8,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: COLORS.white,
-                          fontWeight: "600",
-                          fontSize: 16,
-                          textAlign: "center",
-                        }}
-                      >
-                        {t(`common.getStarted`)}
-                      </Text>
-                    </TouchableOpacity>
+                      resizeMode="contain"
+                    />
                   </View>
-                </View>
-              </View>
+                </FadeInView>
 
+                {/* Texto con efecto de entrada */}
+                <FadeInView delay={1000} duration={800}>
+                  <View className="flex flex-col justify-center items-center gap-2">
+                    <Text
+                      className="justify-center items-center lg:mt-5 mb-1 lg:p-0 md:py-4 font-normal text-center text-gray-800"
+                      style={{
+                        fontSize: isDesktop ? 22 : SCREEN_WIDTH * 0.045,
+                      }}
+                    >
+                      {t(`landing.title`)}
+                    </Text>
+                    
+                    {/* Botones con efecto de entrada */}
+                    <FadeInView delay={1000} duration={800}>
+                      <View className="flex flex-row justify-center items-center gap-4 w-full text-gray-800">
+                        <TouchableOpacity
+                          onPress={() => scrollToSection("services", true)}
+                          style={{
+                            borderRadius: 6,
+                            paddingHorizontal: 16,
+                            paddingVertical: 8,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontWeight: "600",
+                              fontSize: 16,
+                              textAlign: "center",
+                            }}
+                          >
+                            {t(`common.moreInfo`)}
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => scrollToSection("contact", true)}
+                          style={{
+                            backgroundColor: COLORS.blueDark,
+                            borderRadius: 6,
+                            paddingHorizontal: 16,
+                            paddingVertical: 8,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              color: COLORS.white,
+                              fontWeight: "600",
+                              fontSize: 16,
+                              textAlign: "center",
+                            }}
+                          >
+                            {t(`common.getStarted`)}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </FadeInView>
+                  </View>
+                </FadeInView>
+              </View>
             </View>
           </View>
         </View>
@@ -488,6 +522,38 @@ function LandingSection({
     </FadeInView>
   );
 }
+
+// Componente FadeInView mejorado para aceptar delay y duration
+const FadeInView = (props: { children: React.ReactNode; delay?: number; duration?: number }) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      delay: props.delay || 0,
+      duration: props.duration || 1000,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim, props.delay, props.duration]);
+
+  return (
+    <Animated.View
+      style={{
+        opacity: fadeAnim,
+        transform: [
+          {
+            translateY: fadeAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [20, 0],
+            }),
+          },
+        ],
+      }}
+    >
+      {props.children}
+    </Animated.View>
+  );
+};
 function ServicesSection({
   scrollToSection,
 }: {
@@ -504,6 +570,8 @@ function ServicesSection({
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { t } = useTranslation();
+   const sectionRef = useRef<View>(null);
+  const isVisible = useOnScreen(sectionRef);
 
   const serviceImages = {
     adu: [
@@ -590,7 +658,8 @@ function ServicesSection({
 
   return (
     <View
-      className="flex flex-col justify-center items-center pt-12 md:w-full md:h-screen"
+      ref={sectionRef}
+      className="flex flex-col justify-center items-center md:w-full md:h-full"
       style={{ backgroundColor: COLORS.white }}
     >
       <ImageBackground
@@ -598,92 +667,100 @@ function ServicesSection({
         style={{ width: "100%", height: "100%", position: "absolute" }}
         resizeMode="cover"
       >
-        <BlurView intensity={60} style={{ flex: 1 }} />
+        <BlurView intensity={10} style={{ flex: 1 }} />
       </ImageBackground>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
       >
-        <View style={{ backgroundColor: "rgba(255, 255, 255, 0.50)", width: "100vw", margin: 25 }}>
-          <Text
-            className=" font-bold text-3xl md:text-4xl text-center text-gray-700"
-          >
-            {t("services.title")}
-          </Text>
-          <Text
-            className=" px-4 font-medium text-xl md:text-2xl text-center text-gray-600"
-            style={{ fontFamily: "Arial" }}
-          >
-            {t("services.subtitle")}
-          </Text>
-        </View>
-        <View className="mx-auto w-full max-w-6xl">
-
-
-          <View className="gap-4 lg:gap-5 grid grid-cols-1 md:grid-cols-3 px-5">
-            {services.map((service, index) => (
-              <Pressable
-                key={index}
-                onPress={() => openModalWithService(index)}
-                style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.60)",
-                  borderRadius: 10,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 8,
-                  elevation: 4,
-                  transform: [{ scale: 1 }],
-                  marginBottom: 1,
-                  overflow: "hidden",
-                }}
+        {isVisible && (<FadeInView delay={1000} duration={800}>
+          <View style={{ margin: 15, backgroundColor: "rgba(255, 255, 255, 0.70)", borderRadius: 20 }}>
+            <FadeInView delay={1200} duration={800}>
+              <Text className="font-bold text-3xl md:text-4xl text-center text-gray-800 mt-3">
+                {t("services.title")}
+              </Text>
+            </FadeInView>
+            
+            <FadeInView delay={1400} duration={800}>
+              <Text
+                className="px-4 font-medium text-xl md:text-2xl text-center text-gray-900"
+                style={{ fontFamily: "Arial" }}
               >
-                <Image
-                  source={service.images[0]}
-                  style={{
-                    width: "100%",
-                    height: 160,
-                    resizeMode: "cover",
-                  }}
-                />
-                <View style={{ padding: 16, gap: 4 }}>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "bold",
-                    }}
-                    className="text-gray-900"
+                {t("services.subtitle")}
+              </Text>
+            </FadeInView>
+            
+            <View className="mx-auto w-full max-w-6xl">
+              <View className="p-9 gap-4 grid grid-cols-1 md:grid-cols-3">
+                {services.map((service, index) => (
+                  <FadeInView 
+                    key={index} 
+                    delay={1600 + (index * 100)} 
+                    duration={800}
                   >
-                    {service.title}
-                  </Text>
-                  <Text
-                    className="text-gray-800"
-
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: 14,
-                      opacity: 0.8,
-                    }}
-                    numberOfLines={3}
-                  >
-                    {service.description}
-                  </Text>
-                  <Text
-                    style={{
-                      marginTop: 12,
-                      fontSize: 14,
-                      fontWeight: "600",
-                      textAlign: "right",
-                    }}
-                  >
-                    {t("common.readMore")}
-                  </Text>
-                </View>
-              </Pressable>
-            ))}
+                    <Pressable
+                      onPress={() => openModalWithService(index)}
+                      style={{
+                        backgroundColor: "rgba(255, 255, 255, 0.60)",
+                        borderRadius: 10,
+                        shadowColor: "#000",
+                        shadowOffset: { width: 0, height: 4 },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 8,
+                        elevation: 4,
+                        transform: [{ scale: 1 }],
+                        marginBottom: 1,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <Image
+                        source={service.images[0]}
+                        style={{
+                          width: "100%",
+                          height: 160,
+                          resizeMode: "cover",
+                        }}
+                      />
+                      <View style={{ padding: 16, gap: 4 }}>
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            fontWeight: "bold",
+                          }}
+                          className="text-gray-900"
+                        >
+                          {service.title}
+                        </Text>
+                        <Text
+                          className="text-gray-800"
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: 14,
+                            opacity: 0.8,
+                          }}
+                          numberOfLines={3}
+                        >
+                          {service.description}
+                        </Text>
+                        <Text
+                          style={{
+                            marginTop: 12,
+                            fontSize: 14,
+                            fontWeight: "600",
+                            textAlign: "right",
+                          }}
+                        >
+                          {t("common.readMore")}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  </FadeInView>
+                ))}
+              </View>
+            </View>
           </View>
-        </View>
+        </FadeInView>)}
       </ScrollView>
 
       {/* Service Modal with Carousel */}
@@ -740,8 +817,8 @@ function ServicesSection({
                   }}
                   style={{
                     borderColor: COLORS.border,
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
                   }}
                 >
                   <Text
@@ -757,8 +834,8 @@ function ServicesSection({
                     borderColor: COLORS.border,
                     backgroundColor: COLORS.blueDark,
                     borderWidth: 1,
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
                     borderRadius: 6,
                   }}
                 >
@@ -972,13 +1049,44 @@ function ServicesSection({
                 }, 1500);
               }}
             />
-
           </View>
         </View>
       </Modal>
     </View>
   );
 }
+
+// Componente FadeInView mejorado
+  // const FadeInView = (props: { children: React.ReactNode; delay?: number; duration?: number }) => {
+  //   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  //   useEffect(() => {
+  //     Animated.timing(fadeAnim, {
+  //       toValue: 1,
+  //       delay: props.delay || 0,
+  //       duration: props.duration || 800,
+  //       useNativeDriver: true,
+  //     }).start();
+  //   }, [fadeAnim, props.delay, props.duration]);
+
+  //   return (
+  //     <Animated.View
+  //       style={{
+  //         opacity: fadeAnim,
+  //         transform: [
+  //           {
+  //             translateY: fadeAnim.interpolate({
+  //               inputRange: [0, 1],
+  //               outputRange: [20, 0],
+  //             }),
+  //           },
+  //         ],
+  //       }}
+  //     >
+  //       {props.children}
+  //     </Animated.View>
+  //   );
+  // };
 function FAQSection({
   scrollToSection,
 }: {
@@ -994,7 +1102,8 @@ function FAQSection({
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
   const isTablet = width >= 768 && width < 1024;
-
+  const sectionRef = useRef<View>(null);
+  const isVisible = useOnScreen(sectionRef);
   // Divide las preguntas en 2 columnas
   const colLength = Math.ceil((faqs as Array<any>).length / 2);
   const columns = [
@@ -1004,136 +1113,122 @@ function FAQSection({
 
   return (
     <View
-      className="flex flex-col justify-center items-center gap-2 px-2 py-20 lg:py-0 w-full md:h-screen"
-      style={{ backgroundColor: COLORS.whiteSoft, paddingTop: 26 }}
+     ref={sectionRef}
+      className="flex flex-col justify-center items-center gap-2 px-2 lg:py-0 w-full md:h-full"
+      style={{ backgroundColor: COLORS.whiteSoft, }}
     >
       <ImageBackground
         source={"main/faqs.jpg"}
         style={{ width: "100%", height: "100%", position: "absolute" }}
         resizeMode="cover"
       >
-        <BlurView intensity={60} style={{ flex: 1 }} />
+        <BlurView intensity={20} style={{ flex: 1 }} />
       </ImageBackground>
-      {/* Título centrado */}
-      <View style={{ backgroundColor: "rgba(255, 255, 255, 0.70)", margin: 10, borderRadius: 15 }} >
-        <Text
-          className="py-3 font-bold text-2xl lg:text-3xl text-center text-gray-800"
-        >
-          {t("faq.title")}
-        </Text>
-        {/* Preguntas y respuesta */}
-        <View
-          className={`
-          flex flex-row justify-center items-start mb-10 w-full px-4
-          ${isMobile
-              ? "gap-4 max-w-xl"
-              : isTablet
-                ? "gap-6 max-w-4xl"
-                : "gap-8 max-w-6xl"
-            }
-        `}
-        >
-          {/* Columna de preguntas */}
-          <View
-            className={`lg:flex-col flex-row flex-1 ${isMobile ? "gap-2" : "gap-4"
-              }`}
-          >
-            {columns.map((faqsCol, colIdx) => (
-              <View key={colIdx} className="flex-1">
-                {faqsCol.map((faq, idx) => {
-                  const realIdx = colIdx * colLength + idx;
-                  return (
-                    <TouchableOpacity
-                      key={realIdx}
-                      onPress={() => {
-                        setSelectedIndex(realIdx);
-                        if (isMobile) setShowAnswerModal(true);
-                      }}
-                      className="mb-2 px-3 py-3 border rounded-xl transition-all"
-                      style={{
+     {isVisible && (
+        <FadeInView duration={800}>
+          <View style={{ backgroundColor: "rgba(255, 255, 255, 0.70)", marginVertical: 50, borderRadius: 15 }}>
+            <FadeInView delay={200} duration={800}>
+              <Text className="py-3 font-bold text-2xl lg:text-3xl text-center text-gray-800">
+                {t("faq.title")}
+              </Text>
+            </FadeInView>
 
-                        backgroundColor:
-                          selectedIndex === realIdx && !isMobile
-                            ? "rgb(31 ,41 ,55)"
-                            : "none",
-                        shadowColor: COLORS.gray,
-                        shadowOpacity: 0.1,
-                        shadowRadius: 2,
+            <FadeInView delay={400} duration={800}>
+              <View className={`flex flex-row justify-center items-start mb-10 w-full px-4 ${
+                isMobile ? "gap-4 max-w-xl" : isTablet ? "gap-6 max-w-4xl" : "gap-8 max-w-6xl"
+              }`}>
+                {/* Columna de preguntas */}
+                <View className={`lg:flex-col flex-row flex-1 ${isMobile ? "gap-2" : "gap-4"}`}>
+                  {columns.map((faqsCol, colIdx) => (
+                    <FadeInView key={colIdx} delay={600 + colIdx * 100} duration={800}>
+                      <View className="flex-1">
+                        {faqsCol.map((faq, idx) => {
+                          const realIdx = colIdx * colLength + idx;
+                          return (
+                            <FadeInView key={realIdx} delay={800 + realIdx * 50} duration={800}>
+                              <TouchableOpacity
+                                onPress={() => {
+                                  setSelectedIndex(realIdx);
+                                  if (isMobile) setShowAnswerModal(true);
+                                }}
+                                className="mb-2 px-3 py-3 border rounded-xl transition-all"
+                                style={{
+                                  backgroundColor: selectedIndex === realIdx && !isMobile ? "rgb(31 ,41 ,55)" : "none",
+                                  shadowColor: COLORS.gray,
+                                  shadowOpacity: 0.1,
+                                  shadowRadius: 2,
+                                }}
+                              >
+                                <Text
+                                  className={"font-bold"}
+                                  style={{
+                                    fontSize: selectedIndex === realIdx && !isMobile ? 19 : 17,
+                                    color: selectedIndex === realIdx && !isMobile ? "white" : "rgb(31 ,41 ,55)",
+                                  }}
+                                >
+                                  {faq.question}
+                                </Text>
+                              </TouchableOpacity>
+                            </FadeInView>
+                          );
+                        })}
+                      </View>
+                    </FadeInView>
+                  ))}
+                </View>
+
+                {/* Respuesta solo en tablet/desktop */}
+                {!isMobile && (
+                  <FadeInView delay={1000} duration={800}>
+                    <View
+                      className={`flex-1 shadow-sm p-4 lg:p-6 border rounded-xl max-w-xl min-h-[220px] ${
+                        isTablet ? "ml-4" : "ml-8"
+                      }`}
+                      style={{
+                        borderColor: COLORS.accentSoft,
                       }}
                     >
-                      <Text
-                        className={"font-bold"
-                        }
-                        style={{
-                          fontSize: selectedIndex === realIdx && !isMobile ? 19 : 17,
-                          color:
-                            selectedIndex === realIdx && !isMobile
-                              ? "white"
-                              : "rgb(31 ,41 ,55)",
-                        }}
-                      >
-                        {faq.question}
+                      <Text className="mb-2 font-bold text-xl text-gray-800">
+                        {faqs[selectedIndex].question}
                       </Text>
-                    </TouchableOpacity>
-                  );
-                })}
+                      <Text className="text-lg whitespace-pre-line text-gray-700">
+                        {faqs[selectedIndex].answer}
+                      </Text>
+                      <FadeInView delay={1200} duration={800}>
+                        <View className="mt-10 pb-6 rounded-xl w-full">
+                          <Text className="py-2 font-bold text-2xl text-center text-gray-800">
+                            {t("questionForm.title")}
+                          </Text>
+                          <QuestionForm onSubmitSuccess={() => setSubmitted(true)} />
+                        </View>
+                      </FadeInView>
+                    </View>
+                  </FadeInView>
+                )}
               </View>
-            ))}
+            </FadeInView>
+
+            {/* Sección "Make a Question" para móviles */}
+            {isMobile && (
+              <FadeInView delay={800} duration={800}>
+                <View className="px-4 w-full">
+                  <Text className="py-4 font-bold text-2xl text-center" style={{ color: COLORS.blueDark }}>
+                    {t("questionForm.title")}
+                  </Text>
+                  <View className="mb-20 p-4 border rounded-xl" style={{ backgroundColor: COLORS.whiteSoft }}>
+                    <QuestionForm onSubmitSuccess={() => setSubmitted(true)} />
+                    {submitted && (
+                      <Text className="mt-4 text-center" style={{ color: "green" }}>
+                        {t("question.success")}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              </FadeInView>
+            )}
           </View>
-
-          {/* Respuesta solo en tablet/desktop */}
-          {!isMobile && (
-            <View
-              className={`flex-1 shadow-sm p-4 lg:p-6 border rounded-xl max-w-xl min-h-[220px] ${isTablet ? "ml-4" : "ml-8"
-                }`}
-              style={{
-                borderColor: COLORS.accentSoft,
-              }}
-            >
-              <Text
-                className="mb-2 font-bold text-xl text-gray-800"
-              >
-                {faqs[selectedIndex].question}
-              </Text>
-              <Text
-                className="text-lg whitespace-pre-line text-gray-700"
-              >
-                {faqs[selectedIndex].answer}
-              </Text>
-              <View className="mt-10 pb-6 rounded-xl w-full">
-                <Text className="py-2 font-bold text-2xl text-center text-gray-800" >
-                  {t("questionForm.title")}
-                </Text>
-                <QuestionForm
-                  onSubmitSuccess={() => setSubmitted(true)}
-                />
-
-              </View>
-            </View>
-          )}
-        </View>
-
-        {/* Sección "Make a Question" para móviles */}
-        {isMobile && (
-          <View className="px-4 w-full">
-            <Text className="py-4 font-bold text-2xl text-center" style={{ color: COLORS.blueDark }}>
-              {t("questionForm.title")}
-            </Text>
-            <View className="mb-20 p-4 border rounded-xl" style={{ backgroundColor: COLORS.whiteSoft }}>
-              <QuestionForm
-                onSubmitSuccess={() => setSubmitted(true)}
-              />
-              {submitted && (
-                <Text className="mt-4 text-center" style={{ color: "green" }}>
-                  {t("question.success")}
-                </Text>
-              )}
-            </View>
-          </View>
-        )}
-
-      </View>
-
+        </FadeInView>
+      )}
 
 
 
@@ -1197,7 +1292,8 @@ function ContactSection() {
   const isDesktop = width >= 1024;
   const [showContactModal, setShowContactModal] = useState(false);
   const { t } = useTranslation();
-
+  const sectionRef = useRef<View>(null);
+  const isVisible = useOnScreen(sectionRef);
   // Función con debounce para buscar sugerencias
   const handleAddressChange = (text: string) => {
     setFormData((prev) => ({ ...prev, address: text }));
@@ -1329,7 +1425,8 @@ function ContactSection() {
 
   return (
     <View
-      className="flex justify-center items-center mb-20 lg:mb-0 px-6 w-full h-screen"
+     ref={sectionRef}
+      className="flex justify-center items-center  lg:mb-0 px-6 w-full h-full "
       style={{ backgroundColor: COLORS.whiteSoft }}
     >
       <ImageBackground
@@ -1337,7 +1434,7 @@ function ContactSection() {
         style={{ width: "100%", height: "100%", position: "absolute" }}
         resizeMode="cover"
       >
-        <BlurView intensity={60} style={{ flex: 1 }} /></ImageBackground>
+        <BlurView intensity={20} style={{ flex: 1 }} /></ImageBackground>
       {/* Modal SOLO en móvil */}
       {!isDesktop && (
         <Modal
@@ -1451,7 +1548,7 @@ function ContactSection() {
         </Modal>
       )}
 
-      <View
+      {isVisible && (<FadeInView delay={800} duration={500}><View
         className="lg:flex-row flex-col gap-5 drop-shadow-xl mx-auto my-20  w-full max-w-6xl"
         style={{ backgroundColor: "rgba(255, 255, 255, 0.70)", borderRadius: 16 }}
       >
@@ -1760,7 +1857,7 @@ function ContactSection() {
             disabled={isSubmitting}
           />
         </View>
-      </View>
+      </View></FadeInView>)}
     </View>
   );
 }
